@@ -1,35 +1,46 @@
 @startuml
-'skinparam monochrome true
-skinparam packageStyle rectangle
-'skinparam shadowing false
-
-skinparam rectangle{
-    BorderColor yellow
-}
-
-'title Use Case Diagram Example
 
 left to right direction
+'https://plantuml.com/use-case-diagram
+actor Editor
+actor player
+actor ProductOwner
 
-rectangle "System Actors" as actors {
-    actor Freelancer
-    actor "Organization\nEmployee" as Employee
-}
+:Main Admin: as Admin
+(Use the application) as (Use)
 
+Editor --> (create map)
+Editor --> (add insdustry)
+Editor --> (add city)
+Editor --> (create scenario)
 
-note right of Freelancer
-    Actor identified but still
-    no concrete use cases
+(create map) --> (map size) : <<include>>
+(create map) --> (map name) : <<include>>
+(add insdustry) --> (ask position) : <<include>>
+(add city) --> (indicate coordenates XY)
+(add city) -->(city name): <<include>>
+(add city) --> (house blocks) : <<extended>>
+(city name) --> (no special characters/digits) : <<extended>>
+(house blocks) --> (need to be positive) : <<extended>>
+
+player --> (Us5)
+player --> (Us6)
+player --> (Us7)
+player --> (Us8)
+player --> (Us9)
+player --> (Us10)
+player --> (Us11)
+
+ProductOwner --> (Us12)
+
+note right of Admin : This is an example.
+
+note right of (Use)
+A note can also
+be on several lines
 end note
 
-rectangle "Use Cases" as usecases{
-    usecase "UC6 - Create a Task" as UC6
-    Employee --> UC6
-}
-note right of actors
-    Rectangles and Titles are for
-    demonstration purposes only.
-    Omitt on your diagrams.
-end note
-
+note "This note is connected\nto several objects." as N2
+(Start) .. N2
+N2 .. (Use)
 @enduml
