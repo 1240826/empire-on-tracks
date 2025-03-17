@@ -14,7 +14,15 @@ However, be aware, this is a pedagogical simplification. On further projects and
 
 | UC/US | Description                                   |                   
 |:------|:----------------------------------------------|
-| US001 | [Short name for US001](../../US001/README.md) |
-| ...   | ...                                           |
-| US006 | [Create a Task](../../US006/US006-README.md)  |
-| ...   | ...                                           |
+| US001 | [Create Map](../../US001/README.md) |
+| US002 | [Add Industry](../../US002/README.md) |
+| US003 | [Add City](../../US003/README.md) |
+| US004 | [Create Scenario](../../US004/README.md) |
+| US005 | [Build Station](../../US005/README.md) |
+| US006 | [Upgrade Station](../../US006/README.md) |
+| US007 | [View Station Details](../../US007/README.md) |
+| US008 | [Build Railway Line](../../US008/README.md) |
+| US009 | [Buy Train](../../US009/README.md) |
+| US010 | [Assign Train to Route](../../US010/README.md) |
+| US011 | [List Trains](../../US011/README.md) |
+| US012 | [Cargo Generation Simulator](../../US012/README.md) |
