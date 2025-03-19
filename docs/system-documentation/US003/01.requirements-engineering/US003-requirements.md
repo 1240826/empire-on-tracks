@@ -1,4 +1,4 @@
-# US006 - Create a Task
+# US003 - Add City
 
 ## 1. Requirements Engineering
 
@@ -20,9 +20,9 @@ map, with a name and a positive number of house blocks.
 >
 > **Answer:** answer1.
 
-> **Question:** Monetary data is expressed in any particular currency?
+> **Question:** question2
 >
-> **Answer:** Monetary data (e.g. estimated cost of a task) is indicated in POT (virtual currency internal to the platform).
+> **Answer:** answer2
 
 ### 1.3. Acceptance Criteria
 
