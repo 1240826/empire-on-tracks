@@ -4,14 +4,14 @@
 
 ### 1.1. User Story Description
 
-As a Player, I want to build a station. AC1: Overbuilding is not possible
+As a Player, I want to build a station. 
 
 ### 1.2. Customer Specifications and Clarifications 
 
 **From the specifications document:**
 
 >   You can choose between three types of stations with each one having a different size and price, their cost and economic radius distinguishx the stations 
->	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
+>	A station's supply and demand are determined by the industries and population within its radius. By summing their contributions, the station's total business is calculated. 
 
 **From the client clarifications:**
 
@@ -25,9 +25,7 @@ As a Player, I want to build a station. AC1: Overbuilding is not possible
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
-* **AC2:** The task reference must have at least 5 alphanumeric characters.
-* **AC3:** When creating a task with an existing reference, the system must reject such operation and the user must be able to modify the typed reference.
+* **AC1:** Overbuilding is not possible
 
 ### 1.4. Found out Dependencies
 

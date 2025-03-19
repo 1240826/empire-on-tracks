@@ -5,32 +5,40 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Player" as Player
 participant ":System" as System
 
-activate Employee
+activate Player
 
-    Employee -> System : asks to create a new task
+    Player -> System : requests to assign a train to a route
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Player : shows list of owned trains
     deactivate System
 
-    Employee -> System : selects a task category
+    Player -> System : selects a train
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Player : shows list of available stations connected by railway lines
     deactivate System
 
-    Employee -> System : types requested data
+    Player -> System : selects stations for the route
     activate System
 
-        System --> Employee : shows all data and requests confirmation
+        System --> Player : shows available cargoes at the selected stations
     deactivate System
 
-    Employee -> System : confirms data
+    Player -> System : selects cargoes to be picked up
     activate System
 
-        System --> Employee : displays operation success
+        System --> Player : shows all selections and requests confirmation
     deactivate System
+
+    Player -> System : confirms selections
+    activate System
+
+        System --> Player : displays operation success message
+    deactivate System
+
+deactivate Player
 @enduml

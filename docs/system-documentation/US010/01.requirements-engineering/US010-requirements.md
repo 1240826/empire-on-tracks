@@ -1,0 +1,61 @@
+# US010 - Assign a Train to a Route
+
+## 1. Requirements Engineering
+
+### 1.1. User Story Description
+
+As a Player, I want to assign a selected train to a route with a valid station and the respective list of cargoes to be picked up.
+
+### 1.2. Customer Specifications and Clarifications 
+
+**From the specifications document:**
+
+>	A route is a list of stations where the train passes, along which it loads (carriages) cargo at each station.
+
+> The carriages are distinguished by the type of cargo they  can transport (e.g., passengers, mail, coal, iron ore, steel, cars) and, in the context of the simulator, they have no acquisition cost.
+
+**From the client clarifications:**
+
+> **Question:** Which is the unit of measurement used to estimate duration?
+>
+> **Answer:** Duration is estimated in days.
+
+
+### 1.3. Acceptance Criteria
+
+* **AC1:** All required fields must be filled in.
+
+### 1.4. Found out Dependencies
+
+* There is a dependency on "US09 - Buy a train" as there must be at least one train owned by the player.
+* There is a dependency on "US08 - Build a railway line between two stations" as there must be railway lines connecting the stations on the route.
+* There is a dependency on "US05 - Build a station" as there must be stations to create a route.
+
+### 1.5 Input and Output Data
+
+**Input Data:**
+
+* Typed data:
+    * none
+	
+* Selected data:
+    * a train (from owned trains)
+    * a route
+    * a cargo to be picked up
+
+**Output Data:**
+
+* List of available trains
+* List of available stations connected by railway lines
+* List of available cargoes at the stations
+* (In)Success of the operation
+
+### 1.6. System Sequence Diagram (SSD)
+
+![System Sequence Diagram](svg/US010-SSD.svg)
+
+**_Other alternatives might exist._**
+
+### 1.7 Other Relevant Remarks
+
+* The created task stays in a "not published" state in order to distinguish from "published" tasks.
