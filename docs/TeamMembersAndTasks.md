@@ -4,12 +4,14 @@
 
 The team is formed by the students identified in the following table.
 
-| Student Number | Name              |
-|----------------|-------------------|
-| **1XXXXXX**    | Name of student 1 |
-| **1XXXXXX**    | Name of student 2 |
-| **1XXXXXX**    | Name of student 3 |
-| **1XXXXXX**    | Name of student 4 |
+| Student Number | Name             |
+|----------------|------------------|
+| **1241949**    | Carlos Fernandes |
+| **1240824**    | Dinis Silva      |
+| **1240826**    | Fábio Costa      |
+| **1240796**    | Gonçalo Silva    |
+| **1240821**    | Nuno Cerqueira   |
+
 
 # 2. Task Distribution ###
 
