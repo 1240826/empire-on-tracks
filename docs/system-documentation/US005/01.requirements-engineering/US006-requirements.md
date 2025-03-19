@@ -10,7 +10,7 @@ As a Player, I want to build a station. AC1: Overbuilding is not possible
 
 **From the specifications document:**
 
->   You can choose between 3 types of stations with eitch one having a different size and price, one of the  
+>   You can choose between three types of stations with each one having a different size and price, their cost and economic radius distinguishx the stations 
 >	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
 
 **From the client clarifications:**
