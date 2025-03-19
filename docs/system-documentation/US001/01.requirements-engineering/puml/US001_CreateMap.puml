@@ -19,7 +19,6 @@ activate Employee
     Employee -> System : Gives name/size
     activate System
 
-        System --> Employee : Verify if the data is valid
         System --> Employee : Confirm map creation
     deactivate System
 
