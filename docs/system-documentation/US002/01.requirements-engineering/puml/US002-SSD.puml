@@ -1,0 +1,46 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Employee
+participant ":System" as System
+
+activate Employee
+
+    Employee -> System : Ask to add an industry.
+    activate System
+
+        System-->Employee:Ask for the XY position.
+
+    deactivate System
+
+    Employee->System:Gives XY.
+
+    activate System
+    System-->Employee:Show the different types of industry and ask one option.
+
+    deactivate System
+
+   Employee->System:Select one option.
+
+   activate System
+
+   System-->Employee:Show the different types of industries of that type and ask one option.
+
+   deactivate System
+
+   Employee-->System:Select one option.
+
+   activate System
+
+   System-->Employee:Confirm the creation of this industry.
+
+   deactivate System
+
+
+
+
+@enduml

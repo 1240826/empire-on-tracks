@@ -10,7 +10,7 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : Select "Create Map"
+    Employee -> System : ask to "Create a Map"
     activate System
 
         System --> Employee : Ask the name/size
