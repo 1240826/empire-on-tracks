@@ -5,32 +5,24 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Editor" as Employee
 participant ":System" as System
 
 activate Employee
 
-    Employee -> System : asks to create a new task
+    Employee -> System : Select "add an industry"
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Employee : show the types of industries
     deactivate System
 
-    Employee -> System : selects a task category
+    Employee -> System : select "type"
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Employee : Verify if the position is valid
+
     deactivate System
+    Employee -> System :select
+        activate System
 
-    Employee -> System : types requested data
-    activate System
-
-        System --> Employee : shows all data and requests confirmation
-    deactivate System
-
-    Employee -> System : confirms data
-    activate System
-
-        System --> Employee : displays operation success
-    deactivate System
 @enduml

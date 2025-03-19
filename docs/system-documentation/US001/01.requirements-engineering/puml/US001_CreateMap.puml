@@ -1,0 +1,25 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Employee
+participant ":System" as System
+
+activate Employee
+
+    Employee -> System : Select "Create Map"
+    activate System
+
+        System --> Employee : Ask the name/size
+    deactivate System
+
+    Employee -> System : Gives name/size
+    activate System
+
+        System --> Employee : Confirm map creation
+    deactivate System
+
+@enduml
