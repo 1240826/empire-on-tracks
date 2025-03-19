@@ -4,21 +4,21 @@
 
 ### 1.1. User Story Description
 
-As an organization employee, I want to create a new task in order to be further published.
+As an Editor, I want to add a city in a position XY of the selected
+map, with a name and a positive number of house blocks.
 
 ### 1.2. Customer Specifications and Clarifications 
 
 **From the specifications document:**
 
->	Each task is characterized by having a unique reference per organization, a designation, an informal and a technical description, an estimated duration and cost, as well as a task category. 
-
->	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
+>   Indicate the position XY.
+>	City must have a name and a positive number of house blocks. 
 
 **From the client clarifications:**
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** question1
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** answer1.
 
 > **Question:** Monetary data is expressed in any particular currency?
 >
@@ -26,20 +26,20 @@ As an organization employee, I want to create a new task in order to be further 
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
-* **AC2:** The task reference must have at least 5 alphanumeric characters.
-* **AC3:** When creating a task with an existing reference, the system must reject such operation and the user must be able to modify the typed reference.
+* **AC1:** A city name cannot have special characters or digits.
+* **AC2:** The house blocks can be assigned manually or automatically (randomly around the city tag position).
+
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US003 - Create a task category" as there must be at least one task category to classify the task being created.
+* N/A
 
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-    * a reference
+    * a name
     * a designation 
     * an informal description
     * a technical description
@@ -56,7 +56,7 @@ As an organization employee, I want to create a new task in order to be further 
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US006-SSD.svg)
+![System Sequence Diagram](svg/US003-SSD.svg)
 
 **_Other alternatives might exist._**
 
