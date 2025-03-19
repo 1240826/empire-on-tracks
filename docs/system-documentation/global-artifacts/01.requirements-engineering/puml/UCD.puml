@@ -1,5 +1,4 @@
 @startuml
-@startuml
 left to right direction
 'https://plantuml.com/use-case-diagram
 
@@ -20,6 +19,7 @@ Editor --> (Create Scenario)
 (Add City) --> (Define House Blocks) : <<extend>>
 (Set City Name) --> (No Special Characters/Digits) : <<extend>>
 (Define House Blocks) --> (Must be Positive) : <<extend>>
+(Define House Blocks) --> (Manually or automatically around the city) : <<extend>>
 
 Player --> (Build Station)
 Player --> (Upgrade Station)
@@ -33,7 +33,6 @@ Player --> (List Trains)
 (Build Railway Line) --> (Select Registered Stations) : <<include>>
 (Buy Train) --> (Select Locomotive from List) : <<include>>
 (Assign Train to Route) --> (Choose Valid Stations) : <<include>>
-(Assign Train to Route) --> (Select Cargo for Pickup) : <<include>>
 (List Trains) --> (Group by Locomotive Type) : <<extend>>
 (List Trains) --> (Sort Alphabetically) : <<extend>>
 
