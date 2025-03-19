@@ -1,17 +1,16 @@
-# US006 - Create a Task
+# US05 - Build a station
 
 ## 1. Requirements Engineering
 
 ### 1.1. User Story Description
 
-As an organization employee, I want to create a new task in order to be further published.
+As a Player, I want to build a station. AC1: Overbuilding is not possible
 
 ### 1.2. Customer Specifications and Clarifications 
 
 **From the specifications document:**
 
->	Each task is characterized by having a unique reference per organization, a designation, an informal and a technical description, an estimated duration and cost, as well as a task category. 
-
+>   You can choose between 3 types of stations with eitch one having a different size and price, one of the  
 >	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
 
 **From the client clarifications:**
