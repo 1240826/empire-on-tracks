@@ -52,7 +52,7 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US006-SSD.svg)
+![System Sequence Diagram](svg/US010-SSD.svg)
 
 **_Other alternatives might exist._**
 
