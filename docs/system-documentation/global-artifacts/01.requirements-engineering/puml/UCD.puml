@@ -1,35 +1,46 @@
 @startuml
-'skinparam monochrome true
-skinparam packageStyle rectangle
-'skinparam shadowing false
-
-skinparam rectangle{
-    BorderColor yellow
-}
-
-'title Use Case Diagram Example
-
+@startuml
 left to right direction
+'https://plantuml.com/use-case-diagram
 
-rectangle "System Actors" as actors {
-    actor Freelancer
-    actor "Organization\nEmployee" as Employee
-}
+actor Editor
+actor Player
+actor ProductOwner
 
+Editor --> (Create Map)
+Editor --> (Add Industry)
+Editor --> (Add City)
+Editor --> (Create Scenario)
 
-note right of Freelancer
-    Actor identified but still
-    no concrete use cases
-end note
+(Create Map) --> (Define Map Size) : <<include>>
+(Create Map) --> (Set Map Name) : <<include>>
+(Add Industry) --> (Specify Position XY) : <<include>>
+(Add City) --> (Indicate Coordinates XY)
+(Add City) --> (Set City Name) : <<include>>
+(Add City) --> (Define House Blocks) : <<extend>>
+(Set City Name) --> (No Special Characters/Digits) : <<extend>>
+(Define House Blocks) --> (Must be Positive) : <<extend>>
 
-rectangle "Use Cases" as usecases{
-    usecase "UC6 - Create a Task" as UC6
-    Employee --> UC6
-}
-note right of actors
-    Rectangles and Titles are for
-    demonstration purposes only.
-    Omitt on your diagrams.
-end note
+Player --> (Build Station)
+Player --> (Upgrade Station)
+Player --> (View Station Details)
+Player --> (Build Railway Line)
+Player --> (Buy Train)
+Player --> (Assign Train to Route)
+Player --> (List Trains)
+
+(Build Station) --> (Check Overbuilding) : <<include>>
+(Build Railway Line) --> (Select Registered Stations) : <<include>>
+(Buy Train) --> (Select Locomotive from List) : <<include>>
+(Assign Train to Route) --> (Choose Valid Stations) : <<include>>
+(Assign Train to Route) --> (Select Cargo for Pickup) : <<include>>
+(List Trains) --> (Group by Locomotive Type) : <<extend>>
+(List Trains) --> (Sort Alphabetically) : <<extend>>
+
+ProductOwner --> (Cargo Generation Simulator)
+(Cargo Generation Simulator) --> (Generate Cargo at Stations) : <<include>>
+(Cargo Generation Simulator) --> (Consider Cities and Industries) : <<include>>
+(Cargo Generation Simulator) --> (Provide Start/Pause Option) : <<include>>
+
 
 @enduml
