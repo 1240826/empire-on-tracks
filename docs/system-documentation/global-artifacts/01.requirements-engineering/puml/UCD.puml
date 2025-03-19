@@ -1,46 +1,46 @@
 @startuml
-
+@startuml
 left to right direction
 'https://plantuml.com/use-case-diagram
+
 actor Editor
-actor player
+actor Player
 actor ProductOwner
 
-:Main Admin: as Admin
-(Use the application) as (Use)
+Editor --> (Create Map)
+Editor --> (Add Industry)
+Editor --> (Add City)
+Editor --> (Create Scenario)
 
-Editor --> (create map)
-Editor --> (add insdustry)
-Editor --> (add city)
-Editor --> (create scenario)
+(Create Map) --> (Define Map Size) : <<include>>
+(Create Map) --> (Set Map Name) : <<include>>
+(Add Industry) --> (Specify Position XY) : <<include>>
+(Add City) --> (Indicate Coordinates XY)
+(Add City) --> (Set City Name) : <<include>>
+(Add City) --> (Define House Blocks) : <<extend>>
+(Set City Name) --> (No Special Characters/Digits) : <<extend>>
+(Define House Blocks) --> (Must be Positive) : <<extend>>
 
-(create map) --> (map size) : <<include>>
-(create map) --> (map name) : <<include>>
-(add insdustry) --> (ask position) : <<include>>
-(add city) --> (indicate coordenates XY)
-(add city) -->(city name): <<include>>
-(add city) --> (house blocks) : <<extended>>
-(city name) --> (no special characters/digits) : <<extended>>
-(house blocks) --> (need to be positive) : <<extended>>
+Player --> (Build Station)
+Player --> (Upgrade Station)
+Player --> (View Station Details)
+Player --> (Build Railway Line)
+Player --> (Buy Train)
+Player --> (Assign Train to Route)
+Player --> (List Trains)
 
-player --> (Us5)
-player --> (Us6)
-player --> (Us7)
-player --> (Us8)
-player --> (Us9)
-player --> (Us10)
-player --> (Us11)
+(Build Station) --> (Check Overbuilding) : <<include>>
+(Build Railway Line) --> (Select Registered Stations) : <<include>>
+(Buy Train) --> (Select Locomotive from List) : <<include>>
+(Assign Train to Route) --> (Choose Valid Stations) : <<include>>
+(Assign Train to Route) --> (Select Cargo for Pickup) : <<include>>
+(List Trains) --> (Group by Locomotive Type) : <<extend>>
+(List Trains) --> (Sort Alphabetically) : <<extend>>
 
-ProductOwner --> (Us12)
+ProductOwner --> (Cargo Generation Simulator)
+(Cargo Generation Simulator) --> (Generate Cargo at Stations) : <<include>>
+(Cargo Generation Simulator) --> (Consider Cities and Industries) : <<include>>
+(Cargo Generation Simulator) --> (Provide Start/Pause Option) : <<include>>
 
-note right of Admin : This is an example.
 
-note right of (Use)
-A note can also
-be on several lines
-end note
-
-note "This note is connected\nto several objects." as N2
-(Start) .. N2
-N2 .. (Use)
 @enduml
