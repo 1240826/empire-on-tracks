@@ -31,7 +31,7 @@ activate Editor
         Editor -> System : confirms data
         activate System
 
-        System --> Editor : adds city and displays operation success
+        System --> Editor : displays operation success
         deactivate System
 
 

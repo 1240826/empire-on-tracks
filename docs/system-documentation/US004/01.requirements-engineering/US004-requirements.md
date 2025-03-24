@@ -23,22 +23,23 @@ this context, the goods that the Ports import and export are also defined.
 
 **From the client clarifications:**
 
-> **Question:** How does the Editor define the restrictions for the scenario?
+> **Question:** 
 >
-> **Answer:** answer.
+> **Answer:** 
 
->**Question:** Should the system request the scenario name and time period in a single interaction, or should it ask for each detail separately?  
+>**Question:** 
 >
-> **Answer:** answer.
+> **Answer:** 
 
-> **Question:** Is it possible to edit a scenario after it has been created?  
-> **Answer:** answer.
+> **Question:** 
+> **Answer:** 
 
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** Time must be positive.
-* **AC2:** Time must be valid.
+* **AC1:** The scenario must be created based on an existing map.
+* **AC2:** The time period must be valid (start date must be before the end date and both positive).
+* **AC3:** The time period must be defined in years and months.
 
 ### 1.4. Found out Dependencies
 
@@ -50,8 +51,7 @@ this context, the goods that the Ports import and export are also defined.
 * Typed data:
   * Scenario name
   * Time restrictions (start and end period)
-  * //Technological restrictions (available locomotives, industries)
-  * //Historical restrictions (events affecting the scenario)
+  
   
 * Selected data:
     * A previously created map
@@ -68,6 +68,5 @@ this context, the goods that the Ports import and export are also defined.
 
 ### 1.7 Other Relevant Remarks
 
-* 
 * For this sprint, the scenario only acts as a **time restriction** for the simulation.  
-* Future sprints will introduce additional features (train types, resource generation).  
+* Future sprints will introduce additional features (technological and historical restrictions).  

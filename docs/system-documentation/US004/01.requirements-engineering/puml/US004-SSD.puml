@@ -13,19 +13,19 @@ activate Editor
     Editor -> System : asks to create a scenario for a selected map
     activate System
 
-        System --> Editor : asks for scenario name and time period (start and end date)
+        System --> Editor : requests data (scenario name and time period - start and end date)
     deactivate System
 
     Editor -> System : provides scenario details
     activate System
 
-        System --> Editor : validates time period
+        System --> Editor : validates data and requests confirmation
     deactivate System
 
     Editor -> System : confirms scenario creation
     activate System
 
-        System --> Editor : creates scenario and confirms success
+        System --> Editor : displays operation success
     deactivate System
 
 @enduml
