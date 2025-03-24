@@ -16,17 +16,10 @@ map, with a name and a positive number of house blocks.
 
 **From the client clarifications:**
 
-> **Question:** Should the system request all city details (name, XY position, number of house blocks) in a single interaction, or should it ask for each detail separately, step by step?
->
-> **Answer:** answer1.
 
 > **Question:** How does the Editor decide whether house blocks are assigned manually or automatically? Should there be an explicit choice in the interface, or does the system handle this automatically?
 >
-> **Answer:** answer2.
-
-> **Question:** Should the system ask the Editor to confirm before adding the city, or should it be added immediately after validation?  
-> **Answer:** answer3.
-
+> **Answer:** Interface is decided by developers.
 
 ### 1.3. Acceptance Criteria
 
@@ -52,8 +45,7 @@ map, with a name and a positive number of house blocks.
 
 **Output Data:**
 
-* Confirmation of successful/unsuccessful city addition
-* Error messages in case of invalid input
+* (In)Success of the operation
 
 ### 1.6. System Sequence Diagram (SSD)
 
