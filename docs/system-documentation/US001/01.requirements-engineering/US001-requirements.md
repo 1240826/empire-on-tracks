@@ -44,11 +44,11 @@ As an Editor, I want to create a map with a size and a name.
 **Output Data:**
 
 * mapa 
-* Success of the operation
+* (In)Success of the operation
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US001_CreateMap.svg)
+![System Sequence Diagram](svg/US001-SSD.svg)
 
 **_Other alternatives might exist._**
 
