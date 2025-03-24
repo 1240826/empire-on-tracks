@@ -32,34 +32,31 @@ As an editor, when adding a new factory, do I need to check for overbuild?
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US003 - Create a task category" as there must be at least one task category to classify the task being created.
+* There is a dependency on "US001" - "Create a map" must exist before an industry can be added.
 
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-    * a reference
-    * a designation 
-    * an informal description
-    * a technical description
-    * an estimated duration
-    * an estimated cost
+    * cordenada X,Y
+
 	
 * Selected data:
-    * a task category 
+    * type of industry
+    * industry category.
+  
 
 **Output Data:**
 
-* List of existing task categories
+
 * (In)Success of the operation
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US006-SSD.svg)
+![System Sequence Diagram](svg/US002-SSD.svg)
 
 **_Other alternatives might exist._**
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.

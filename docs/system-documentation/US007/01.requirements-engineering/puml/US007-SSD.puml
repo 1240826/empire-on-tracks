@@ -10,22 +10,22 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : asks to create a new task
+    Employee -> System : Ask to list all the stations
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Employee : shows list of all the stations and asks to select one
     deactivate System
 
-    Employee -> System : selects a task category
+    Employee -> System : selects a station
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Employee : Asks to select type of details (i.e. upgrades, buildings...)
     deactivate System
 
-    Employee -> System : types requested data
+    Employee -> System : selects detail type
     activate System
 
-        System --> Employee : shows all data and requests confirmation
+        System --> Employee : shows detail type
     deactivate System
 
     Employee -> System : confirms data
