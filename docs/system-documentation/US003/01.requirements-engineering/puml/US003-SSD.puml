@@ -5,32 +5,27 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Editor" as Editor
 participant ":System" as System
 
-activate Employee
+activate Editor
 
-    Employee -> System : asks to create a new task
+    Editor -> System : asks to add a new city
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Editor : asks for city details (name, XY position, number of house blocks)
     deactivate System
 
-    Employee -> System : selects a task category
+    Editor -> System : provides city details
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Editor : validates name and number of house blocks
     deactivate System
 
-    Employee -> System : types requested data
+    Editor -> System : confirms city addition
     activate System
 
-        System --> Employee : shows all data and requests confirmation
+        System --> Editor : adds city and confirms operation success
     deactivate System
 
-    Employee -> System : confirms data
-    activate System
-
-        System --> Employee : displays operation success
-    deactivate System
 @enduml
