@@ -26,9 +26,8 @@ As an editor, when adding a new factory, do I need to check for overbuild?
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
-* **AC2:** The task reference must have at least 5 alphanumeric characters.
-* **AC3:** When creating a task with an existing reference, the system must reject such operation and the user must be able to modify the typed reference.
+* **AC1:** You can only add industries to the map that are available in the list of industries.
+* **AC2:** The X and Y coordinates must be within the bounds of the map.
 
 ### 1.4. Found out Dependencies
 
@@ -39,16 +38,15 @@ As an editor, when adding a new factory, do I need to check for overbuild?
 **Input Data:**
 
 * Typed data:
-    * cordenada X,Y
+    * cordenada X
+    * cordenada Y
 
 	
 * Selected data:
     * type of industry
     * industry category.
   
-
 **Output Data:**
-
 
 * (In)Success of the operation
 

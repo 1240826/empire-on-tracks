@@ -28,14 +28,6 @@ activate Employee
 
    activate System
 
-   System-->Employee:Show the different types of industries of that type and ask one option.
-
-   deactivate System
-
-   Employee-->System:Select one option.
-
-   activate System
-
    System-->Employee:Confirm the creation of this industry.
 
    deactivate System
