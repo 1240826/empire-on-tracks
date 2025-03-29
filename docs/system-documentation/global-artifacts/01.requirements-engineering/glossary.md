@@ -6,8 +6,8 @@ Column "TEA (PT)" is optional. If the team does not intend to use it, then remov
 
 (Complete according to the provided example)
 
-| **_TEA_** (EN)  | **_TEA_** (PT) | **_Description_** (EN)                                                                                                                                                                     |                                       
-|:------------------------|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_TEA_** (EN)                             | **_TEA_** (PT) | **_Description_** (EN)                                                                                                                                                                     |                                       
+|:-------------------------------------------|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Calculation of train (de)accelerations** | **Cálculo da (des)aceleração**           | Calculation of train (de)accelerations is the process of figuring out how quickly a train speeds up (acceleration) or slows down (deceleration).                                           |
 | **CamelCase**                              | **CamelCase**                            | CamelCase is a way of writing words where the first letter of each word is capitalized except for the first word.                                                                          |
 | **Carriage**                               | **Carruagem**                            | A carriage is distinguished by the type of cargo it can transport (e.g., passengers, mail, coal, iron ore, steel, cars) and, in the context of the simulation, it has no acquisition cost. |

@@ -1,0 +1,36 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+'title Domain Model
+
+class Editor {
+
+    autentication
+    email
+
+}
+
+class Editing_Tool {
+
+}
+
+class Map {
+    name
+    size
+}
+
+Editor "1" - "1*" Editing_Tool : interacts with
+Editing_Tool "1*" -- "1" Map : creates
+Map "1" -- "1*" Editor : confirms data
+
+
+@enduml
