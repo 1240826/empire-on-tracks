@@ -9,7 +9,10 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-
+class Editor {
+    authentication
+    email
+}
 
 class Map {
     name
@@ -24,6 +27,8 @@ class City {
 
 
 Map "1" - "*" City : contains
+
+Editor "1" - "*" Map : creates
 
 
 @enduml
