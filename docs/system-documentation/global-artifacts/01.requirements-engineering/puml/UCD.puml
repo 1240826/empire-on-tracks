@@ -1,45 +1,25 @@
-@startuml
-left to right direction
-'https://plantuml.com/use-case-diagram
+@@startuml
+ left to right direction
+ 'https://plantuml.com/use-case-diagram
 
-actor Editor
-actor Player
-actor ProductOwner
+ actor Editor
+ actor Player
+ actor ProductOwner
 
-Editor --> (UC1 - Create a Map)
-Editor --> (UC2 - Add an Industry)
-Editor --> (UC3 - Add a City)
-Editor --> (UC4 - Create a Scenario)
+ Editor --> (UC1 - Create a Map)
+ Editor --> (UC2 - Add an Industry)
+ Editor --> (UC3 - Add a City)
+ Editor --> (UC4 - Create a Scenario)
 
-(UC1 - Create a Map) --> (Define Map Size)
-(UC1 - Create a Map) --> (Set Map Name)
-(UC2 - Add an Industry) --> (Specify Position XY)
-(UC3 - Add a City) --> (Indicate Coordinates XY)
-(UC3 - Add a City) --> (Set City Name)
-(UC3 - Add a City) --> (Define House Blocks)
-(Set City Name) --> (No Special Characters/Digits)
-(Define House Blocks) --> (Must be Positive)
-(Define House Blocks) --> (Manually or Automatically)
+ Player --> (UC5 - Build a Station)
+ Player --> (UC6 - Upgrade a Station)
+ Player --> (UC7 - List all the Stations)
+ Player --> (UC8 - Build a Railway Line)
+ Player --> (UC9 - Buy a Train)
+ Player --> (UC10 - Assign a Train to a Route)
+ Player --> (UC11 - List all Trains)
 
-Player --> (UC5 - Build a Station)
-Player --> (UC6 - Upgrade a Station)
-Player --> (UC7 - List all the Stations)
-Player --> (UC8 - Build a Railway Line)
-Player --> (UC9 - Buy a Train)
-Player --> (UC10 - Assign a Train to a Route)
-Player --> (UC11 - List all Trains)
+ ProductOwner --> (UC12 - Create a Cargo Generator Simulator)
 
-(UC5 - Build a Station) --> (Check Overbuilding)
-(UC8 - Build a Railway Line) --> (Select stations from Registered Stations)
-(UC9 - Buy a Train) --> (Select Locomotive from List)
-(UC10 - Assign a Train to a Route) --> (Choose Valid Stations)
-(UC11 - List all Trains) --> (Group by Locomotive Type)
-(UC11 - List all Trains) --> (Sort Alphabetically)
-
-ProductOwner --> (UC12 - Create a Cargo Generator Simulator)
-(UC12 - Create a Cargo Generator Simulator) --> (Generate Cargo at Stations)
-(UC12 - Create a Cargo Generator Simulator) --> (Consider Cities and Industries)
-(UC12 - Create a Cargo Generator Simulator) --> (Provide Start/Pause Option)
-
-@enduml
+ @enduml
 

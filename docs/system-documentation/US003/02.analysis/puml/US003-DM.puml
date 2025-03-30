@@ -3,48 +3,27 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-'left to right direction
 
 skinparam classAttributeIconSize 0
 
 hide circle
 hide methods
 
-'title Domain Model
 
-class Organization {
+
+class Map {
     name
-    vatNumber
-    website
-    phoneNumber
-    email
+    size
 }
 
-class Task {
-    reference
-    description
-    informalDescription
-    technicalDescription
-    duration
-    cost
-}
-
-class TaskCategory {
-    description
-}
-
-class Employee {
+class City {
     name
-    email
-    position
-    phone
+    positionXY
+    houseBlocks
 }
 
-Organization "1" - "*" Employee : has
-Organization "1" - "*" Task: owns
 
-Employee "1" -- "*" Task : creates
+Map "1" - "*" City : contains
 
-Task "*" - "1" TaskCategory: cataloged as
 
 @enduml
