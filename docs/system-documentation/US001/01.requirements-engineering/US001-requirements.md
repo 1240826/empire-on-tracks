@@ -24,7 +24,8 @@ As an Editor, I want to create a map with a size and a name.
 
 ### 1.3. Acceptance Criteria
 
-* **N/A**
+*  **AC1**: The maps dimensions are positive integers
+*  **AC2**: Map name should be a valid file name.
 
 ### 1.4. Found out Dependencies
 
@@ -39,12 +40,13 @@ As an Editor, I want to create a map with a size and a name.
     * name
 	
 * Selected data:
-    * a task category 
+    *
 
 **Output Data:**
 
-* mapa 
+* validation of the name and size of the map
 * (In)Success of the operation
+* map
 
 ### 1.6. System Sequence Diagram (SSD)
 

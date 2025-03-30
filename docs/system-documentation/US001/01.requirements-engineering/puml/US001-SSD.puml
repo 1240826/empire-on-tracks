@@ -16,10 +16,16 @@ activate Employee
         System --> Employee : Ask the name/size
     deactivate System
 
-    Employee -> System : Gives name/size
+    Employee -> System : Gives name and size
     activate System
 
-        System --> Employee : Confirm map creation
+    System --> Employee : validates name and size confirmation
     deactivate System
+
+     Employee -> System : confirms map creation
+     activate System
+
+     System --> Employee : displays operation success
+     deactivate System
 
 @enduml
