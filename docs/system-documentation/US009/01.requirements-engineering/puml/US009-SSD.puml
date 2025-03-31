@@ -19,13 +19,7 @@ activate Player
     Player -> System : selects a locomotive
     activate System
 
-        System --> Player : requests current date
-    deactivate System
-
-    Player -> System : enters current date
-    activate System
-
-        System --> Player : shows selected locomotive and date, requests confirmation
+            System --> Player : shows selected locomotive and requests confirmation
     deactivate System
 
     Player -> System : confirms selection
