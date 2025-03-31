@@ -18,9 +18,22 @@ As an Editor, I want to create a map with a size and a name.
 >
 > **Answer:** We are the ones who define them.
 
-> **Question:** Does the name of a map have any restrictions??
+> **Question:** Does the name of a map have any restrictions?
 >
-> **Answer:** The name has no restrictions.
+> **Answer:** File name like restrictions.
+
+> **Question:** Is there a predefined list of sizes, or should users be able to input custom dimensions?
+> 
+> **Answer:** Custom dimensions but suggesting predefined sizes could be a good idea.
+
+> **Question:** Should map names be unique within the system?
+>
+> **Answer:** Yes.
+
+> **Question:** Can the names of scenarios and maps be the same?
+>
+> **Answer:** Yes, they are different objects.
+> 
 
 ### 1.3. Acceptance Criteria
 
@@ -52,8 +65,8 @@ As an Editor, I want to create a map with a size and a name.
 
 ![System Sequence Diagram](svg/US001-SSD.svg)
 
-**_Other alternatives might exist._**
+**__**
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* 
