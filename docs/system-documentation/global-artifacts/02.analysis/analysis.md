@@ -124,10 +124,18 @@ An association is a relationship between instances of objects that indicates a r
 - etc.
 
 
-| Concept (A) 		|  Association   	|  Concept (B) |
-|----------	   		|:-------------:		|------:       |
-| C1  	| verb1    		 	| C2  |
-| ...  	| ...    		 	| ...  |
+
+| Concept (A) 		|     Association   	     |                                                              Concept (B) |
+|-------------------|:-----------------------:|-------------------------------------------------------------------------:|
+| Editor           |    create  <br/>add     |                                                        Map <br/>Industry<br/>City <br/>Scenario |
+| Map              |           has           |                                                               Size, Name |
+| Industry        |         placed          |                                                          Position on Map |
+| City            |           has           |                                                       Name, House Blocks |
+| House Blocks    |      are assigned       |                                                 Manually / Automatically |
+| Scenario        |         defines         |             Port Behavior, Locomotion Types, Industry Generation Factors |
+| Player         |          build          |                                       Station (Depot, Terminal, Station) |
+| Player         |         upgrade         |                                                    Station with Building |
+| Building       |           has           |                         Availability Date, Mutually Exclusive Equipments |
 
 
 

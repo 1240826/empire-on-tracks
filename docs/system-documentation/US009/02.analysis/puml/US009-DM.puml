@@ -3,48 +3,38 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-'left to right direction
-
 skinparam classAttributeIconSize 0
 
 hide circle
 hide methods
 
-'title Domain Model
+'title Domain Model for US009 - Buy a Train
 
-class Organization {
-    name
-    vatNumber
-    website
-    phoneNumber
-    email
+class Player {
+    budget
 }
 
-class Task {
-    reference
-    description
-    informalDescription
-    technicalDescription
-    duration
-    cost
+class Train {
+    id
+    acquisitionPrice
 }
 
-class TaskCategory {
-    description
+class Locomotive {
+    type
+    power
+    acceleration
+    topSpeed
+    startYear
+    acquisitionPrice
 }
 
-class Employee {
-    name
-    email
-    position
-    phone
+class Scenario {
+    currentDate
+    availableLocomotives
 }
 
-Organization "1" - "*" Employee : has
-Organization "1" - "*" Task: owns
-
-Employee "1" -- "*" Task : creates
-
-Task "*" - "1" TaskCategory: cataloged as
+Player "1" -- "*" Train : owns
+Train "1" - "1" Locomotive : composed of
+Scenario "1" - "*" Locomotive : restricts availability
 
 @enduml

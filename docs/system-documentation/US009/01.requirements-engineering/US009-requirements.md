@@ -20,10 +20,21 @@ As a Player, I want to buy a train.
 
 **From the client clarifications:**
 
+> **Question:** Is there a limit to how many trains a player can own?
+>
+> **Answer:** There is no physical limit.
+
+> **Question:** Can a player buy the same train multiple times?
+>
+> **Answer:** The same type of locomotive, yes; but they will have a unique identification (plate/serial number).
+
+> **Question:** This user story has a dependency to the creation of a list of available locomotives for the scenario and current date. Will that feature be part of a future user story?
+>
+> **Answer:** The locomotives that will be presented in the selection list are restricted to the current date and any restrictions that may have been defined in the scenario. The presentation of the list of locomotives is part of US09. put the train into service on a specific route.
+
 > **Question:** Which is the unit of measurement used to estimate duration?
 >
 > **Answer:** Duration is estimated in days.
-
 
 ### 1.3. Acceptance Criteria
 
@@ -38,19 +49,15 @@ As a Player, I want to buy a train.
 **Input Data:**
 
 * Typed data:
-    * a reference
-    * a designation 
-    * an informal description
-    * a technical description
-    * an estimated duration
-    * an estimated cost
+    * none
 	
 * Selected data:
-    * a task category 
+    * a locomotive type (from available options in the scenario/current date) 
 
 **Output Data:**
 
-* List of existing task categories
+* List of available locomotives
+* Cost of the selected locomotive
 * (In)Success of the operation
 
 ### 1.6. System Sequence Diagram (SSD)
@@ -61,4 +68,4 @@ As a Player, I want to buy a train.
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* The player must have sufficient funds to purchase the train.

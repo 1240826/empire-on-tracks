@@ -19,9 +19,30 @@ industries that the railway network serves.
 
 **From the client clarifications:**
 
-> **Question:** 
+> **Question:** How will the predefined list of industries be managed and updated?
 >
 > **Answer:** 
+
+> **Question:** How will the predefined list of industries be managed and updated?
+>
+> **Answer:**
+
+> **Question:** Will there be any restrictions on selecting multiple industries at once?
+>
+> **Answer:**
+
+> **Question:** Should industries be categorized or filtered for easier selection?
+>
+> **Answer:**
+
+> **Question:** Will users be able to adjust their selection before confirming?
+>
+> **Answer:**
+
+> **Question:** How precise should the XY coordinates be
+>
+> **Answer:** 
+
 
 
 ### 1.3. Acceptance Criteria
