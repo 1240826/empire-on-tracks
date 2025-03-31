@@ -12,12 +12,10 @@ hide methods
 
 'title Domain Model
 
-class Editor {
-    autentication
-    email
-}
+
 
 class EditingTool {
+    indus
 
 
 }
@@ -29,8 +27,8 @@ class Industry {
     positionY
 }
 
-Editor "1" -- "*" EditingTool : interacts with
+
 EditingTool "1" - "*" Industry : adds
-Editor "1" -- "1*" Industry : selects and confirms creation
+
 
 @enduml
