@@ -125,20 +125,17 @@ An association is a relationship between instances of objects that indicates a r
 
 
 
-| Concept (A) 		| Association   	 |  Concept (B) |
-|-------------------|:---------------:|-------------------:|
-| Editor           |     create      | Map               |
-| Map              |       has       | Size, Name        |
-| Editor          |       add       | Industry          |
-| Industry        |     placed      | Position on Map   |
-| Editor          |       add       | City              |
-| City            |       has       | Name, House Blocks |
-| House Blocks    |  are assigned   | Manually / Automatically |
-| Editor          |     create      | Scenario          |
-| Scenario        |     defines     | Port Behavior, Locomotion Types, Industry Generation Factors |
-| Player         |      build      | Station (Depot, Terminal, Station) |
-| Player         |     upgrade     | Station with Building |
-| Building       |       has       | Availability Date, Mutually Exclusive Equipments |
+| Concept (A) 		|     Association   	     |                                                              Concept (B) |
+|-------------------|:-----------------------:|-------------------------------------------------------------------------:|
+| Editor           |    create  <br/>add     |                                                        Map <br/>Industry<br/>City <br/>Scenario |
+| Map              |           has           |                                                               Size, Name |
+| Industry        |         placed          |                                                          Position on Map |
+| City            |           has           |                                                       Name, House Blocks |
+| House Blocks    |      are assigned       |                                                 Manually / Automatically |
+| Scenario        |         defines         |             Port Behavior, Locomotion Types, Industry Generation Factors |
+| Player         |          build          |                                       Station (Depot, Terminal, Station) |
+| Player         |         upgrade         |                                                    Station with Building |
+| Building       |           has           |                         Availability Date, Mutually Exclusive Equipments |
 
 
 
