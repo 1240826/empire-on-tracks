@@ -4,7 +4,7 @@
 
  actor Editor
  actor Player
-
+ actor ProductOwner
 
  Editor --> (UC1 - Create a Map)
  Editor --> (UC2 - Add an Industry)
@@ -19,7 +19,7 @@
  Player --> (UC10 - Assign a Train to a Route)
  Player --> (UC11 - List all Trains)
 
-
+ ProductOwner --> (UC12 - Generate Cargo Automatically)
 
  @enduml
 
