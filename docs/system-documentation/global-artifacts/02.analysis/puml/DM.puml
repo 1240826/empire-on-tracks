@@ -27,7 +27,6 @@ class Map {
 }
 
 class Industry {
-    type
     positionX
     positionY
 }
@@ -54,16 +53,11 @@ class PortBehavior {
 class Station {
     name
     type
-    center
     positionX
     positionY
 }
 
-class Building {
-    name
-    availableFrom
-    replaces
-    mutuallyExclusiveWith
+class StationUpgrades {
 }
 
 class RailwayLine {
@@ -109,7 +103,7 @@ Scenario "1" -- "*" PortBehavior : defines >
 Scenario "1" -- "*" Locomotive : allows >
 
 
-Station "1" -- "*" Building : has >
+Station "1" -- "*" StationUpgrades : upgrades >
 Station "1" -- "*" RailwayLine : connectedVia >
 RailwayLine "1" -- "*" Train : usedBy >
 
