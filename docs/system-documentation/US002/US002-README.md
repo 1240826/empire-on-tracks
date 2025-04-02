@@ -1,4 +1,4 @@
-# US006 - Create a Task 
+# US002 - Add an Industry
 
 [Requirements Engineering](01.requirements-engineering/US006-requirements.md)
 
