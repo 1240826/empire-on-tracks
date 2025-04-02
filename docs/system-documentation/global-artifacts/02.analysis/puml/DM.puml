@@ -1,7 +1,5 @@
 @startuml
 skinparam monochrome true
-@startuml
-skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam classAttributeIconSize 0
@@ -18,7 +16,6 @@ class Player {
 
 class Map {
     name
-
 }
 class Size{
     width
@@ -30,7 +27,6 @@ class Industry {
 }
 class PrimarySectorIndustries{
     type
-
 }
 class TransformingIndustries{
     type
@@ -53,31 +49,25 @@ class Scenario {
     behaviorOfMixedIndustries
     availableTrains
     changeProduction
-
-
 }
 
 class Location{
     positionX
     positionY
-
 }
 
 class Station {
     name
     range
-    capacity
+    type
 }
 
 class Trains{
      type
      speed
      cargo
-
 }
 class RailLines{
-
-
 }
 class StationUpgrades{
       structure
@@ -87,7 +77,14 @@ starts
 ends
 }
 
+class Simulator{
+}
 
+class Cargo {
+    type
+    quantity
+
+}
 
 Editor "1" -down- "1*" Map : creates >
 Editor "1" -- "1*" Scenario : creates >
@@ -109,6 +106,7 @@ Industry "1*" -- "1*" TransformingIndustries : could be >
 Industry "1*" -- "1*" MixedIndustries : could be >
 Industry "1" - "1" Location : have >
 Industry "1*" -- "1*" Station : load/unload >
+Industry "1" -- "1*" Cargo : produces >
 
 Scenario "*" -- "1*" MixedIndustries : changes Class >
 Scenario "*" -left- "1*" Industry : changes Production >
@@ -122,6 +120,7 @@ Station "1" -- "1" Location : has >
 Station "1" - "1" RailLines : connect <
 Station "1" -right- "*" StationUpgrades : upgrade <
 Station "1*" -- "1*" Trains : Load/unload <
+Station "1" -- "1*" Cargo : assigned to <
 
 Trains "1" -- "1*" RailLines : use >
 Trains "1" -- "1*" Routes : follow >
@@ -131,5 +130,7 @@ Routes "1" -- "2*" Station : connect >
 
 City -- HouseBlocks : contains >
 City "1" -- "1" Location : has >
+
+Simulator "1" -- "1*" Industry : changes >
 
 @enduml
