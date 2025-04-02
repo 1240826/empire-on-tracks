@@ -10,27 +10,27 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : asks to create a new task
+    Employee -> System : wants to build a station
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Employee : asks for what type of station
     deactivate System
 
-    Employee -> System : selects a task category
+    Employee -> System : selects station
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Employee : asks to pick the coordinates
     deactivate System
 
     Employee -> System : types requested data
     activate System
 
-        System --> Employee : shows all data and requests confirmation
+        System --> Employee : shows the location of the station
     deactivate System
 
     Employee -> System : confirms data
     activate System
 
-        System --> Employee : displays operation success
+        System --> Employee : adds the city and confirms operation success
     deactivate System
 @enduml

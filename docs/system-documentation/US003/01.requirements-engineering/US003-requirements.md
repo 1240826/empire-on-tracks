@@ -31,12 +31,15 @@ map, with a name and a positive number of house blocks.
 > **Answer:** It can be repeated but it can become confusing for players, the editor should be alerted to the situation.
 
 > **Question:** Dear client, should it be considered as an acceptance criterion that the map should be visually updated to show the city that was previously added to the respective map and its house blocks?
+
 > **Answer:** There is no specification for user interfaces yet.
 
 > **Question:** Is there a minimum or maximum number of house blocks that can be assigned?
+
 > **Answer:** The number needs to be a positive on; there is no maximum, it's up to the editor to decide.
 
 > **Question:** Is it possible for a city to be destroyed by a natural disaster or a war? If so, is it necessary to create a mechanism to remove the city from the map and create a new one to transfer the active elements from the first one(people, mail, ...)?
+
 > **Answer:** A city can be removed in edit mode, but not in simulation mode.
 
 

@@ -10,19 +10,19 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : asks to create a new task
+    Employee -> System : asks to upgrade the station
     activate System
 
-        System --> Employee : shows task category list and asks to select one
+        System --> Employee : asks what station should be upgraded
     deactivate System
 
-    Employee -> System : selects a task category
+    Employee -> System : selects a station
     activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
+        System --> Employee : asks what building to use for the upgrade
     deactivate System
 
-    Employee -> System : types requested data
+    Employee -> System : chooses a building
     activate System
 
         System --> Employee : shows all data and requests confirmation
