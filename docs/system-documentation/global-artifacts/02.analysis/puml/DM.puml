@@ -22,24 +22,42 @@ class Player {
 
 class Map {
     name
+
+}
+class Size{
     width
     height
 }
 
 class Industry {
+    production
+}
+class PrimarySectorIndustries{
+    type
+
+}
+class TransformingIndustries{
+    type
+    demand
+}
+class  MixedIndustries{
+    type
 }
 
 class City {
+    numberOfHouseBlocks
     name
 }
 class HouseBlocks{
-     people
+    people
 }
 
 class Scenario {
-    availableLocomotives
-    portBehaviors
-    industryGenerationFactors
+    time
+    behaviorOfMixedIndustries
+    availableLocomotive
+    changeProduction
+
 }
 
 class Location{
@@ -47,64 +65,47 @@ class Location{
     positionY
 
 }
+
 class Station {
     name
-    type
-    positionX
-    positionY
-}
-
-class StationUpgrades {
-   type
-
-}
-
-class RailwayLine {
-    startStation
-    endStation
-}
-
-class Locomotive {
-    type
-    name
-    availableFrom
+    range
 }
 
 
-class Train {
-    name
-    locomotive
-    currentCargoes
-}
 
-class Cargo {
-    type
-    origin
-    destination
-}
 
-class Simulator {
-    isRunning
-    cargoGenerationRules
-}
 
-class PrimarySectorIndustries{
-    type
-    supplies
 
-}
-class TransformingIndustries{
-    type
-    supplies
-    demand
-}
-class  MixedIndustries{
-    type
-    supplies
-    demand
-}
 
 ' --- Relacionamentos ---
-Editor "1"--"1*" Map: create >
+Player "1" -- "1*" Station: buy >
+Player "1" -- "1" Map: add builds >
+
+Editor "1" -- "1*" Map: creates >
+Editor "1" -- "*" Scenario: creates >
+Editor "1" -- "1*" City: add >
+Editor "1" -- "1*" Industry: adds >
+
+Station "1*" - "1" Location: have >
+
+Map "1" -- "1" Size: have >
+Map "1" -- "1*" Industry: contains >
+Map "1"-- "1*"City: contains >
+
+Industry "1" --- "1" PrimarySectorIndustries: could be >
+Industry "1" --- "1" TransformingIndustries: could be >
+Industry "1" --- "1" MixedIndustries: could be >
+Industry "1*" --- "1" Location: have >
+
+MixedIndustries "1" -- "1" TransformingIndustries: transforms >
+MixedIndustries "1" -- "1" PrimarySectorIndustries: transforms >
+
+Scenario "1" -- "*" MixedIndustries: changes Class >
+Scenario "1" -- "*" Industry: changes Production >
+
+City "1"--"1*" HouseBlocks: contains >
+
+
+
 
 @enduml
