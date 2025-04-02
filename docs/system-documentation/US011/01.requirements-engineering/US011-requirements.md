@@ -10,9 +10,12 @@ As a Player, I want to list all trains.
 
 **From the specifications document:**
 
->	Each task is characterized by having a unique reference per organization, a designation, an informal and a technical description, an estimated duration and cost, as well as a task category. 
+>	In the simulator, the player/user acquires trains within the available budget and can put the train into service on a specific route.
 
 >	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
+
+>	As long as it is not published, access to the task is exclusive to the employees of the respective organization.
+
 
 **From the client clarifications:**
 
@@ -20,14 +23,10 @@ As a Player, I want to list all trains.
 >
 > **Answer:** Duration is estimated in days.
 
-> **Question:** Monetary data is expressed in any particular currency?
->
-> **Answer:** Monetary data (e.g. estimated cost of a task) is indicated in POT (virtual currency internal to the platform).
-
 ### 1.3. Acceptance Criteria
 
 * **AC1:** The display of trains must include the locomotive and the current cargoes.
-* **AC2:**  The trains should be grouped by locomotive type and then listed alphabetically by name.
+* **AC2:** The trains should be grouped by locomotive type and then listed alphabetically by name.
 
 ### 1.4. Found out Dependencies
 
@@ -42,7 +41,8 @@ As a Player, I want to list all trains.
     * none
 	
 * Selected data:
-    * a task category 
+    * a locomotive type
+    * a train 
 
 **Output Data:**
 
