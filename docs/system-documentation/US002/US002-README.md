@@ -1,6 +1,6 @@
 # US002 - Add an Industry
 
-[Requirements Engineering](01.requirements-engineering/US006-requirements.md)
+[Requirements Engineering](01.requirements-engineering/US002-requirements)
 
 [Analysis](02.analysis/US006-analysis.md)
 

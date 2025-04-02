@@ -23,13 +23,10 @@ As an Editor, I want to add an industry in a position XY of the selected map.
 >
 > **Answer:** This is a matter of UX/UI rather than the functioning of the US itself, so teams are free to decide.
 
-> **Question:** As an editor, are there limits to how many industries/factories can be placed on the map?
-> 
-> **Answer:** 
-
-> **Question:** As an editor, when adding a new factory, do I need to check for overbuild?
+> **Question:** When adding a new industry to a map, is there any other necessary input aside from position and industry type?
 >
-> **Answer:**
+> **Answer:** no.
+
 
 ### 1.3. Acceptance Criteria
 
