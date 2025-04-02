@@ -66,6 +66,7 @@ class Location{
 class Station {
     name
     range
+    capacity
 }
 
 class Trains{
@@ -86,51 +87,49 @@ starts
 ends
 }
 
-' === Relações do Editor ===
-Editor "1"--down"1*" Map : creates >
-Editor "1"--"*" Scenario : creates >
-Editor "1"-"1*" City : add >
-Editor "1"--"1*" Industry : add >
-
-' === Relações do Player ===
-Player "1" -"1*" Station : buy >
-Player "1"--down"1" Map : "add builds" >
-Player "1"--"1*"Trains : buy >
-Player "1"-"1*" RailLines : build >
-
-' === Hierarquia do Mapa ===
-Map "1"-"1"Size : has >
-Map "1"--"1*" Industry : contains >
-Map "1"--"1*" City : contains >
-Map "1"--"1*" RailLines : contains >
-
-' === Tipos de Indústria ===
-Industry "1*"--"1*" PrimarySectorIndustries : could be >
-Industry "1*"--"1*" TransformingIndustries:could be  >
-Industry "1*"--"1*" MixedIndustries : could be >
-Industry "1"--"1" Location : have >
-
-' === Relações do Cenário ===
-Scenario "*"-"1*" MixedIndustries : changes Class >
-Scenario "*"-left"1*" Industry : changes Production >
-Scenario "*"-"1" Map : have >
-Scenario "*"-"1*"Trains: restrict >
 
 
+Editor "1" -down- "1*" Map : creates >
+Editor "1" -- "1*" Scenario : creates >
+Editor "1" -right- "1*" City : add >
+Editor "1" -- "1*" Industry : add >
 
-Station "1"--"1" Location : has >
-Station "1"--"1" RailLines: connect <
-Station "1"-"*" StationUpgrades: upgrade <
+Player "1" -right- "1*" Station : buy >
+Player "1" -down- "1" Map : "add builds" >
+Player "1" -- "1*" Trains : buy >
+Player "1" - "1*" RailLines : build >
 
-Trains "1"--"1*" RailLines : use >
+Map "1" - "1" Size : has >
+Map "1" -- "1*" Industry : contains >
+Map "1" -- "1*" City : contains >
+Map "1" -- "1*" RailLines : contains >
 
-Trains "1"--"1*" Routes:follow >
+Industry "1*" -- "1*" PrimarySectorIndustries : could be >
+Industry "1*" -- "1*" TransformingIndustries : could be >
+Industry "1*" -- "1*" MixedIndustries : could be >
+Industry "1" - "1" Location : have >
+Industry "1*" -- "1*" Station : load/unload >
 
-Routes"1"--"1*" RailLines:use >
-Routes"1"--"2*" Station: conect >
+Scenario "*" -- "1*" MixedIndustries : changes Class >
+Scenario "*" -left- "1*" Industry : changes Production >
+Scenario "*" - "1" Map : have >
+Scenario "*" - "1*" Trains : restrict >
+
+MixedIndustries "*" -down- "*" PrimarySectorIndustries : transforms >
+MixedIndustries "*" -down- "*" TransformingIndustries : transforms >
+
+Station "1" -- "1" Location : has >
+Station "1" - "1" RailLines : connect <
+Station "1" -right- "*" StationUpgrades : upgrade <
+Station "1*" -- "1*" Trains : Load/unload <
+
+Trains "1" -- "1*" RailLines : use >
+Trains "1" -- "1*" Routes : follow >
+
+Routes "1" -- "1*" RailLines : use >
+Routes "1" -- "2*" Station : connect >
 
 City -- HouseBlocks : contains >
-City "1"--"1" Location: has >
-
+City "1" -- "1" Location : has >
 
 @enduml
