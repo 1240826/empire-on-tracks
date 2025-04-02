@@ -125,17 +125,24 @@ An association is a relationship between instances of objects that indicates a r
 
 
 
-| Concept (A) 		|     Association   	     |                                                              Concept (B) |
-|-------------------|:-----------------------:|-------------------------------------------------------------------------:|
-| Editor           |    create  <br/>add     |                                                        Map <br/>Industry<br/>City <br/>Scenario |
-| Map              |           has           |                                                               Size, Name |
-| Industry        |         placed          |                                                          Position on Map |
-| City            |           has           |                                                       Name, House Blocks |
-| House Blocks    |      are assigned       |                                                 Manually / Automatically |
-| Scenario        |         defines         |             Port Behavior, Locomotion Types, Industry Generation Factors |
-| Player         |          build          |                                       Station (Depot, Terminal, Station) |
-| Player         |         upgrade         |                                                    Station with Building |
-| Building       |           has           |                         Availability Date, Mutually Exclusive Equipments |
+| Concept (A) 		|  Association   	  |                                                                                     Concept (B) |
+|-------------------|:-----------------:|-----------------------------------------------------------------------------------------------:|
+| Editor           | create  <br/>add  |                                                        Map <br/>Industry<br/>City <br/>Scenario |
+| Map              |        has        |                                                                                      Size, Name |
+| Industry        |      placed       |                                                                                 Position on Map |
+| City            |        has        |                                                                              Name, House Blocks |
+| House Blocks    |   are assigned    |                                                                        Manually / Automatically |
+| Scenario        |      defines      |                                    Port Behavior, Locomotion Types, Industry Generation Factors |
+| Player         |       build       |                                                              Station (Depot, Terminal, Station) |
+| Player         |      upgrade      |                                                                           Station with Building |
+| Building       |        has        |                                                Availability Date, Mutually Exclusive Equipments |
+| Station          |      listed       |                                               Name, Existing Building, Demand/Supply of Cargoes |
+| Player          | builds<br/>choose |                                                               Railway Line between Two Stations |
+| Player          |       buys        |                                                                                      Locomotive |
+| Locomotive      |    chosen from    |                                                                   List of Available Locomotives |
+| Trains          |     listed by     |                                                                      Alphabetical Order of Name |
+| Product         |     generates     |                                                                               Cargo at Stations |
+| Simulator       |     considers  <br/>provides    |                                             Cities and Industries<br/>Start/Pause Options|
 
 
 

@@ -2,66 +2,53 @@
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
-
-'left to right direction
-
 skinparam classAttributeIconSize 0
-
 hide circle
 hide methods
 
-'title Domain Model
+'title US12 - Cargo Generation Simulator (Domain Model)
 
-class ProductOwner {
-
-}
-
-class Simulation {
-    status
-    industries
-    cities
-    stations
-    railroadNetworks
-    scenarios
-    map
-}
-
-class Industry {
-    type
-    sector
-    location
-    inventory
-}
-
-class City {
-    name
-    population
+class Simulator {
+    isRunning
+    start()
+    pause()
+    generateCargo()
 }
 
 class Station {
     name
-    location
-    inventory
+    positionX
+    positionY
 }
 
-class RailroadNetwork {
-
-    tracks
-    routes
+class Industry {
+    type
+    positionX
+    positionY
+    productionRate
 }
 
-class Scenario {
+class City {
     name
-    data
-    description
+    houseBlocks
+    positionX
+    positionY
 }
 
-ProductOwner "1" -- "*" Simulation : creates
-Simulation "1" -- "*" Industry : run
-Simulation "1" -- "*" City : run
-Simulation "1" -- "*" Station : run
-Simulation "1" -- "*" RailroadNetwork : run
-Simulation "1" -- "*" Scenario : run
+class Cargo {
+    type
+    amount
 
+}
+
+' --- Relacionamentos ---
+Simulator "1" -- "*" Cargo : generates >
+Station "1" -- "*" Cargo : holds >
+
+Industry "1" -- "*" Station : supplies >
+City "1" -- "*" Station : demands >
+
+Industry "1" -- "*" Cargo : produces >
+City "1" -- "*" Cargo : consumes >
 
 @enduml

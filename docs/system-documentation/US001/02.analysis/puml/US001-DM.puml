@@ -2,35 +2,24 @@
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
-
-'left to right direction
-
 skinparam classAttributeIconSize 0
-
 hide circle
 hide methods
 
-'title Domain Model
+'title US01 - Create a Map (Domain Model)
 
 class Editor {
-
-    autentication
     email
-
-}
-
-class Editing_Tool {
-
+    login
 }
 
 class Map {
     name
-    size
+    width
+    height
 }
 
-Editor "1" - "1*" Editing_Tool : interacts with
-Editing_Tool "1*" -- "1" Map : creates
-Map "1" -- "1*" Editor : confirms data
-
+' --- Relacionamentos ---
+Editor "1" -- "*" Map : creates >
 
 @enduml
