@@ -11,13 +11,9 @@ hide methods
 'title Railway Map Management - Domain Model
 
 class Editor {
-    email
-    login
 }
 
 class Player {
-    email
-    login
 }
 
 class Map {
@@ -53,10 +49,11 @@ class HouseBlocks{
 }
 
 class Scenario {
-    time
+    year
     behaviorOfMixedIndustries
-    availableLocomotive
+    availableTrains
     changeProduction
+
 
 }
 
@@ -71,41 +68,68 @@ class Station {
     range
 }
 
+class Trains{
+     type
+     speed
+     cargo
+
+}
+class RailLines{
+
+
+}
+class StationUpgrades{
+      structure
+}
+class Routes{
+starts
+ends
+}
+
+' === Relações do Editor ===
+Editor "1"--down"1*" Map : creates >
+Editor "1"--"*" Scenario : creates >
+Editor "1"-"1*" City : add >
+Editor "1"--"1*" Industry : add >
+
+' === Relações do Player ===
+Player "1" -"1*" Station : buy >
+Player "1"--down"1" Map : "add builds" >
+Player "1"--"1*"Trains : buy >
+Player "1"-"1*" RailLines : build >
+
+' === Hierarquia do Mapa ===
+Map "1"-"1"Size : has >
+Map "1"--"1*" Industry : contains >
+Map "1"--"1*" City : contains >
+Map "1"--"1*" RailLines : contains >
+
+' === Tipos de Indústria ===
+Industry "1*"--"1*" PrimarySectorIndustries : could be >
+Industry "1*"--"1*" TransformingIndustries:could be  >
+Industry "1*"--"1*" MixedIndustries : could be >
+Industry "1"--"1" Location : have >
+
+' === Relações do Cenário ===
+Scenario "*"-"1*" MixedIndustries : changes Class >
+Scenario "*"-left"1*" Industry : changes Production >
+Scenario "*"-"1" Map : have >
+Scenario "*"-"1*"Trains: restrict >
 
 
 
+Station "1"--"1" Location : has >
+Station "1"--"1" RailLines: connect <
+Station "1"-"*" StationUpgrades: upgrade <
 
+Trains "1"--"1*" RailLines : use >
 
+Trains "1"--"1*" Routes:follow >
 
-' --- Relacionamentos ---
-Player "1" -- "1*" Station: buy >
-Player "1" -- "1" Map: add builds >
+Routes"1"--"1*" RailLines:use >
+Routes"1"--"2*" Station: conect >
 
-Editor "1" -- "1*" Map: creates >
-Editor "1" -- "*" Scenario: creates >
-Editor "1" -- "1*" City: add >
-Editor "1" -- "1*" Industry: adds >
-
-Station "1*" - "1" Location: have >
-
-Map "1" -- "1" Size: have >
-Map "1" -- "1*" Industry: contains >
-Map "1"-- "1*"City: contains >
-
-Industry "1" --- "1" PrimarySectorIndustries: could be >
-Industry "1" --- "1" TransformingIndustries: could be >
-Industry "1" --- "1" MixedIndustries: could be >
-Industry "1*" --- "1" Location: have >
-
-MixedIndustries "1" -- "1" TransformingIndustries: transforms >
-MixedIndustries "1" -- "1" PrimarySectorIndustries: transforms >
-
-Scenario "1" -- "*" MixedIndustries: changes Class >
-Scenario "1" -- "*" Industry: changes Production >
-
-City "1"--"1*" HouseBlocks: contains >
-
-
-
+City -- HouseBlocks : contains >
+City "1"--"1" Location: has >
 
 @enduml
