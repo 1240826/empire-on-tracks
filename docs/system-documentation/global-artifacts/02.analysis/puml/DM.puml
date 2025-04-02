@@ -27,15 +27,13 @@ class Map {
 }
 
 class Industry {
-    positionX
-    positionY
 }
 
 class City {
     name
-    houseBlocks
-    positionX
-    positionY
+}
+class HouseBlocks{
+     people
 }
 
 class Scenario {
@@ -44,12 +42,11 @@ class Scenario {
     industryGenerationFactors
 }
 
-class PortBehavior {
-    imports
-    exports
-    transformations
-}
+class Location{
+    positionX
+    positionY
 
+}
 class Station {
     name
     type
@@ -58,6 +55,8 @@ class Station {
 }
 
 class StationUpgrades {
+   type
+
 }
 
 class RailwayLine {
@@ -70,6 +69,7 @@ class Locomotive {
     name
     availableFrom
 }
+
 
 class Train {
     name
@@ -88,26 +88,23 @@ class Simulator {
     cargoGenerationRules
 }
 
+class PrimarySectorIndustries{
+    type
+    supplies
+
+}
+class TransformingIndustries{
+    type
+    supplies
+    demand
+}
+class  MixedIndustries{
+    type
+    supplies
+    demand
+}
+
 ' --- Relacionamentos ---
-Editor "1" -- "*" Map : creates >
-Player "1" -- "*" Station : builds >
-Player "1" -- "*" RailwayLine : constructs >
-Player "1" -- "*" Train : manages >
-
-Map "1" -- "*" Industry : contains >
-Map "1" -- "*" Station : contains >
-Map "1" -- "*" City : contains >
-Map "1" -- "*" Scenario : has >
-
-Scenario "1" -- "*" PortBehavior : defines >
-Scenario "1" -- "*" Locomotive : allows >
-
-
-Station "1" -- "*" StationUpgrades : upgrades >
-Station "1" -- "*" RailwayLine : connectedVia >
-RailwayLine "1" -- "*" Train : usedBy >
-
-Train "1" -- "*" Cargo : carries >
-Simulator "1" -- "*" Cargo : generates >
+Editor "1"--"1*" Map: create >
 
 @enduml
