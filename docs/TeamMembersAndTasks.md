@@ -29,24 +29,24 @@ At last, remember that each User Story does not stand alone... it needs to be in
 
 **This table must be always up-to-date.**
 
-| Task                                                                                                                                 | Sprint 1 | Sprint 2 | Sprint 3 |
-|--------------------------------------------------------------------------------------------------------------------------------------|---------|----------|----------|
-| [Glossary](system-documentation/global-artifacts/01.requirements-engineering/glossary.md)                                            | all     | all      | all      |
-| [Use Case Diagram (UCD)](system-documentation/global-artifacts/01.requirements-engineering/use-case-diagram.md)                      | all     | all      | all      |
+| Task                                                                                                                           | Sprint 1 | Sprint 2 | Sprint 3 |
+|--------------------------------------------------------------------------------------------------------------------------------|---------|----------|----------|
+| [Glossary](system-documentation/global-artifacts/01.requirements-engineering/glossary.md)                                      | all     | all      | all      |
+| [Use Case Diagram (UCD)](system-documentation/global-artifacts/01.requirements-engineering/use-case-diagram.md)                | all     | all      | all      |
 | [Supplementary Specification](docs/system-documentation/global-artifacts/01.requirements-engineering/supplementary-specification.md) | all     | all      | all      |
-| [Domain Model](system-documentation/global-artifacts/01.requirements-engineering/domain-model.md)                                    | all     | all      | all      |
-| [US01 (SDP Activities)](system-documentation/US001/US001-README.md)                                                                                 | 1240821 |          |          |
-| US02 (SDP Activities)                                                                                                                | 1240821 |          |          |
-| US03 (SDP Activities)                                                                                                                | 1240826 |          |          |
-| US04 (SDP Activities)                                                                                                                | 1240826 |          |          |
-| US05 (SDP Activities)                                                                                                                | 1240796 |          |          |
-| US06 (SDP Activities)                                                                                                                | 1240796 |          |          |
-| US07 (SDP Activities)                                                                                                                | 1240824 |          |          |
-| US08 (SDP Activities)                                                                                                                | 1240824 |          |          |
-| US09 (SDP Activities)                                                                                                                | 1241949 |          |          |
-| US10 (SDP Activities)                                                                                                                | 1241949 |          |          |
-| US11 (SDP Activities)                                                                                                                | 1241949 |          |          |
-| US12 (SDP Activities)                                                                                                                | 1240821 |          |          |
+| [Domain Model](system-documentation/global-artifacts/01.requirements-engineering/domain-model.md)                              | all     | all      | all      |
+| US01 (SDP Activities)                                                                                                          | 1240821 |          |          |
+| US02 (SDP Activities)                                                                                                          | 1240821 |          |          |
+| US03 (SDP Activities)                                                                                                          | 1240826 |          |          |
+| US04 (SDP Activities)                                                                                                          | 1240826 |          |          |
+| US05 (SDP Activities)                                                                                                          | 1240796 |          |          |
+| US06 (SDP Activities)                                                                                                          | 1240796 |          |          |
+| US07 (SDP Activities)                                                                                                          | 1240824 |          |          |
+| US08 (SDP Activities)                                                                                                          | 1240824 |          |          |
+| US09 (SDP Activities)                                                                                                          | 1241949 |          |          |
+| US10 (SDP Activities)                                                                                                          | 1241949 |          |          |
+| US11 (SDP Activities)                                                                                                          | 1241949 |          |          |
+| US12 (SDP Activities)                                                                                                          | 1240821 |          |          |
 
 
 
