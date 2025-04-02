@@ -11,17 +11,25 @@ hide methods
 
 class Map {
     name
-    size
 }
 
 class City {
     name
-    positionXY
     houseBlocks
 }
 
+class Position {
+    X
+    Y
+}
+
+class Size {
+    width
+    length
+}
 
 Map "1" - "*" City : contains
-
+City "1" - "1" Position : has
+Map "1" - "1" Size : has
 
 @enduml
