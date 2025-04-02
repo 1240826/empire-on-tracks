@@ -1,10 +1,10 @@
-# US006 - Create a Task
+# US011 - List All Trains
 
 ## 1. Requirements Engineering
 
 ### 1.1. User Story Description
 
-As an organization employee, I want to create a new task in order to be further published.
+As a Player, I want to list all trains.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -26,33 +26,29 @@ As an organization employee, I want to create a new task in order to be further 
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
-* **AC2:** The task reference must have at least 5 alphanumeric characters.
-* **AC3:** When creating a task with an existing reference, the system must reject such operation and the user must be able to modify the typed reference.
+* **AC1:** The display of trains must include the locomotive and the current cargoes.
+* **AC2:**  The trains should be grouped by locomotive type and then listed alphabetically by name.
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US003 - Create a task category" as there must be at least one task category to classify the task being created.
+* There is a dependency on "US09 - Buy a train" as there must be trains purchased by the player to list.
+* There is a dependency on "US10 - Assign a train to a route" for trains that have cargoes assigned.
 
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-    * a reference
-    * a designation 
-    * an informal description
-    * a technical description
-    * an estimated duration
-    * an estimated cost
+    * none
 	
 * Selected data:
     * a task category 
 
 **Output Data:**
 
-* List of existing task categories
-* (In)Success of the operation
+* List of all trains grouped by locomotive type and sorted alphabetically by name
+* For each train: locomotive type, train name, current cargoes
+* (optional) Additional train details (route, status, etc.)
 
 ### 1.6. System Sequence Diagram (SSD)
 

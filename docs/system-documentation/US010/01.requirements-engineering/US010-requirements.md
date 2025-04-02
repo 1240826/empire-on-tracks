@@ -10,7 +10,9 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 **From the specifications document:**
 
->	A route is a list of stations where the train passes, along which it loads (carriages) cargo at each station.
+> A route is a list of stations where the train passes, along which it loads (carriages) cargo at each station.
+
+>  Railway Lines allow the connection of two stations. In the context of this project, it is not intended to make a detailed graphical edition of the route, but only a topological representation of the connection between two stations. A line has a certain length, can be single or double, and can be electrified (or not).
 
 > The carriages are distinguished by the type of cargo they  can transport (e.g., passengers, mail, coal, iron ore, steel, cars) and, in the context of the simulator, they have no acquisition cost.
 
