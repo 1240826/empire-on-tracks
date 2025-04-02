@@ -32,7 +32,7 @@ class TransformingIndustries{
     type
     demand
 }
-class  MixedIndustries{
+class MixedIndustries{
     type
 }
 
@@ -73,8 +73,8 @@ class StationUpgrades{
       structure
 }
 class Routes{
-starts
-ends
+    starts
+    ends
 }
 
 class Simulator{
@@ -83,15 +83,16 @@ class Simulator{
 class Cargo {
     type
     quantity
-
 }
+
+' Ajustando as posições das classes
 
 Editor "1" -down- "1*" Map : creates >
 Editor "1" -- "1*" Scenario : creates >
 Editor "1" -right- "1*" City : add >
 Editor "1" -- "1*" Industry : add >
 
-Player "1" -right- "1*" Station : buy >
+Player "1" --right- "1*" Station : buy >
 Player "1" -down- "1" Map : "add builds" >
 Player "1" -- "1*" Trains : buy >
 Player "1" - "1*" RailLines : build >
@@ -120,6 +121,7 @@ Station "1" -- "1" Location : has >
 Station "1" - "1" RailLines : connect <
 Station "1" -right- "*" StationUpgrades : upgrade <
 Station "1*" -- "1*" Trains : Load/unload <
+Station "1*" --- "1*" City : Load/unload <
 Station "1" -- "1*" Cargo : assigned to <
 
 Trains "1" -- "1*" RailLines : use >
@@ -134,3 +136,4 @@ City "1" -- "1" Location : has >
 Simulator "1" -- "1*" Industry : changes >
 
 @enduml
+
