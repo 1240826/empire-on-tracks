@@ -19,7 +19,7 @@
  Player --> (UC10 - Assign a Train to a Route)
  Player --> (UC11 - List all Trains)
 
- ProductOwner --> (UC12 - Generate Cargo Automatically)
+ ProductOwner --> (UC12 - Run a Cargo Simulation)
 
  @enduml
 

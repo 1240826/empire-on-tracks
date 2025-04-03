@@ -1,4 +1,4 @@
-# US012 - Create a simulator
+# US012 - US012 - Run a Cargo Simulation
 
 ## 1. Requirements Engineering
 

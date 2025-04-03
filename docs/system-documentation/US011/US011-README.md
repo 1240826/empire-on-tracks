@@ -1,9 +1,9 @@
-# US011 - List all Trains
+# US011 - List All Trains
 
 [Requirements Engineering](01.requirements-engineering/US011-requirements.md)
 
 [Analysis](02.analysis/US011-analysis.md)
 
-[Design](03.design/US006-design.md)
+[Design](03.design/US011-design.md)
 
-[Tests & Implementation](04.tests-and-implementation/US006-tests-and-implementation.md)
+[Tests & Implementation](04.tests-and-implementation/US011-tests-and-implementation.md)

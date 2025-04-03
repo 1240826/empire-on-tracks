@@ -25,4 +25,4 @@ However, be aware, this is a pedagogical simplification. On further projects and
 | US009  | [Buy a Train](../../US009/US009-README.md)                  |
 | US010  | [Assign a Train to a Route](../../US010/US010-README.md)    |
 | US011  | [List all Trains](../../US011/US011-README.md)              |
-| US012  | [Create a Cargo Generator Simulator](../../US012/US012-README.md) |
+| US012  | [Run a Cargo Simulation ](../../US012/US012-README.md) |

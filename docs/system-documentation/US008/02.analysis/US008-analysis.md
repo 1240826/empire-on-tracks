@@ -1,10 +1,10 @@
-# US006 - Create a Task 
+# US008 - Build a Railway Line
 
 ## 2. Analysis
 
 ### 2.1. Relevant Domain Model Excerpt 
 
-![Domain Model](svg/US006-DM.svg)
+![Domain Model](svg/US008-DM.svg)
 
 ### 2.2. Other Remarks
 

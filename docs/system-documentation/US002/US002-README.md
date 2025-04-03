@@ -1,9 +1,9 @@
 # US002 - Add an Industry
 
-[Requirements Engineering](01.requirements-engineering/US002-requirements)
+[Requirements Engineering](01.requirements-engineering/US002-requirements.md)
 
-[Analysis](02.analysis/US006-analysis.md)
+[Analysis](02.analysis/US002-analysis.md)
 
-[Design](03.design/US006-design.md)
+[Design](03.design/US002-design.md)
 
-[Tests & Implementation](04.tests-and-implementation/US006-tests-and-implementation.md)
+[Tests & Implementation](04.tests-and-implementation/US002-tests-and-implementation.md)
