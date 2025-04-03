@@ -1,4 +1,4 @@
-# US007 - List all the Stations
+# US007 - List all Stations
 
 ## 1. Requirements Engineering
 
