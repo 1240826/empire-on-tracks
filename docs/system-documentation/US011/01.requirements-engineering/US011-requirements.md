@@ -12,9 +12,11 @@ As a Player, I want to list all trains.
 
 >	In the simulator, the player/user acquires trains within the available budget and can put the train into service on a specific route.
 
->	As long as it is not published, access to the task is exclusive to the employees of the respective organization. 
+>	Trains are composed of locomotives and carriages.
 
->	As long as it is not published, access to the task is exclusive to the employees of the respective organization.
+>	The locomotives provide traction to the composition (train) and can be of different types, namely, run by steam, diesel, and electricity.
+
+>	The locomotives are characterized by several technical aspects, such as power, acceleration, top speed, start year of operation, fuel cost and maintenance per year, and acquisition price.
 
 
 **From the client clarifications:**

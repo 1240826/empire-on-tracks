@@ -30,11 +30,19 @@ As a Player, I want to buy a train.
 
 > **Question:** This user story has a dependency to the creation of a list of available locomotives for the scenario and current date. Will that feature be part of a future user story?
 >
-> **Answer:** The locomotives that will be presented in the selection list are restricted to the current date and any restrictions that may have been defined in the scenario. The presentation of the list of locomotives is part of US09. put the train into service on a specific route.
+> **Answer:** The locomotives that will be presented in the selection list are restricted to the current date and any restrictions that may have been defined in the scenario. The presentation of the list of locomotives is part of US09.
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** How is the availability of locomotives determined?
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** Each locomotive model has a one-year entry into service period, after which it becomes available for purchase.
+
+> **Question:** Monetary data is expressed in any particular currency?
+>
+> **Answer:** An abstract one.
+
+> **Question:** What happens if the player does not have enough budget to buy a locomotive?
+>
+> **Answer:** He can't buy! Bonds and loans will not be considered right now.
 
 ### 1.3. Acceptance Criteria
 
