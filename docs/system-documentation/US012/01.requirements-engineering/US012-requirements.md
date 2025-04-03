@@ -19,31 +19,42 @@ industries that the railway network serves.
 
 **From the client clarifications:**
 
-> **Question:** How will the predefined list of industries be managed and updated?
+> **Question:** A simulação é corrida mapa a mapa ou para todos os mapas existentes?
+Exemplo: Escolhe correr isoladamente a simulação no mapa da cidade de Lisboa mas não corre no mapa de Paris.
 >
-> **Answer:** 
+> **Answer:** No contexto da simulation o jogador escolhe um cenário para jogar, associado ao cenário existe obrigatoriamente um mapa.
 
-> **Question:** How will the predefined list of industries be managed and updated?
+> **Question:** There is a limit to cargo storage?
+> 
+> **Answer:** 24
+
+> **Question:**  How should cargo generation be done? At fixed time intervals or based on specific events (train arrival)?
 >
-> **Answer:**
+> **Answer:** accordingly to the frequency defined for the industry and house blocks by the station (the distribution along the year can be fixed or random)
 
-> **Question:** Will there be any restrictions on selecting multiple industries at once?
+> **Question:** Should the simulator run in real-time or in set intervals?
 >
-> **Answer:**
+> **Answer:** Not in real-time
 
-> **Question:** Should industries be categorized or filtered for easier selection?
+> **Question:**  Can users manually adjust cargo generation rates?
+> 
+> **Answer:** Maybe not the player but generation should be configurable (maybe in a config file).
+
+> **Question:**  Should generated cargo be influenced by train schedules?
+> 
+> **Answer:** There are no train schedules!
+
+> **Question:** Should cargo generation dynamically update as the railway network expands or changes?  
+> 
+> **Answer:** Yes; the generation is done for the industries and house blocks served by the stations present in the network.
+
+> **Question:** Will the user have customization options for cargo generation rules, or will it be fully automated?  
+> 
+> **Answer:** Just in the edition of the scenario.
+
+> **Question:** How should cargo stockpiling be managed at stations to prevent excessive accumulation?  
 >
-> **Answer:**
-
-> **Question:** Will users be able to adjust their selection before confirming?
->
-> **Answer:**
-
-> **Question:** How precise should the XY coordinates be
->
-> **Answer:** 
-
-
+> **Answer:** A maximum number can be considered per cargo type (e.g., 30).
 
 ### 1.3. Acceptance Criteria
 

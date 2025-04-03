@@ -9,24 +9,45 @@ hide methods
 'title US02 - Add Industry to Map (Domain Model)
 
 class Editor {
-    email
-    login
 }
-
 class Map {
     name
+
+}
+class Size{
     width
     height
 }
 
-class Industry {
-    type
+class Location{
     positionX
     positionY
+
+}
+class Industry {
+    production
+}
+class PrimarySectorIndustries{
+    type
+
+}
+class TransformingIndustries{
+    type
+    demand
+}
+class  MixedIndustries{
+    type
 }
 
 ' --- Relacionamentos ---
-Editor "1" -- "*" Map : creates >
-Map "1" -- "*" Industry : contains >
+Editor "1" -down- "1*" Map : creates >
+Editor "1" -- "1*" Industry : add >
+Map "1" - "1" Size : has >
+
+
+Industry "1*" -- "1*" PrimarySectorIndustries : could be >
+Industry "1*" -- "1*" TransformingIndustries : could be >
+Industry "1*" -- "1*" MixedIndustries : could be >
+Industry "1" - "1" Location : have >
 
 @enduml

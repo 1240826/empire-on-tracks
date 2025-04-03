@@ -1,7 +1,5 @@
 @startuml
 skinparam monochrome true
-@startuml
-skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam classAttributeIconSize 0
@@ -11,18 +9,13 @@ hide methods
 'title Railway Map Management - Domain Model
 
 class Editor {
-    email
-    login
 }
 
 class Player {
-    email
-    login
 }
 
 class Map {
     name
-
 }
 class Size{
     width
@@ -34,13 +27,12 @@ class Industry {
 }
 class PrimarySectorIndustries{
     type
-
 }
 class TransformingIndustries{
     type
     demand
 }
-class  MixedIndustries{
+class MixedIndustries{
     type
 }
 
@@ -53,59 +45,95 @@ class HouseBlocks{
 }
 
 class Scenario {
-    time
+    year
     behaviorOfMixedIndustries
-    availableLocomotive
+    availableTrains
     changeProduction
-
 }
 
 class Location{
     positionX
     positionY
-
 }
 
 class Station {
     name
     range
+    type
 }
 
+class Trains{
+     type
+     speed
+     cargo
+}
+class RailLines{
+}
+class StationUpgrades{
+      structure
+}
+class Routes{
+    starts
+    ends
+}
 
+class Simulator{
+}
 
+class Cargo {
+    type
+    quantity
+}
 
+' Ajustando as posições das classes
 
+Editor "1" -down- "1*" Map : creates >
+Editor "1" -- "1*" Scenario : creates >
+Editor "1" -right- "1*" City : add >
+Editor "1" -- "1*" Industry : add >
 
+Player "1" --right- "1*" Station : buy >
+Player "1" -down- "1" Map : "add builds" >
+Player "1" -- "1*" Trains : buy >
+Player "1" - "1*" RailLines : build >
 
-' --- Relacionamentos ---
-Player "1" -- "1*" Station: buy >
-Player "1" -- "1" Map: add builds >
+Map "1" - "1" Size : has >
+Map "1" -- "1*" Industry : contains >
+Map "1" -- "1*" City : contains >
+Map "1" -- "1*" RailLines : contains >
 
-Editor "1" -- "1*" Map: creates >
-Editor "1" -- "*" Scenario: creates >
-Editor "1" -- "1*" City: add >
-Editor "1" -- "1*" Industry: adds >
+Industry "1*" -- "1*" PrimarySectorIndustries : could be >
+Industry "1*" -- "1*" TransformingIndustries : could be >
+Industry "1*" -- "1*" MixedIndustries : could be >
+Industry "1" - "1" Location : have >
+Industry "1*" -- "1*" Station : load/unload >
+Industry "1" -- "1*" Cargo : produces >
 
-Station "1*" - "1" Location: have >
+Scenario "*" -- "1*" MixedIndustries : changes Class >
+Scenario "*" -left- "1*" Industry : changes Production >
+Scenario "*" - "1" Map : have >
+Scenario "*" - "1*" Trains : restrict >
 
-Map "1" -- "1" Size: have >
-Map "1" -- "1*" Industry: contains >
-Map "1"-- "1*"City: contains >
+MixedIndustries "*" -down- "*" PrimarySectorIndustries : transforms >
+MixedIndustries "*" -down- "*" TransformingIndustries : transforms >
 
-Industry "1" --- "1" PrimarySectorIndustries: could be >
-Industry "1" --- "1" TransformingIndustries: could be >
-Industry "1" --- "1" MixedIndustries: could be >
-Industry "1*" --- "1" Location: have >
+Station "1" -- "1" Location : has >
+Station "1" - "1" RailLines : connect <
+Station "1" -right- "*" StationUpgrades : upgrade <
+Station "1*" -- "1*" Trains : Load/unload <
+Station "1*" --- "1*" City : Load/unload <
+Station "1" -- "1*" Cargo : assigned to <
 
-MixedIndustries "1" -- "1" TransformingIndustries: transforms >
-MixedIndustries "1" -- "1" PrimarySectorIndustries: transforms >
+Trains "1" -- "1*" RailLines : use >
+Trains "1" -- "1*" Routes : follow >
 
-Scenario "1" -- "*" MixedIndustries: changes Class >
-Scenario "1" -- "*" Industry: changes Production >
+Routes "1" -- "1*" RailLines : use >
+Routes "1" -- "2*" Station : connect >
 
-City "1"--"1*" HouseBlocks: contains >
+City -- HouseBlocks : contains >
+City "1" -- "1" Location : has >
 
-
-
+Simulator "1" -- "1*" Industry : changes >
 
 @enduml
+
