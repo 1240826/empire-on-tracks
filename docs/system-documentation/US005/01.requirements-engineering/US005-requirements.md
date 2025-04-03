@@ -40,6 +40,13 @@ As a Player, I want to build a station.
 > **Answer:** 
 > Just the budget in a generic currency.
 
+> **Question:**
+>What is the input data for the user story 5? Is there any input besides the type of the station?
+
+> **Answer:**
+> Position; Station type (Terminal, Station or Depot) and, in the case of the station, the center must be filled in. If the proposed is not accepted an alternative one must be entered.
+
+
 
 ### 1.3. Acceptance Criteria
 
@@ -55,6 +62,7 @@ As a Player, I want to build a station.
 
 * Typed data:
     * XY position on the map
+    * The center of the station
   
 * Selected data:
     * what type of station to build 
@@ -67,7 +75,7 @@ As a Player, I want to build a station.
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram.svg](puml/System%20Sequence%20Diagram.svg)
+![System Sequence Diagram.svg](svg/System%20Sequence%20Diagram.svg)
 
 **_Other alternatives might exist._**
 

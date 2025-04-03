@@ -10,7 +10,7 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : wants to build a station
+    Employee -> System : asks to build a station
     activate System
 
         System --> Employee : asks for what type of station
@@ -20,6 +20,7 @@ activate Employee
     activate System
 
         System --> Employee : asks to pick the coordinates
+        System --> Employee : asks to pick the center of the station
     deactivate System
 
     Employee -> System : types requested data

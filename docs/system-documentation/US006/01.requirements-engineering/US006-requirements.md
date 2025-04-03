@@ -39,6 +39,19 @@ As a Player, I want to upgrade a station with a building
 >* Não podem existir multiplos edificios iguais (por exemplo, não posso ter 3 silos de cereais)    
 >* As combinações, desde que respeitando as restrições anteriomente referidas, são todas possíveis.  
 
+> **Question:**
+> Is there a limit on the number of buildings a station can be upgraded with?  
+
+> **Answer:**
+> No.
+
+> **Question:**
+> Does the upgrade from telegraph to telephone occur automatically once a certain year is reached?
+
+> **Answer:**
+> There are no automatic updates; When a new building is available, the player can buy it and then the previous building is replaced.
+
+
 ### 1.3. Acceptance Criteria
 
 N.A.
@@ -47,7 +60,7 @@ N.A.
 
 * There is a dependency on "US01 - Create a map" as there must be a map so that you can place stations and upgrade it
 * There is a dependency on "US05 - Build a station" as there must be a station so that you can upgrade it
-* 
+
 
 ### 1.5 Input and Output Data
 
