@@ -6,49 +6,80 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-'title US12 - Cargo Generation Simulator (Domain Model)
-
-class Simulator {
-    isRunning
-    start()
-    pause()
-    generateCargo()
+class Simulator{
+isRunning
 }
-
+class Industry {
+    production
+}
+class PrimarySectorIndustries{
+    type
+}
+class TransformingIndustries{
+    type
+    demand
+}
+class MixedIndustries{
+    type
+}
 class Station {
     name
-    positionX
-    positionY
-}
-
-class Industry {
+    range
     type
-    positionX
-    positionY
-    productionRate
-}
-
-class City {
-    name
-    houseBlocks
-    positionX
-    positionY
+    cost
 }
 
 class Cargo {
     type
-    amount
-
+    quantity
 }
 
-' --- Relacionamentos ---
-Simulator "1" -- "*" Cargo : generates >
-Station "1" -- "*" Cargo : holds >
+class RailLines{
+cost
+type
+}
 
-Industry "1" -- "*" Station : supplies >
-City "1" -- "*" Station : demands >
+class Location{
+    positionX
+    positionY
+}
 
-Industry "1" -- "*" Cargo : produces >
-City "1" -- "*" Cargo : consumes >
 
+class City {
+    numberOfHouseBlocks
+    name
+}
+
+class Trains{
+     type
+     speed
+     cargo
+     cost
+}
+
+class Routes{
+    starts
+    ends
+}
+
+Simulator "1" -- "1*" Industry : start/pause >
+
+Industry "1*" -- "1" PrimarySectorIndustries : could be >
+Industry "1*" -- "1" TransformingIndustries : could be >
+Industry "*" -- "1" MixedIndustries : could be >
+Industry "1" -- "1*" Cargo : produces >
+Industry "1*" -- "1*" Station : load/unload >
+Industry "1" - "1" Location : have >
+
+Station "1" - "1*" Cargo : assigned to <
+Station "1" -- "1" Location : has >
+Station "1" -left "1" RailLines : connect <
+Station "1*" -- "1*" Trains : Load/unload <
+Station "1*" -- "1*" City : Load/unload >
+
+Trains "1" -- "1*" Routes : follow >
+
+Routes "1" -- "1*" RailLines : use >
+Routes "1" -- "2*" Station : connect >
+City "1" -- "1" Location : has >
 @enduml
