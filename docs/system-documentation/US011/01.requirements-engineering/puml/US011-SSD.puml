@@ -13,18 +13,7 @@ activate Player
     Player -> System : asks to list all trains
     activate System
 
-        System --> Player : displays trains grouped by locomotive type and sorted\nalphabetically, showing locomotive details and current cargoes
+        System --> Player : displays all trains grouped by locomotive type,\nsorted alphabetically, showing locomotive details and current cargoes
     deactivate System
 
-    Player -> System : selects a train for more details
-    activate System
-
-        System --> Player : shows detailed information for the selected train
-    deactivate System
-
-    Player -> System : closes train details
-    activate System
-
-        System --> Player : returns to the train listing view
-    deactivate System
 @enduml

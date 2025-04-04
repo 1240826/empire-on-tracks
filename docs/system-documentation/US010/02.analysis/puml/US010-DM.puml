@@ -3,48 +3,51 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-'left to right direction
-
 skinparam classAttributeIconSize 0
 
 hide circle
 hide methods
 
-'title Domain Model
+'title Domain Model for US010 - Assign a Train to a Route
 
-class Organization {
+class Player {
+}
+
+class Train {
+    plateNumber
+}
+
+class Locomotive {
+    powerSource
+    acceleration
+}
+
+class Carriage {
+    cargoType
+    capacity
+}
+
+class Route {
+    starts
+    ends
+}
+
+class Station {
     name
-    vatNumber
-    website
-    phoneNumber
-    email
+    type
 }
 
-class Task {
-    reference
-    description
-    informalDescription
-    technicalDescription
-    duration
-    cost
+class Cargo {
+    type
+    quantity
 }
 
-class TaskCategory {
-    description
-}
-
-class Employee {
-    name
-    email
-    position
-    phone
-}
-
-Organization "1" - "*" Employee : has
-Organization "1" - "*" Task: owns
-
-Employee "1" -- "*" Task : creates
-
-Task "*" - "1" TaskCategory: cataloged as
+Player "1" -- "*" Train : owns >
+Train "1" -- "1" Route : assigned to >
+Train "1" -- "1" Locomotive : powered by >
+Train "1" -- "*" Carriage : composed of >
+Route "1" -- "2*" Station : connects >
+Station "1" -- "*" Cargo : assigned to >
+Carriage "*" -- "1" Cargo : transports >
 
 @enduml

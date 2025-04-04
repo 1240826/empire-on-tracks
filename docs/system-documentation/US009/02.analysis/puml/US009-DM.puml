@@ -8,24 +8,15 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-'title Domain Model for US009 - Buy a Train
+'title Domain Model for US009 - Buy a Locomotive
 
 class Player {
     budget
 }
 
-class Train {
-    id
-    acquisitionPrice
-}
-
 class Locomotive {
-    type
-    power
-    acceleration
-    topSpeed
-    startYear
-    acquisitionPrice
+    powerSource
+    acquisitionCost
 }
 
 class Scenario {
@@ -33,8 +24,7 @@ class Scenario {
     availableLocomotives
 }
 
-Player "1" -- "*" Train : owns
-Train "1" - "1" Locomotive : composed of
-Scenario "1" - "*" Locomotive : restricts availability
+Player "1" -- "*" Locomotive : buys >
+Scenario "1" -- "*" Locomotive : restricts availability >
 
 @enduml

@@ -32,8 +32,10 @@ As a Player, I want to list all trains.
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US09 - Buy a train" as there must be trains purchased by the player to list.
-* There is a dependency on "US10 - Assign a train to a route" for trains that have cargoes assigned.
+* There is a dependency on **US001 - Create a Map**, as a scenario can only be created for an existing map previously selected.
+* There is a dependency on **US004 - Create a Scenario**, as the scenario determines what locomotives are available.
+* There is a dependency on **US09 - Buy a train**, as there must be trains purchased by the player to list.
+* There is a dependency on **US10 - Assign a train to a route** for trains that have cargoes assigned.
 
 ### 1.5 Input and Output Data
 

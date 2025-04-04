@@ -12,15 +12,15 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 > A route is a list of stations where the train passes, along which it loads (carriages) cargo at each station.
 
->  Railway Lines allow the connection of two stations. In the context of this project, it is not intended to make a detailed graphical edition of the route, but only a topological representation of the connection between two stations. A line has a certain length, can be single or double, and can be electrified (or not).
+> Railway Lines allow the connection of two stations. 
 
 > The carriages are distinguished by the type of cargo they  can transport (e.g., passengers, mail, coal, iron ore, steel, cars) and, in the context of the simulator, they have no acquisition cost.
 
 **From the client clarifications:**
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** 
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** 
 
 
 ### 1.3. Acceptance Criteria
@@ -29,9 +29,10 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US09 - Buy a train" as there must be at least one train owned by the player.
-* There is a dependency on "US08 - Build a railway line between two stations" as there must be railway lines connecting the stations on the route.
-* There is a dependency on "US05 - Build a station" as there must be stations to create a route.
+* There is a dependency on **US001 - Create a Map**, as a scenario can only be created for an existing map previously selected.
+* There is a dependency on **US05 - Build a station**, as there must be stations to create a route.
+* There is a dependency on **US08 - Build a railway line between two stations**, as there must be railway lines connecting the stations on the route.
+* There is a dependency on **US09 - Buy a locomotive**, as there must be at least one train owned by the player.
 
 ### 1.5 Input and Output Data
 

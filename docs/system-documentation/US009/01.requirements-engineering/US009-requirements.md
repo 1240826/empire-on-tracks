@@ -50,7 +50,8 @@ As a Player, I want to buy a locomotive.
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US004 - Create a Scenario" as the scenario determines what locomotives/trains are available.
+* There is a dependency on **US001 - Create a Map**, as a scenario can only be created for an existing map previously selected.
+* There is a dependency on **US004 - Create a Scenario** as the scenario determines what locomotives are available.
 
 ### 1.5 Input and Output Data
 
