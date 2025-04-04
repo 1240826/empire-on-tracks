@@ -10,107 +10,126 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 ### _Conceptual Class Category List_
 
+### _Conceptual Class Category List_
+
 **Business Transactions**
 
-* 
+* Player builds Station or RailLine
+* Player buys Trains or Locomotives
 
 ---
 
-**Transaction Line Itemss**
+**Transaction Line Items**
 
-* 
+* Individual Train Purchase
+* Specific RailLine segment built
 
 ---
 
 **Product/Service related to a Transaction or Transaction Line Item**
 
-* 
+* Train (as product)
+* RailLine (as infrastructure service)
 
 ---
 
 **Transaction Records**
 
-* 
+* Purchase history (e.g., Trains bought by Player)
+* Construction log (Stations and Lines built)
 
----  
+---
 
 **Roles of People or Organizations**
 
-* 
+* Player
+* Editor
+* Simulator (as system role)
 
 ---
 
 **Places**
 
-* 
+* Map
+* City
+* Location (used by Industry and Station)
 
 ---
 
 **Noteworthy Events**
 
-* 
+* Scenario definition/change
+* Industry production change
+* Station upgrade
 
 ---
 
 **Physical Objects**
 
-* 
+* Station
+* Train / Locomotive
+* RailLine
+* Industry
+* House Block
 
 ---
 
 **Descriptions of Things**
 
-* 
+* Map (Size, Name)
+* Station (Name, Building, Upgrades, Cargo info)
+* Train (type, capabilities)
 
 ---
 
 **Catalogs**
 
-* 
+* List of Available Locomotives
+* Scenario parameters (e.g., Locomotion Types)
 
 ---
 
 **Containers**
 
-* 
+* City (contains House Blocks)
+* Map (contains Cities, Industries, RailLines)
 
 ---
 
 **Elements of Containers**
 
-* 
+* House Blocks (within City)
+* Industries / Cities (within Map)
 
 ---
 
 **Organizations**
 
 * 
-
 ---
 
 **Other External/Collaborating Systems**
 
-* 
-
+*
 ---
 
 **Records of finance, work, contracts, legal matters**
 
-* 
+*
 
 ---
 
 **Financial Instruments**
 
 * 
-
 ---
 
-**Documents mentioned/used to perform some work/**
+**Documents mentioned/used to perform some work**
 
-* 
+* Scenario definition
+* Map design (by Editor)
+* Game configuration
 
----
 
 
 ## Rationale to identify associations between conceptual classes
@@ -127,24 +146,32 @@ An association is a relationship between instances of objects that indicates a r
 
 
 
-| Concept (A) 		|  Association   	  |                                                                                     Concept (B) |
-|-------------------|:-----------------:|-----------------------------------------------------------------------------------------------:|
-| Editor           | create  <br/>add  |                                                        Map <br/>Industry<br/>City <br/>Scenario |
-| Map              |        has        |                                                                                      Size, Name |
-| Industry        |      placed       |                                                                                 Position on Map |
-| City            |        has        |                                                                              Name, House Blocks |
-| House Blocks    |   are assigned    |                                                                        Manually / Automatically |
-| Scenario        |      defines      |                                    Port Behavior, Locomotion Types, Industry Generation Factors |
-| Player         |       build       |                                                              Station (Depot, Terminal, Station) |
-| Player         |      upgrade      |                                                                           Station with Building |
-| Building       |        has        |                                                Availability Date, Mutually Exclusive Equipments |
-| Station          |      listed       |                                               Name, Existing Building, Demand/Supply of Cargoes |
-| Player          | builds<br/>choose |                                                               Railway Line between Two Stations |
-| Player          |       buys        |                                                                                      Locomotive |
-| Locomotive      |    chosen from    |                                                                   List of Available Locomotives |
-| Trains          |     listed by     |                                                                      Alphabetical Order of Name |
-| Product         |     generates     |                                                                               Cargo at Stations |
-| Simulator       |     considers  <br/>provides    |                                             Cities and Industries<br/>Start/Pause Options|
+| Concept (A)       |      Association           |                                Concept (B)                                |
+|------------------|:--------------------------:|:-------------------------------------------------------------------------:|
+| Editor           | create / add               | Map, Industry, City, Scenario                                             |
+| Map              | has / contains             | Size, Name, Industry, City, RailLines                                     |
+| Industry         | placed                     | Position on Map                                                           |
+| Industry         | could be                   | PrimarySectorIndustries, TransformingIndustries, MixedIndustries         |
+| Industry         | has                        | Location                                                                  |
+| Industry         | load/unload                | Station                                                                   |
+| Industry         | produces                   | Cargo                                                                     |
+| City             | has / contains             | Name, Location, House Blocks                                              |
+| House Blocks     | are assigned               | Manually / Automatically                                                  |
+| Scenario         | defines / changes / has    | Port Behavior, Locomotion Types, Industry Generation Factors,<br>MixedIndustries, Industry, Map |
+| Scenario         | restricts                  | Trains                                                                    |
+| MixedIndustries  | transforms                 | PrimarySectorIndustries, TransformingIndustries                          |
+| Player           | build / upgrade / buy      | Map, Station (Depot, Terminal, Station), Railway Line,<br>Trains, Station with Building |
+| Player           | choose                     | Railway Line between Two Stations                                         |
+| Station          | has / connects / listed    | Name, Existing Building, Upgrades, Demand/Supply of Cargoes,<br>Location, RailLines |
+| Station          | upgrade                    | StationUpgrades                                                           |
+| Station          | load/unload                | Trains, City                                                              |
+| Station          | assigned to                | Cargo                                                                     |
+| Trains           | use / follow               | RailLines, Routes                                                         |
+| Routes           | use / connect              | RailLines, Stations (2+)                                                  |
+| Locomotive       | chosen from                | List of Available Locomotives                                             |
+| Product          | generates                  | Cargo at Stations                                                         |
+| Simulator        | considers / provides / changes | Cities, Industries, Start/Pause Options                               |
+
 
 
 
