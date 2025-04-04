@@ -1,10 +1,10 @@
-# US009 - Buy a Train
+# US009 - Buy a locomotive
 
 ## 1. Requirements Engineering
 
 ### 1.1. User Story Description
 
-As a Player, I want to buy a train.
+As a Player, I want to buy a locomotive.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -70,7 +70,7 @@ As a Player, I want to buy a train.
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US009-SSD.svg)
+![System Sequence Diagram.svg](svg/System%20Sequence%20Diagram.svg)
 
 **_Other alternatives might exist._**
 

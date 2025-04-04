@@ -75,7 +75,7 @@ As a Player, I want to build a station.
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram.svg](svg/System%20Sequence%20Diagram.svg)
+![US005-SSD.svg](svg/US005-SSD.svg)
 
 **_Other alternatives might exist._**
 

@@ -10,7 +10,7 @@ participant ":System" as System
 
 activate Player
 
-    Player -> System : requests to buy a train
+    Player -> System : requests to buy a locomotive
     activate System
 
         System --> Player : shows available locomotives and asks to select one

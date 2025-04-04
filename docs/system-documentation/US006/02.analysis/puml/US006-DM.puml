@@ -12,39 +12,33 @@ hide methods
 
 'title Domain Model
 
-class Organization {
-    name
-    vatNumber
-    website
-    phoneNumber
-    email
+class Editor {
 }
 
-class Task {
-    reference
-    description
-    informalDescription
-    technicalDescription
-    duration
+class Map {
+    name
+}
+class Player {
+money
+}
+
+class Station {
+    name
+    range
+    type
     cost
 }
 
-class TaskCategory {
-    description
+class StationUpgrades{
+      structure
 }
 
-class Employee {
-    name
-    email
-    position
-    phone
-}
+Editor "1" -down- "1*" Map : creates >
 
-Organization "1" - "*" Employee : has
-Organization "1" - "*" Task: owns
+Player "1" --right- "1*" Station : buy >
 
-Employee "1" -- "*" Task : creates
+Player "1" -up- "1" Map : "add builds" >
 
-Task "*" - "1" TaskCategory: cataloged as
+Station "1" -right- "*" StationUpgrades : upgrade <
 
 @enduml

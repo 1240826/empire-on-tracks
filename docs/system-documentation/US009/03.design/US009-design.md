@@ -1,4 +1,4 @@
-# US009 - Buy a Train
+# US009 - Buy a locomotive
 
 ## 3. Design
 

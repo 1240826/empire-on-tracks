@@ -5,7 +5,7 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Player" as Employee
 participant ":System" as System
 
 activate Employee

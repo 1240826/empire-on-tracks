@@ -81,7 +81,7 @@ N.A.
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram.svg](System%20Sequence%20Diagram.svg)
+![US006-SSD.svg](svg/US006-SSD.svg)
 
 **_Other alternatives might exist._**
 
