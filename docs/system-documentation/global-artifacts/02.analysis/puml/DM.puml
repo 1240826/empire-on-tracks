@@ -12,6 +12,7 @@ class Editor {
 }
 
 class Player {
+money
 }
 
 class Map {
@@ -60,14 +61,18 @@ class Station {
     name
     range
     type
+    cost
 }
 
 class Trains{
      type
      speed
      cargo
+     cost
 }
 class RailLines{
+cost
+type
 }
 class StationUpgrades{
       structure
@@ -78,6 +83,7 @@ class Routes{
 }
 
 class Simulator{
+isRunning
 }
 
 class Cargo {
