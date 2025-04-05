@@ -4,7 +4,7 @@
 
 ### 2.1. Relevant Domain Model Excerpt 
 
-![US005-DM.svg](svg/US005-DM.svg)
+[US005-DM.puml](puml/US005-DM.puml)
 
 ### 2.2. Other Remarks
 

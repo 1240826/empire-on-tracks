@@ -65,7 +65,7 @@ As a Player, I want to build a station.
     * The center of the station
   
 * Selected data:
-    * what type of station to build 
+    * Station Type
 
 **Output Data:**
 
@@ -80,5 +80,5 @@ As a Player, I want to build a station.
 **_Other alternatives might exist._**
 
 ### 1.7 Other Relevant Remarks
-* N/A
+* the center of the station is only required if the Station Type is "Station"
 

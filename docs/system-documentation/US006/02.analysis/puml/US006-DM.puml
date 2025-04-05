@@ -39,6 +39,10 @@ Player "1" --right- "1*" Station : buy >
 
 Player "1" -up- "1" Map : "place elements " >
 
-Station "1" -right- "*" StationUpgrade : upgrade <
+Player "1"---"*" StationUpgrade: buy >
+
+Station "1" -left- "*" StationUpgrade : upgrade <
+
+
 
 @enduml
