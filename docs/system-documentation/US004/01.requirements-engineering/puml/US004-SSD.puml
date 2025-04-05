@@ -13,7 +13,7 @@ activate Editor
     Editor -> System : asks to create a scenario for a selected map
     activate System
 
-        System --> Editor : requests data (scenario name and time period - start and end date)
+        System --> Editor : requests data (start/end date, locomotion type - steam, diesel, and/or electric,\n port cargo behavior - import/export/transform, behavior of mixed industries)
     deactivate System
 
     Editor -> System : provides scenario details

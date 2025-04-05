@@ -1,0 +1,44 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+'title Domain Model
+
+class Editor {
+}
+
+class Map {
+    name
+}
+
+class Size{
+    length
+    width
+}
+
+class Scenario {
+    behaviorOfMixedIndustries
+    locomotionType
+    portCargoBehavior
+}
+
+class Period {
+    start
+    end
+}
+
+Editor "1" -down- "1*" Map : creates >
+Editor "1" -- "*" Scenario : creates >
+Map "1" - "1" Size : has >
+Scenario "1" -- "1" Period : has >
+Scenario "*" - "1" Map : uses >
+
+@enduml

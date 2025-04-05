@@ -4,8 +4,7 @@
 
 ### 1.1. User Story Description
 
-As an Editor, I want to add a city in a position XY of the selected
-map, with a name and a positive number of house blocks.
+As an Editor, I want to add a city in a position XY of the selected map, with a name and a positive number of house blocks.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -17,30 +16,26 @@ map, with a name and a positive number of house blocks.
 **From the client clarifications:**
 
 
-> **Question:** According to User Story 3, dear client, can the city name have spaces in its naming?
+> **Question:** Is it possible for a city to be destroyed by a natural disaster or a war? If so, is it necessary to create a mechanism to remove the city from the map and create a new one to transfer the active elements from the first one(people, mail, ...)?
 
-> **Answer:** yes you can, "Torres Novas" for example.
-
-
-> **Question:** According to User Story 3, can house blocks be assigned manually (by the editor) or automatically randomly around the city position?
-
-> **Answer:** Already clarified in the statement.
-
-> **Question:** According to User Story 3, should the city name be unique within the same map?
-
-> **Answer:** It can be repeated but it can become confusing for players, the editor should be alerted to the situation.
-
-> **Question:** Dear client, should it be considered as an acceptance criterion that the map should be visually updated to show the city that was previously added to the respective map and its house blocks?
-
-> **Answer:** There is no specification for user interfaces yet.
+> **Answer:** A city can be removed in edit mode, but not in simulation mode.  
 
 > **Question:** Is there a minimum or maximum number of house blocks that can be assigned?
 
-> **Answer:** The number needs to be a positive on; there is no maximum, it's up to the editor to decide.
+> **Answer:** The number needs to be a positive on; there is no maximum, it's up to the editor to decide. 
 
-> **Question:** Is it possible for a city to be destroyed by a natural disaster or a war? If so, is it necessary to create a mechanism to remove the city from the map and create a new one to transfer the active elements from the first one(people, mail, ...)?
+> **Question:** De acordo com a User Story 3, senhor cliente, o nome da cidade pode apresentar espaços na sua nomenclatura? De acordo com a User Story 3, os blocos de casas podem ser atribuídos manualmente (pelo editor) ou automaticamente de forma aleatória em torno da posição da cidade? De acordo com a User Story 3, o nome da cidade deve ser exclusivo dentro do mesmo mapa? Caro cliente, deve ser considerado como critério de aceitação que o mapa deve ser atualizado visualmente para mostrar a cidade que foi adicionada previamente ao respetivo mapa e os seus blocos de casas? 
 
-> **Answer:** A city can be removed in edit mode, but not in simulation mode.
+> **Answer:** sim pode, "Torres Novas" por exemplo. entretanto já esclarecido no enunciado. Pode ser repetido mas pode tornar-se confuso para os jogadores, o editor deve ser alertado da situação. Ainda não existem especificação para interfaces de utilizador.
+
+> **Question:** 1. What is the purpose and meaning of the "City Tag"? 2. Does the city have a specific radius for some functionality or is the city creation just figurative? 3. Does that influence passenger statistics or will there be no statistics for a specific city 
+
+> **Answer:** 1. It's a label that would appear in the map if a GUI is considered. 2. No, it's the center, that can be useful if the positions for the House Blocks as randomly generated. 3. The statistics will about stations and the railroad network not about cities.
+
+> **Question:** We need some clarification about cities: What exactly are "cities"? Are they entities that automatically produce people and mail based on the total number of house blocks, or do we also need to consider whether the house blocks themselves are located within the economic radius of a station? Is it possible to place a station inside a city without touching any house blocks, resulting in no production? When the editor creates a city, what is the radius within which house blocks can be placed? Is there a minimum and/or maximum number of house blocks that can be placed when creating a city?
+
+> **Answer:** Cities are places with a name, a location and a number of house blocks. Each house block functions as an industry blocks but generates mail/passengers, and demand mail/passangers and final produts like food or goods. The house blocks will accept and generate cargos when inside the economic radius of a station as other industries. If you consider a normal distribution the probability of being far from the town center becames zero. no;
+
 
 
 ### 1.3. Acceptance Criteria
@@ -60,7 +55,8 @@ map, with a name and a positive number of house blocks.
 
 * Typed data:
   * City name
-  * XY position on the map
+  * positionX
+  * positionY
   * Number of house blocks
 
 * Selected data:
@@ -78,4 +74,5 @@ map, with a name and a positive number of house blocks.
 
 ### 1.7 Other Relevant Remarks
 
-* N/A.
+* The editor should be alerted when the city has a repeated name.
+* House blocks are automatically assigned according to the city center and within a certain radius.  

@@ -6,7 +6,6 @@
 
 ![US003-DM.svg](svg/US003-DM.svg)
 
-
 ### 2.2. Other Remarks
 
 n/a

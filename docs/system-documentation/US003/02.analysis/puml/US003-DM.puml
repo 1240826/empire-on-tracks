@@ -3,33 +3,41 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-
 skinparam classAttributeIconSize 0
 
+left to right direction
 hide circle
 hide methods
+
+class Editor {
+}
 
 class Map {
     name
 }
 
-class City {
-    name
-    houseBlocks
-}
-
-class Position {
-    X
-    Y
-}
-
-class Size {
-    width
+class Size{
     length
+    width
+}
+class City {
+    numberOfHouseBlocks
+    name
+}
+class HouseBlock{
+    people
 }
 
-Map "1" - "*" City : contains
-City "1" - "1" Position : has
-Map "1" - "1" Size : has
+class Location{
+    positionX
+    positionY
+}
+
+Editor "1" -- "1*" Map : creates >
+Editor "1" --  "1*" City : add >
+Map "1" - "1" Size : has >
+Map "1" -- "*" City : contains >
+City "1" -- "1*" HouseBlock : contains >
+City "1" -- "1" Location : bears >
 
 @enduml
