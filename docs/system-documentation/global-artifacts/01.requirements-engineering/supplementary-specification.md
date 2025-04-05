@@ -6,11 +6,15 @@ _Specifies functionalities that:
 &nbsp; &nbsp; (i) are common across several US/UC;  
 &nbsp; &nbsp; (ii) are not related to US/UC, namely: Audit, Reporting and Security._
 
-(The system must authenticate users with a password containing seven alphanumeric characters, including three capital letters and two digits, as specified in the non-functional requirements. 
-Data persistence must be ensured using object serialization, allowing data recovery between successive runs.
-The simulator must automatically generate cargo at stations based on the cities and industries present in the railway network. 
+(Security:
+* "All those who wish to use the application must be authenticated with a password of seven alphanumeric characters, including three capital letters and two digits." 
+* The application ought to employ object serialization to guarantee the persistence of the data in two successive runs.
+
+
+Functionalities that are common across several US/UC:
+* The simulator must automatically generate cargo at stations based on the cities and industries present in the railway network. 
 Additionally, the system must provide statistical tools to analyze the railway network's performance, including its connectivity and efficiency.
-The simulator must provide tools to assess the railway network’s structure and performance.)
+* The simulator must provide tools to assess the railway network’s structure and performance.)
 
 
 ## Usability
@@ -19,11 +23,18 @@ _Evaluates the user interface. It has several subcategories,
 among them: error prevention; interface aesthetics and design; help and
 documentation; consistency and standards._
 
-(The user interface must follow usability principles, prioritizing user intent rather than complex UI mechanisms. 
-Error messages must follow a centralized error reporting approach, providing consistent notifications to users and facilitating issue resolution. 
-Interactive guidance, such as contextual hints and help features, must be available to assist users in navigating the system effectively. 
-Input methods must be structured to minimize user errors, providing clear validation feedback when incorrect data is entered. 
-The interface must maintain uniformity across all modules to ensure a predictable and intuitive interaction experience.)
+(Interface aesthetics and design:
+* The user interface must follow usability principles, prioritizing user intent rather than complex UI mechanisms.
+
+Error prevention:
+* Error messages must follow a centralized error reporting approach, providing consistent notifications to users and facilitating issue resolution. 
+
+Interface aesthetics and design:
+* Interactive guidance, such as contextual hints and help features, must be available to assist users in navigating the system effectively. 
+
+Consistency and standards:
+* Input methods must be structured to minimize user errors, providing clear validation feedback when incorrect data is entered. 
+* The interface must maintain uniformity across all modules to ensure a predictable and intuitive interaction experience.)
 
 ## Reliability
 
@@ -37,9 +48,7 @@ The system must maintain data persistence between successive runs using object s
 
 _Evaluates the performance requirements of the software, namely: response time, start-up time, recovery time, memory consumption, CPU usage, load capacity and application availability._
 
-(The system must be capable of managing railway network simulations efficiently. 
-The architecture must support scalability to accommodate a growing number of cities, industries, stations, and trains. 
-The system must be able to handle complex railway networks with multiple trains, stations, and industries without loss of functionality.)
+(TBD)
 
 ## Supportability
 
@@ -70,8 +79,11 @@ _Specifies or constraints the code or construction of a system such
 such as: mandatory standards/patterns, implementation languages,
 database integrity, resource limits, operating system._
 
-(The system must be implemented in Java.
-Coding standards such as CamelCase naming conventions must be followed.
+(implementation languages:
+* "The application must be developed in Java language."
+
+Mandatory standards/patterns:
+* Coding standards such as CamelCase naming conventions must be followed.
 The system must use object serialization to guarantee data persistence across system executions.
 Strict validation rules must be applied to ensure business logic consistency and data integrity.)
 
