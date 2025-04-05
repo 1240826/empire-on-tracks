@@ -19,8 +19,8 @@ class Map {
     name
 }
 class Size{
+    length
     width
-    height
 }
 
 class Industry {
@@ -91,12 +91,17 @@ class Cargo {
 class Locomotive {
     powerSource
     acceleration
+    cost
 }
 
 class Carriage{
     cargoType
     capacity
     }
+
+class List{
+detail
+}
 
 
 ' Ajustando as posições das classes
@@ -106,26 +111,27 @@ Editor "1" -- "1*" Scenario : create >
 Editor "1" -right- "1*" City : add >
 Editor "1" -- "1*" Industry : add >
 
-Player "1" --right- "1*" Station : buy >
-Player "1" -down- "1" Map : "add building" >
+Player "1" -right- "1*" Station : buy >
+Player "1" -down- "1" Map : place elements >
 Player "1" -- "1*" Trains : buy >
 Player "1" - "1*" RailLines : build >
-
+Player "1"---"*" StationUpgrade: buy >
+Player"1"---"1" List:view >
 
 Map "1" - "1" Size : has >
 Map "1" -- "1*" Industry : contain >
 Map "1" -- "1*" City : contain >
 Map "1" -- "1*" RailLines : contain >
 
-Industry "1*" -- "1*" PrimarySectorIndustries : could be >
-Industry "1*" -- "1*" TransformingIndustries : could be >
-Industry "*" -- "1*" MixedIndustries : could be >
+Industry "1*" -down- "1*" PrimarySectorIndustries : could be >
+Industry "1*" -down- "1*" TransformingIndustries : could be >
+Industry "*" -down- "1*" MixedIndustries : could be >
 Industry "1" - "1" Location : have >
 Industry "1*" -- "1*" Station : load/unload >
 Industry "1" -- "1*" Cargo : produces >
 
 Scenario "*" -- "1*" MixedIndustries : changes Class >
-Scenario "*" -left- "1*" Industry : changes Production >
+Scenario "*" -- "1*" Industry : changes Production >
 Scenario "*" - "1" Map : have >
 Scenario "*" - "1*" Trains : restrict >
 
@@ -138,12 +144,14 @@ Station "1" -left- "*" StationUpgrade : upgrade <
 Station "1*" -- "1*" Trains : Load/unload <
 Station "1*" --- "1*" City : Load/unload >
 Station "1" -- "1*" Cargo : assigned to <
+Station "*"--- "1"List: contain <
 
 Trains "1" -- "1*" RailLines : use >
 Trains "1" -- "1*" Routes : follow >
-
-Trains "1" -- "1" Locomotive : powered by >
+Trains "1" -- "1" Locomotive : composed of >
 Trains "1" -- "*" Carriage : composed of >
+Trains"*"--right"1" List: contain <
+
 
 Routes "1" -- "1*" RailLines : use >
 Routes "1" -- "2*" Station : connect >
