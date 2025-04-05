@@ -16,17 +16,22 @@ As a Player, I want to list all the stations to select one to see its details, i
 
 **From the client clarifications:**
 
-> **Question:** 
+> **Question:** What information should be visible directly in the list? Just the station name, or also other details like type, location, and operational status (active/inactive), etc.?
 >
-> **Answer:** 
+> **Answer:** name and a summary of available cargos to be collected and the ones that are demanded.
 
-> **Question:** 
+> **Question:** Besides the existing buildings and demand/supply cargo, are there any other details that should be shown when viewing a station's information? For example, location, capacity, or operational status?
 >
-> **Answer:**
+> **Answer:** available cargos to be collected and the ones that are demanded.
+
+> **Question:** When the user selects an existing station, does it automatically show all the associated info to that station or the user selects the station then has to select the required option ? eg: 'show details'.
+> 
+> **Answer:** That's a matter of UX/UI, each team can decide what works best.
+
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** At least one station must exist, and an error message should be shown in case it doesn't.
+* **AC1:** 
 * **AC2:** 
 * **AC3:** 
 
@@ -37,20 +42,17 @@ As a Player, I want to list all the stations to select one to see its details, i
 ### 1.5 Input and Output Data
 
 **Input Data:**
-selected station
+
 * Typed data:
-    * a reference
-    * a designation 
-    * an informal description
-    * a technical description
-    * an estimated duration
-    * an estimated cost
+  
 	
 * Selected data:
-    * selected station and detail type
+    * station
+    * type of detail
 
 **Output Data:**
-
+* list of stations
+* list of types of details
 * station details
 * (In)Success of the operation
 
