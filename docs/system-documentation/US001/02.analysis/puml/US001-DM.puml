@@ -20,7 +20,7 @@ class Size{
 }
 
 ' --- Relacionamentos ---
-Editor "1" -down- "1*" Map : creates >
+Editor "1" -down- "1*" Map : create >
 Map "1" - "1" Size : has >
 
 @enduml

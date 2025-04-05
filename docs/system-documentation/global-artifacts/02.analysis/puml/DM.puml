@@ -12,7 +12,7 @@ class Editor {
 }
 
 class Player {
-money
+budget
 }
 
 class Map {
@@ -65,16 +65,13 @@ class Station {
 }
 
 class Trains{
-     type
-     speed
-     cargo
-     cost
+   plateNumber
 }
 class RailLines{
 cost
 type
 }
-class StationUpgrades{
+class StationUpgrade{
       structure
 }
 class Routes{
@@ -91,6 +88,16 @@ class Cargo {
     quantity
     limit
 }
+class Locomotive {
+    powerSource
+    acceleration
+}
+
+class Carriage{
+    cargoType
+    capacity
+    }
+
 
 ' Ajustando as posições das classes
 
@@ -100,9 +107,10 @@ Editor "1" -right- "1*" City : add >
 Editor "1" -- "1*" Industry : add >
 
 Player "1" --right- "1*" Station : buy >
-Player "1" -down- "1" Map : "add build" >
+Player "1" -down- "1" Map : "add building" >
 Player "1" -- "1*" Trains : buy >
 Player "1" - "1*" RailLines : build >
+
 
 Map "1" - "1" Size : has >
 Map "1" -- "1*" Industry : contain >
@@ -126,13 +134,16 @@ MixedIndustries "*" -down- "*" TransformingIndustries : transform >
 
 Station "1" -- "1" Location : has >
 Station "1" - "1" RailLines : connect <
-Station "1" -right- "*" StationUpgrades : upgrade <
+Station "1" -left- "*" StationUpgrade : upgrade <
 Station "1*" -- "1*" Trains : Load/unload <
 Station "1*" --- "1*" City : Load/unload >
 Station "1" -- "1*" Cargo : assigned to <
 
 Trains "1" -- "1*" RailLines : use >
 Trains "1" -- "1*" Routes : follow >
+
+Trains "1" -- "1" Locomotive : powered by >
+Trains "1" -- "*" Carriage : composed of >
 
 Routes "1" -- "1*" RailLines : use >
 Routes "1" -- "2*" Station : connect >
