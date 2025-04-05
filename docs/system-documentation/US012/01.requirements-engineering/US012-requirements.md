@@ -1,4 +1,4 @@
-# US012 - US012 - Run a Cargo Simulation
+# US012 - US012 - Operate a Simulation
 
 ## 1. Requirements Engineering
 

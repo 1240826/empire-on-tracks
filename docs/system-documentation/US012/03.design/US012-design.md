@@ -1,5 +1,4 @@
-# US012 - Run a Cargo Simulation
-
+# US012 - Operate a Simulation
 ## 3. Design
 
 ### 3.1. Rationale
