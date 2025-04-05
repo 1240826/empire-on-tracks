@@ -29,10 +29,10 @@ class Station {
     cost
 }
 
-Editor "1" -down- "1*" Map : creates >
+Editor "1" -down- "1*" Map : create >
 
 Player "1" --right- "1*" Station : buy >
 
-Player "1" -up- "1" Map : "add builds" >
+Player "1" -up- "1" Map : "place elements" >
 
 @enduml
