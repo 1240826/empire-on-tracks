@@ -6,15 +6,26 @@ _Specifies functionalities that:
 &nbsp; &nbsp; (i) are common across several US/UC;  
 &nbsp; &nbsp; (ii) are not related to US/UC, namely: Audit, Reporting and Security._
 
-(Security:
-* "All those who wish to use the application must be authenticated with a password of seven alphanumeric characters, including three capital letters and two digits." 
-* The application ought to employ object serialization to guarantee the persistence of the data in two successive runs.
+* (i)
+  * "Two types of tools will be considered to manage the railway network: statistical tools to assess the network performance and tools to analyze the network connectivity and the quality of the services provided."
+  * "Two tools will have to be developed: a map and scenario editor, and a simulation tool."
+  * "In the context of the simulator, functionalities will be created that allow statistical analysis of the functioning of the railway network, including its multiple components, as well as tools that explore the topological aspects of the network." 
+  * "The Map Editor allows you to create rectangular maps and place static elements on the map. Elements can be cities or industries."
+
+    
+* (ii)
+
+  *  **Audit**
+     * N/A
 
 
-Functionalities that are common across several US/UC:
-* The simulator must automatically generate cargo at stations based on the cities and industries present in the railway network. 
-Additionally, the system must provide statistical tools to analyze the railway network's performance, including its connectivity and efficiency.
-* The simulator must provide tools to assess the railway network’s structure and performance.)
+  *  **Reporting**
+      * "The JaCoCo plugin should be used to generate the coverage report."
+
+
+  *  **Security**
+     * "All those who wish to use the application must be authenticated with a password of seven alphanumeric characters, including three capital letters and two digits." 
+
 
 
 ## Usability
@@ -23,32 +34,55 @@ _Evaluates the user interface. It has several subcategories,
 among them: error prevention; interface aesthetics and design; help and
 documentation; consistency and standards._
 
-(Interface aesthetics and design:
-* The user interface must follow usability principles, prioritizing user intent rather than complex UI mechanisms.
+* **Error prevention**
+    * TBD
 
-Error prevention:
-* Error messages must follow a centralized error reporting approach, providing consistent notifications to users and facilitating issue resolution. 
 
-Interface aesthetics and design:
-* Interactive guidance, such as contextual hints and help features, must be available to assist users in navigating the system effectively. 
+* **Interface aesthetics and design**
+   * TBD
 
-Consistency and standards:
-* Input methods must be structured to minimize user errors, providing clear validation feedback when incorrect data is entered. 
-* The interface must maintain uniformity across all modules to ensure a predictable and intuitive interaction experience.)
+
+* **Interface aesthetics and design**
+   * TBD 
+
+
+* **Help and documentation**
+   * "The application documentation must be in English."
+
+
+* **Consistency and standards**
+    * TBD
 
 ## Reliability
 
 _Refers to the integrity, compliance and interoperability of the software. The requirements to be considered are: frequency and severity of failure, possibility of recovery, possibility of prediction, accuracy, average time between failures._
 
-(In case of system failure, data integrity must be maintained using object serialization. 
-The simulator must execute train routes, cargo movement, and station operations based on predefined operational rules.
-The system must maintain data persistence between successive runs using object serialization.)
+* **Frequency and severity of failure**
+    * TBD
+  
+
+* **Possibility of recovery**
+    * TBD
+  
+
+* **Possibility of prediction** 
+    * TBD
+  
+
+* **Accuracy** 
+    *  "Validation of business rules must be respected when recording and updating data."
+  
+
+* **Average time between failures**
+    * TBD
+
+
 
 ## Performance
 
 _Evaluates the performance requirements of the software, namely: response time, start-up time, recovery time, memory consumption, CPU usage, load capacity and application availability._
 
-(TBD)
+  * TBD
 
 ## Supportability
 
@@ -56,11 +90,34 @@ _The supportability requirements gathers several characteristics, such as:
 testability, adaptability, maintainability, compatibility,
 configurability, installability, scalability and more._
 
-(The system must be developed in Java to ensure cross-platform compatibility. 
-The codebase must follow Object-Oriented programming principles to facilitate maintainability and scalability. 
-Javadoc documentation must be provided for all major classes and methods. 
-The architecture must be modular to facilitate the addition of new industries, train types, and functionalities with minimal modifications. 
-Unit tests must be implemented using JUnit 5, and test coverage analysis must be performed using JaCoCo.)
+* **Testability**
+   * "The development team must implement unit tests for all methods, except for the methods that implement Input/Output operations. Unit tests should be implemented using the JUnit 5 framework."
+
+
+*  **Adaptability**
+   * TBD
+
+
+* **Maintainability**
+  * "To increase the solution maintainability and respect good software development practices, the implementation must follow a Test-Driven Development (TDD) approach."
+  * "The class structure must be designed to allow easy maintenance and the addition of new features following the best Object-Oriented (OO) practices."
+
+
+* **Compatibility**
+   * TBD
+  
+
+* **Configurability** 
+    * TBD
+
+
+* **Installability**
+     *  TBD
+
+
+* **Scalability and more**
+     *  TBD
+
 
 ## +
 
@@ -68,39 +125,66 @@ Unit tests must be implemented using JUnit 5, and test coverage analysis must be
 
 _Specifies or constraints the system design process. Examples may include: programming languages, software process, mandatory standards/patterns, use of development tools, class library, etc._
 
-(The project must follow an iterative and incremental development approach based on SCRUM.
-The architecture must incorporate UML modeling as part of the system design process .
-All diagrams and graphical elements must be stored in SVG format.
-The development must follow Test-Driven Development (TDD) principles to ensure software quality and maintainability.)
+* **Programming languages**
+   * "The application must be developed in Java language."
+   * "The software solution to be developed must be composed of a set of Java applications that must meet the requirements."
+
+
+* **Software process**
+  * "Therefore, the agile SCRUM approach must be used to manage teamwork in each four-week SPRINT."
+
+
+* **Mandatory standards/patterns**
+    * "During system development, the team must: (i) adopt best practices for identifying requirements and for OO software analysis and design;"
+    * "All the images/figures produced during the software development process should be recorded in SVG format."
+
+
+* **Use of development tools**
+    * "(iii) use Javadoc to generate useful documentation for Java code."
+
+
+* **Class library, etc**
+    * TBD
+
+
 
 ### Implementation Constraints
 
-_Specifies or constraints the code or construction of a system such
-such as: mandatory standards/patterns, implementation languages,
+_Specifies or constraints the code or construction of a system such as: mandatory standards/patterns, implementation languages,
 database integrity, resource limits, operating system._
 
-(implementation languages:
-* "The application must be developed in Java language."
+* **Mandatory standards/patterns**
+  * "(ii) adopt recognized coding standards (e.g., CamelCase);"
+  * "The application ought to employ object serialization to guarantee the persistence of the data in two successive runs."
 
-Mandatory standards/patterns:
-* Coding standards such as CamelCase naming conventions must be followed.
-The system must use object serialization to guarantee data persistence across system executions.
-Strict validation rules must be applied to ensure business logic consistency and data integrity.)
+
+*  **Implementation languages**
+   * TBD
+   
+
+* **Database integrity** 
+   * TBD
+  
+
+* **Resource limits** 
+   * TBD
+  
+
+* **Operating system**
+  * TBD
+
+    
 
 ### Interface Constraints
 
 _Specifies or constraints the features inherent to the interaction of the
 system being developed with other external systems._
 
-(The system must enable users to select stations and locomotives from a predefined list. 
-The simulator must allow users to create and oversee the railway network. 
-Users must be able to start, pause, and resume simulations dynamically. 
-The interface must present train movements and cargo transactions in real time, facilitating effective network monitoring.)
+* TBD
+
 
 ### Physical Constraints
 
 _Specifies a limitation or physical requirement regarding the hardware used to house the system, as for example: material, shape, size or weight._
 
-(The system must run on any machine capable of executing Java applications.
-No specialized hardware should be required to run the software.
-The graphical interface must be adaptable to different screen configurations to maintain usability.)
+* TBD
