@@ -33,12 +33,17 @@ As an Editor, I want to create a map with a size and a name.
 > **Question:** Can the names of scenarios and maps be the same?
 >
 > **Answer:** Yes, they are different objects.
-> 
+
+> **Question:** O tamanho do mapa pode ser um número real ou precisa de ser um número inteiro?
+>
+> **Answer:** The map is a set of cells, similar to a spreadsheet. The coordinates are integers (row and column, or alternatively X and Y)
+
 
 ### 1.3. Acceptance Criteria
 
 *  **AC1**: The maps dimensions are positive integers
 *  **AC2**: Map name should be a valid file name.
+*  **AC3**: The name of the map must be unique in the system.
 
 ### 1.4. Found out Dependencies
 

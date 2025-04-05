@@ -32,6 +32,7 @@ class Station {
 class Cargo {
     type
     quantity
+    limit
 }
 
 class RailLines{

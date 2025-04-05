@@ -89,6 +89,7 @@ isRunning
 class Cargo {
     type
     quantity
+    limit
 }
 
 ' Ajustando as posições das classes

@@ -27,6 +27,11 @@ As an Editor, I want to add an industry in a position XY of the selected map.
 >
 > **Answer:** no.
 
+> **Question:**
+As an editor, when adding a new factory, do I need to check for overbuild?
+>
+> **Answer:** yes.
+
 
 ### 1.3. Acceptance Criteria
 
