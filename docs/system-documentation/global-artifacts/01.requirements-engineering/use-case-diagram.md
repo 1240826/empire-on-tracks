@@ -20,7 +20,7 @@ However, be aware, this is a pedagogical simplification. On further projects and
 | US004  | [Create a Scenario](../../US004/US004-README.md)         |
 | US005  | [Build a Station](../../US005/US005-README.md)           |
 | US006  | [Upgrade a Station](../../US006/US006-README.md)         |
-| US007  | [List all Stations](../../US007/US007-README.md)         |
+| US007  | [List all the Stations](../../US007/US007-README.md)     |
 | US008  | [Build a Railway Line](../../US008/US008-README.md)      |
 | US009  | [Buy a Locomotive](../../US009/US009-README.md)          |
 | US010  | [Assign a Train to a Route](../../US010/US010-README.md) |
