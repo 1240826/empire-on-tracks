@@ -94,20 +94,20 @@ class Cargo {
 
 ' Ajustando as posições das classes
 
-Editor "1" -down- "1*" Map : creates >
-Editor "1" -- "1*" Scenario : creates >
+Editor "1" -down- "1*" Map : create >
+Editor "1" -- "1*" Scenario : create >
 Editor "1" -right- "1*" City : add >
 Editor "1" -- "1*" Industry : add >
 
 Player "1" --right- "1*" Station : buy >
-Player "1" -down- "1" Map : "add builds" >
+Player "1" -down- "1" Map : "add build" >
 Player "1" -- "1*" Trains : buy >
 Player "1" - "1*" RailLines : build >
 
 Map "1" - "1" Size : has >
-Map "1" -- "1*" Industry : contains >
-Map "1" -- "1*" City : contains >
-Map "1" -- "1*" RailLines : contains >
+Map "1" -- "1*" Industry : contain >
+Map "1" -- "1*" City : contain >
+Map "1" -- "1*" RailLines : contain >
 
 Industry "1*" -- "1*" PrimarySectorIndustries : could be >
 Industry "1*" -- "1*" TransformingIndustries : could be >
@@ -121,8 +121,8 @@ Scenario "*" -left- "1*" Industry : changes Production >
 Scenario "*" - "1" Map : have >
 Scenario "*" - "1*" Trains : restrict >
 
-MixedIndustries "*" -down- "*" PrimarySectorIndustries : transforms >
-MixedIndustries "*" -down- "*" TransformingIndustries : transforms >
+MixedIndustries "*" -down- "*" PrimarySectorIndustries : transform >
+MixedIndustries "*" -down- "*" TransformingIndustries : transform >
 
 Station "1" -- "1" Location : has >
 Station "1" - "1" RailLines : connect <
@@ -137,7 +137,7 @@ Trains "1" -- "1*" Routes : follow >
 Routes "1" -- "1*" RailLines : use >
 Routes "1" -- "2*" Station : connect >
 
-City -- HouseBlocks : contains >
+City -- HouseBlocks : contain >
 City "1" -- "1" Location : has >
 
 Simulator "1" -- "1*" Industry : start/pause >
