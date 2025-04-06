@@ -19,7 +19,7 @@ class Map {
     name
 }
 class Player {
-money
+budget
 }
 
 class Station {
@@ -33,15 +33,15 @@ class StationUpgrade{
       structure
 }
 
-Editor "1" -down- "1*" Map : create >
+Editor "1" -down- "1*" Map : creates >
 
-Player "1" --right- "1*" Station : buy >
+Player "1" --right- "1*" Station : buys >
 
-Player "1" -up- "1" Map : "place elements " >
+Player "1" -up- "1" Map : "places elements " >
 
-Player "1"---"*" StationUpgrade: buy >
+Player "1"---"*" StationUpgrade: buys >
 
-Station "1" -left- "*" StationUpgrade : upgrade <
+Station "1" -left- "*" StationUpgrade : upgrades <
 
 
 
