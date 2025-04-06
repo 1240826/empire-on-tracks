@@ -59,6 +59,7 @@ Exemplo: Escolhe correr isoladamente a simulação no mapa da cidade de Lisboa m
 ### 1.3. Acceptance Criteria
 
 * **AC1:** This simulator should provide options for start/pause.
+*  **AC2:** Limit to cargo storage
 
 ### 1.4. Found out Dependencies
 
