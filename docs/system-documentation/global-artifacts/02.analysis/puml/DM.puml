@@ -157,7 +157,7 @@ Trains"*"--right"1" List: contain <
 Routes "1" -- "1*" RailLines : use >
 Routes "1" -- "2*" Station : connect >
 
-City -- HouseBlocks : contain >
+City "1"--"1*" HouseBlocks : contain >
 City "1" -- "1" Location : has >
 
 Simulator "1" -- "1*" Industry : start/pause >

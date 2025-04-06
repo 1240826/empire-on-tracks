@@ -34,6 +34,9 @@ class Cargo {
     quantity
     limit
 }
+class HouseBlocks{
+    people
+}
 
 class RailLines{
 cost
@@ -76,11 +79,13 @@ Station "1" - "1*" Cargo : assigned to <
 Station "1" -- "1" Location : has >
 Station "1" -left "1" RailLines : connect <
 Station "1*" -- "1*" Trains : Load/unload <
-Station "1*" -- "1*" City : Load/unload >
+
+Station "1*" -- "1*" HouseBlocks : Load/unload >
 
 Trains "1" -- "1*" Routes : follow >
 
 Routes "1" -- "1*" RailLines : use >
 Routes "1" -- "2*" Station : connect >
 City "1" -- "1" Location : has >
+City "1"-left"1*" HouseBlocks : contain >
 @enduml
