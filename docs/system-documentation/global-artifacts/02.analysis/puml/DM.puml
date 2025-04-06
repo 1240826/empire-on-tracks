@@ -7,7 +7,6 @@ hide circle
 hide methods
 
 
-
 class Editor {
 }
 
@@ -26,14 +25,14 @@ class Size{
 class Industry {
     production
 }
-class PrimarySectorIndustries{
+class PrimarySectorIndustry{
     type
 }
-class TransformingIndustries{
+class TransformingIndustry{
     type
     demand
 }
-class MixedIndustries{
+class MixedIndustry{
     type
 }
 
@@ -41,15 +40,18 @@ class City {
     numberOfHouseBlocks
     name
 }
-class HouseBlocks{
+class HouseBlock{
     people
 }
 
 class Scenario {
-    year
     behaviorOfMixedIndustries
-    availableTrains
-    changeProduction
+    locomotionType
+    portCargoBehavior
+}
+class Period {
+    start
+    end
 }
 
 class Location{
@@ -64,18 +66,18 @@ class Station {
     cost
 }
 
-class Trains{
+class Train{
    plateNumber
    name
 }
-class RailLines{
+class RailLine{
 cost
 type
 }
 class StationUpgrade{
       structure
 }
-class Routes{
+class Route{
     starts
     ends
 }
@@ -107,58 +109,59 @@ detail
 
 ' Ajustando as posições das classes
 
-Editor "1" -down- "1*" Map : create >
-Editor "1" -- "1*" Scenario : create >
-Editor "1" -right- "1*" City : add >
-Editor "1" -- "1*" Industry : add >
+Editor "1" -down- "1*" Map : creates >
+Editor "1" -- "*" Scenario : creates >
+Editor "1" -right- "*" City : adds >
+Editor "1" -- "*" Industry : adds >
 
-Player "1" -right- "1*" Station : buy >
-Player "1" -down- "1" Map : place elements >
-Player "1" -- "1*" Trains : buy >
-Player "1" - "1*" RailLines : build >
-Player "1"---"*" StationUpgrade: buy >
-Player"1"---"1" List:view >
+Player "1" -right- "1*" Station : buys >
+Player "1" -down- "1" Map : places elements >
+Player "1" -- "1*" Train : buys >
+Player "1" - "1*" RailLine : builds >
+Player "1"---"*" StationUpgrade: buys >
+Player"1"---"1" List:views >
 
 Map "1" - "1" Size : has >
-Map "1" -- "1*" Industry : contain >
-Map "1" -- "1*" City : contain >
-Map "1" -- "1*" RailLines : contain >
+Map "1" -- "*" Industry : contains >
+Map "1" -- "*" City : contains >
+Map "1" -- "*" RailLine : contains >
 
-Industry "1*" -down- "1*" PrimarySectorIndustries : could be >
-Industry "1*" -down- "1*" TransformingIndustries : could be >
-Industry "*" -down- "1*" MixedIndustries : could be >
-Industry "1" - "1" Location : have >
+Industry "1*" -down- "1*" PrimarySectorIndustry : can be >
+Industry "1*" -down- "1*" TransformingIndustry : can be >
+Industry "*" -down- "1*" MixedIndustry : can be >
+Industry "1" - "1" Location : has >
 Industry "1*" -- "1*" Station : load/unload >
 Industry "1" -- "1*" Cargo : produces >
 
-Scenario "*" -- "1*" MixedIndustries : changes Class >
+Scenario "1" -- "1" Period : has >
+Scenario "*" -- "1*" MixedIndustry : changes Class >
 Scenario "*" -- "1*" Industry : changes Production >
-Scenario "*" - "1" Map : have >
-Scenario "*" - "1*" Trains : restrict >
+Scenario "*" - "1" Map : uses >
+Scenario "*" - "1*" Train : restricts >
 
-MixedIndustries "*" -down- "*" PrimarySectorIndustries : transform >
-MixedIndustries "*" -down- "*" TransformingIndustries : transform >
+MixedIndustry "*" -down- "*" PrimarySectorIndustry : transforms >
+MixedIndustry "*" -down- "*" TransformingIndustry : transforms >
 
 Station "1" -- "1" Location : has >
-Station "1" - "1" RailLines : connect <
-Station "1" -left- "*" StationUpgrade : upgrade <
-Station "1*" -- "1*" Trains : Load/unload <
-Station "1*" -- "1*" HouseBlocks : Load/unload >
+Station "1" - "1" RailLine : connects <
+Station "1" -left- "*" StationUpgrade : upgrades <
+Station "1*" -- "1*" Train : Load/unload <
+Station "1*" --- "1*" City : Load/unload >
 Station "1" -- "1*" Cargo : assigned to <
-Station "*"--- "1"List: contain <
+Station "*"--- "1"List: contains <
 
-Trains "1" -- "1*" RailLines : use >
-Trains "1" -- "1*" Routes : follow >
-Trains "1" -- "1" Locomotive : composed of >
-Trains "1" -- "*" Carriage : composed of >
-Trains"*"--right"1" List: contain <
+Train "1" -- "1*" RailLine : uses >
+Train "1" -- "1*" Route : follows >
+Train "1" -- "1" Locomotive : composed of >
+Train "1" -- "*" Carriage : composed of >
+Train"*"--right"1" List: contains <
 
 
-Routes "1" -- "1*" RailLines : use >
-Routes "1" -- "2*" Station : connect >
+Route "1" -- "1*" RailLine : use >
+Route "1" -- "2*" Station : connect >
 
-City "1"--"1*" HouseBlocks : contain >
-City "1" -- "1" Location : has >
+City "1" -- "1*" HouseBlock : contains >
+City "1" -- "1" Location : bears >
 
 Simulator "1" -- "1*" Industry : start/pause >
 
