@@ -21,9 +21,9 @@ As a Player, I want to list all trains.
 
 **From the client clarifications:**
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** On these User Story i want to list all the trains available on the game to buy, or i want to list all the trains that i had already bought?
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** The ones you bought.
 
 ### 1.3. Acceptance Criteria
 
@@ -45,8 +45,7 @@ As a Player, I want to list all trains.
     * none
 	
 * Selected data:
-    * a locomotive type
-    * a train 
+    * request to view the list of purchased trains
 
 **Output Data:**
 
@@ -62,4 +61,4 @@ As a Player, I want to list all trains.
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* NA

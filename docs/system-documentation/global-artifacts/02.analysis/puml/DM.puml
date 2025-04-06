@@ -69,6 +69,7 @@ class Station {
 
 class Train{
    plateNumber
+   name
 }
 class RailLine{
 cost
