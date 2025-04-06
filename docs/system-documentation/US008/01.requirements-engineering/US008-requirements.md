@@ -31,8 +31,7 @@ As a Player, I want to build a railway line between two stations.
 ### 1.3. Acceptance Criteria
 
 * **AC1:**  The player should choose the stations from a list of registered stations.
-* **AC2:** 
-* **AC3:**
+
 
 ### 1.4. Found out Dependencies
 
@@ -53,8 +52,9 @@ As a Player, I want to build a railway line between two stations.
 
 * list of types of line
 * topological representation of the railway line
-* (In)Success of the operation
 * list of registered stations
+* (In)Success of the operation
+
 
 ### 1.6. System Sequence Diagram (SSD)
 
@@ -64,4 +64,4 @@ As a Player, I want to build a railway line between two stations.
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* N/A

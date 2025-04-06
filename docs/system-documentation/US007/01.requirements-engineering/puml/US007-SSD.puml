@@ -13,19 +13,13 @@ activate Employee
     Employee -> System : Ask to list all the stations
     activate System
 
-        System --> Employee : shows list of all the stations and asks to select one
+        System --> Employee : shows list of all the stations and asks to select one to see its details
     deactivate System
 
     Employee -> System : selects a station
     activate System
 
-        System --> Employee : Asks to select type of details (i.e. upgrades, buildings...)
-    deactivate System
-
-    Employee -> System : selects detail type
-    activate System
-
-        System --> Employee : shows detail type
+        System --> Employee : Shows station details
     deactivate System
 
     Employee -> System : confirms data

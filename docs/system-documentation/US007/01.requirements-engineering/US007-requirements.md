@@ -31,9 +31,8 @@ As a Player, I want to list all the stations to select one to see its details, i
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** 
-* **AC2:** 
-* **AC3:** 
+* **AC:** N/A
+
 
 ### 1.4. Found out Dependencies
 
@@ -48,11 +47,9 @@ As a Player, I want to list all the stations to select one to see its details, i
 	
 * Selected data:
     * station
-    * type of detail
 
 **Output Data:**
 * list of stations
-* list of types of details
 * station details
 * (In)Success of the operation
 
@@ -64,4 +61,4 @@ As a Player, I want to list all the stations to select one to see its details, i
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* N/A
