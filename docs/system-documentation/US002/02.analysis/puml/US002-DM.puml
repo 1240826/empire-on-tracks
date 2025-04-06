@@ -27,15 +27,15 @@ class Location{
 class Industry {
     production
 }
-class PrimarySectorIndustries{
+class PrimarySectorIndustry{
     type
 
 }
-class TransformingIndustries{
+class TransformingIndustry{
     type
     demand
 }
-class  MixedIndustries{
+class  MixedIndustry{
     type
 }
 
@@ -45,9 +45,9 @@ Editor "1" -- "1*" Industry : add >
 Map "1" - "1" Size : has >
 
 
-Industry "1*" -- "1*" PrimarySectorIndustries : could be >
-Industry "1*" -- "1*" TransformingIndustries : could be >
-Industry "1*" -- "1*" MixedIndustries : could be >
+Industry "1*" -- "1*" PrimarySectorIndustry : could be >
+Industry "1*" -- "1*" TransformingIndustry : could be >
+Industry "1*" -- "1*" MixedIndustry : could be >
 Industry "1" - "1" Location : have >
 
 @enduml
