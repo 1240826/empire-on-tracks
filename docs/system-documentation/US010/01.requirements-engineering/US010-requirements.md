@@ -18,14 +18,22 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 **From the client clarifications:**
 
-> **Question:** 
+> **Question:** Can multiple cargo types be assigned to the same train?
 >
-> **Answer:** 
+> **Answer:** Yes.
+
+> **Question:** Does a route have a limit of stations that can be assigned?
+>
+> **Answer:** No.
+
+> **Question:** A route is a list of stations where the train passes. If there is many stations but no railway lines, are we able to create a route?
+>
+> **Answer:** If there is no path between any pair of consecutive points of the route, the player should be warned, then the player can opt between cancel/proceed.
 
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
+NA
 
 ### 1.4. Found out Dependencies
 
@@ -61,4 +69,4 @@ As a Player, I want to assign a selected train to a route with a valid station a
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+NA

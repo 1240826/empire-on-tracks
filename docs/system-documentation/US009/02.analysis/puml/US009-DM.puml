@@ -16,12 +16,14 @@ class Player {
 
 class Locomotive {
     powerSource
-    acquisitionCost
+    acceleration
+    cost
 }
 
 class Scenario {
-    currentDate
-    availableLocomotives
+    behaviorOfMixedIndustries
+    locomotiveType
+    portCargoBehavior
 }
 
 Player "1" -- "*" Locomotive : buys >

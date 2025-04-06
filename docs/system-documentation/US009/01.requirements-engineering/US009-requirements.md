@@ -22,7 +22,7 @@ As a Player, I want to buy a locomotive.
 
 > **Question:** Is there a limit to how many trains a player can own?
 >
-> **Answer:** There is no physical limit.
+> **Answer:** There is no physical limit, just the available memory.
 
 > **Question:** Can a player buy the same train multiple times?
 >
@@ -61,7 +61,8 @@ As a Player, I want to buy a locomotive.
     * none
 	
 * Selected data:
-    * a locomotive type (from available options in the scenario/current date) 
+    * a locomotive (from available options in the scenario/current date) 
+
 
 **Output Data:**
 
@@ -77,4 +78,4 @@ As a Player, I want to buy a locomotive.
 
 ### 1.7 Other Relevant Remarks
 
-* The player must have sufficient funds to purchase the train.
+* The player must have sufficient funds to purchase the locomotive.

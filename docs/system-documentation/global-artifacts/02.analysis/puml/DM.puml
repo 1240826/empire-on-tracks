@@ -46,7 +46,7 @@ class HouseBlock{
 
 class Scenario {
     behaviorOfMixedIndustries
-    locomotionType
+    locomotiveType
     portCargoBehavior
 }
 class Period {

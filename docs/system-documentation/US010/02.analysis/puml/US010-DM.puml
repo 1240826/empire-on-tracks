@@ -15,11 +15,13 @@ class Player {
 
 class Train {
     plateNumber
+    name
 }
 
 class Locomotive {
     powerSource
     acceleration
+    cost
 }
 
 class Carriage {
@@ -34,7 +36,9 @@ class Route {
 
 class Station {
     name
+    range
     type
+    cost
 }
 
 class Cargo {
