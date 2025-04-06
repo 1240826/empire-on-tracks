@@ -1,4 +1,4 @@
-# US012 - US012 - Operate a Simulation
+# US012 - Operate a Simulation
 
 ## 1. Requirements Engineering
 
