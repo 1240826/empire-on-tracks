@@ -19,22 +19,16 @@ activate Player
     Player -> System : selects a train
     activate System
 
-        System --> Player : shows list of available stations connected by railway lines
+        System --> Player : shows list of all stations and respective cargoes
     deactivate System
 
     Player -> System : selects stations for the route
     activate System
 
-        System --> Player : shows available cargoes at the selected stations
+        System --> Player : asks for confirmation
     deactivate System
 
-    Player -> System : selects cargoes to be picked up
-    activate System
-
-        System --> Player : shows all selections and requests confirmation
-    deactivate System
-
-    Player -> System : confirms selections
+    Player -> System : confirms route
     activate System
 
         System --> Player : displays operation success message

@@ -4,7 +4,7 @@
 
 ### 1.1. User Story Description
 
-As a Player, I want to assign a selected train to a route with a valid station and the respective list of cargoes to be picked up.
+As a Player, I want to assign a selected train to a route with a valid station and the respective list of cargoes to be picked up in each station.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -51,8 +51,8 @@ NA
 	
 * Selected data:
     * a train (from owned trains)
-    * a route
-    * a cargo to be picked up
+    * stations for route
+
 
 **Output Data:**
 

@@ -44,14 +44,15 @@ class Station {
 class Cargo {
     type
     quantity
+    limit
 }
 
 Player "1" -- "*" Train : owns >
-Train "1" -- "1" Route : assigned to >
-Train "1" -- "1" Locomotive : powered by >
-Train "1" -- "*" Carriage : composed of >
+Train "1" -- "1" Route : is assigned to >
+Train "1" -- "1" Locomotive : is composed of >
+Train "1" -- "*" Carriage : is composed of >
 Route "1" -- "2*" Station : connects >
-Station "1" -- "*" Cargo : assigned to >
+Station "1" -- "*" Cargo : is assigned to <
 Carriage "*" -- "1" Cargo : transports >
 
 @enduml

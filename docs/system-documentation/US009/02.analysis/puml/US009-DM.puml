@@ -27,6 +27,6 @@ class Scenario {
 }
 
 Player "1" -- "*" Locomotive : buys >
-Scenario "1" -- "*" Locomotive : restricts availability >
+Scenario "*" -- "1*" Locomotive : restricts >
 
 @enduml
