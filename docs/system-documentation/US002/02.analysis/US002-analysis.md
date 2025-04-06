@@ -1,4 +1,4 @@
-# US006 - Create a Task 
+# US002 - Add an industry 
 
 ## 2. Analysis
 
