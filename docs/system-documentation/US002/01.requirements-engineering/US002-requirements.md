@@ -47,8 +47,9 @@ As an editor, when adding a new factory, do I need to check for overbuild?
 **Input Data:**
 
 * Typed data:
-    * cordenada X
-    * cordenada Y
+  * positionX
+  * positionY
+
 
 	
 * Selected data:
