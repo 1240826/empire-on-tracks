@@ -14,17 +14,20 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 * Player builds Station
 * Player builds RailLine
-* Player buys Locomotives
-* Player buys Station
+* Player buys Locomotive
+* Player assigns Train to Route
+* Player upgrades Station
+
 
 ---
 
 **Transaction Line Items**
 
 
-* Locomotive Purchase
+* Locomotive purchase
 * RailLine segment built
-* Station Purchase 
+* Station built 
+* Station Upgrade purchase
 
 ---
 
@@ -33,13 +36,16 @@ To identify domain conceptual classes, start by making a list of candidate conce
 * Locomotive (as product)
 * RailLine (as infrastructure service)
 * Station (as infrastructure service)
+* Station Upgrade (as service/product)
+* Train (with Locomotive and Carriages as products)
 
 ---
 
 **Transaction Records**
 
-* Purchase log (e.g., Locomotives bought by Player, Stations bought by Player)
+* Purchase log (e.g., Locomotive bought by Player)
 * Construction log (Stations and RailLines built)
+* Train assignments (Trains assigned to Route)
 
 ---
 
@@ -64,13 +70,16 @@ To identify domain conceptual classes, start by making a list of candidate conce
 * Scenario definition/change
 * Industry production change
 * Station upgrade
+* Train assignment to Route
 
 ---
 
 **Physical Objects**
 
 * Station
-* Train / Locomotive
+* Train
+* Locomotive
+* Carriage
 * RailLine
 * Industry
 * House Block
@@ -81,14 +90,20 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 * Map (Size, Name)
 * Station (Name, Building, Upgrades)
-* Train (Type, Capabilities, Cost, PlateNumber)
+* Train (Name, PlateNumber)
+* Locomotive (PowerSource, Acceleration, Cost)
+* Carriage (CargoType, Capacity)
 * RailLine (Cost, Type)
+* Cargo (Type, Quantity, Limit)
+* Location (PositionX, PositionY)
 
 ---
 
 **Catalogs**
 
 * List of Available Locomotives
+* List of (Owned) Trains
+* List of (Built) Stations
 * Scenario parameters (e.g., Locomotion Types, Port Behavior)
 
 ---
@@ -97,6 +112,7 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 * City (contains House Blocks)
 * Map (contains Cities, Industries, RailLines, Stations)
+* List (contains Available Locomotives, Trains, Stations)
 
 
 ---
@@ -105,6 +121,7 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 * House Blocks (within City)
 * Industries / Cities / Stations (within Map)
+* Available Locomotives / Trains / Stations (within List)
 
 ---
 
@@ -158,32 +175,43 @@ An association is a relationship between instances of objects that indicates a r
 - etc.
 
 
-
-| Concept (A)       |      Association           |                                Concept (B)                                |
-|------------------|:--------------------------:|:-------------------------------------------------------------------------:|
-| Editor           | create / add               | Map, Industry, City, Scenario                                             |
-| Map              | has / contains             | Size, Name, Industry, City, RailLines                                     |
-| Industry         | placed                     | Position on Map                                                           |
-| Industry         | could be                   | PrimarySectorIndustries, TransformingIndustries, MixedIndustries         |
-| Industry         | has                        | Location                                                                  |
-| Industry         | load/unload                | Station                                                                   |
-| Industry         | produces                   | Cargo                                                                     |
-| City             | has / contains             | Name, Location, House Blocks                                              |
-| House Blocks     | are assigned               | Manually / Automatically                                                  |
-| Scenario         | defines / changes / has    | Port Behavior, Locomotion Types, Industry Generation Factors,<br>MixedIndustries, Industry, Map |
-| Scenario         | restricts                  | Trains                                                                    |
-| MixedIndustries  | transforms                 | PrimarySectorIndustries, TransformingIndustries                          |
-| Player           | build / upgrade / buy      | Map, Station (Depot, Terminal, Station), Railway Line,<br>Trains, Station with Building |
-| Player           | choose                     | Railway Line between Two Stations                                         |
-| Station          | has / connects / listed    | Name, Existing Building, Upgrades, Demand/Supply of Cargoes,<br>Location, RailLines |
-| Station          | upgrade                    | StationUpgrades                                                           |
-| Station          | load/unload                | Trains, City                                                              |
-| Station          | assigned to                | Cargo                                                                     |
-| Trains           | use / follow               | RailLines, Routes                                                         |
-| Routes           | use / connect              | RailLines, Stations (2+)                                                  |
-| Locomotive       | chosen from                | List of Available Locomotives                                             |
-| Product          | generates                  | Cargo at Stations                                                         |
-| Simulator        | considers / provides / changes | Cities, Industries, Start/Pause Options                               |
+| Concept (A)   |    Association     |                        Concept (B)                         |
+|---------------|:------------------:|:----------------------------------------------------------:|
+| Editor        |      creates       |                            Map                             |
+| Editor        |        adds        |                       Industry, City                       |
+| Editor        |      creates       |                          Scenario                          |
+| Map           |        has         |                            Size                            |
+| Map           |      contains      |                  Industry, City, RailLine                  |
+| Industry      |       can be       | PrimarySectorIndustry, TransformingIndustry, MixedIndustry |
+| Industry      |        has         |                          Location                          |
+| Industry      |   loads/unloads    |                          Station                           |
+| Industry      |      produces      |                           Cargo                            |
+| List          |      contains      |                           Train                            |
+| List          |      contains      |                          Station                           |
+| City          |      contains      |                         HouseBlock                         |
+| City          |       bears        |                          Location                          |
+| City          |   loads/unloads    |                          Station                           |
+| Scenario      |        has         |                           Period                           |
+| Scenario      |   changes Class    |                       MixedIndustry                        |
+| Scenario      | changes Production |                          Industry                          |
+| Scenario      |        uses        |                            Map                             |
+| Scenario      |     restricts      |                           Train                            |
+| MixedIndustry |     transforms     |        PrimarySectorIndustry, TransformingIndustry         |
+| Player        |        buys        |               Station, Train, StationUpgrade               |
+| Player        |  places elements   |                            Map                             |
+| Player        |       builds       |                          RailLine                          |
+| Player        |       views        |                            List                            |
+| Station       |        has         |                          Location                          |
+| Station       |      connects      |                          RailLine                          |
+| Station       |      upgrades      |                       StationUpgrade                       |
+| Station       |   loads/unloads    |                           Train                            |
+| Station       |   is assigned to   |                           Cargo                            |
+| Train         |        uses        |                          RailLine                          |
+| Train         |      follows       |                           Route                            |
+| Train         |   is composed of   |                    Locomotive, Carriage                    |
+| Route         |        uses        |                          RailLine                          |
+| Route         |      connects      |                    Station (2 or more)                     |
+| Simulator     |   starts/pauses    |                          Industry                          |
 
 
 
