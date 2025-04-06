@@ -136,7 +136,6 @@ _Specifies or constraints the system design process. Examples may include: progr
 
 * **Mandatory standards/patterns**
     * "During system development, the team must: (i) adopt best practices for identifying requirements and for OO software analysis and design;"
-    * "All the images/figures produced during the software development process should be recorded in SVG format."
 
 
 * **Use of development tools**
@@ -155,7 +154,8 @@ database integrity, resource limits, operating system._
 
 * **Mandatory standards/patterns**
   * "(ii) adopt recognized coding standards (e.g., CamelCase);"
-  * "The application ought to employ object serialization to guarantee the persistence of the data in two successive runs."
+  * "All the images/figures produced during the software development process should be recorded in SVG format."
+  
 
 
 *  **Implementation languages**
@@ -163,7 +163,7 @@ database integrity, resource limits, operating system._
    
 
 * **Database integrity** 
-   * TBD
+   * "The application ought to employ object serialization to guarantee the persistence of the data in two successive runs."
   
 
 * **Resource limits** 
