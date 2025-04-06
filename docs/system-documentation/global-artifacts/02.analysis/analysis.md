@@ -10,33 +10,36 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 ### _Conceptual Class Category List_
 
-### _Conceptual Class Category List_
-
 **Business Transactions**
 
-* Player builds Station or RailLine
-* Player buys Trains or Locomotives
+* Player builds Station
+* Player builds RailLine
+* Player buys Locomotives
+* Player buys Station
 
 ---
 
 **Transaction Line Items**
 
-* Individual Train Purchase
-* Specific RailLine segment built
+
+* Locomotive Purchase
+* RailLine segment built
+* Station Purchase 
 
 ---
 
 **Product/Service related to a Transaction or Transaction Line Item**
 
-* Train (as product)
+* Locomotive (as product)
 * RailLine (as infrastructure service)
+* Station (as infrastructure service)
 
 ---
 
 **Transaction Records**
 
-* Purchase history (e.g., Trains bought by Player)
-* Construction log (Stations and Lines built)
+* Purchase log (e.g., Locomotives bought by Player, Stations bought by Player)
+* Construction log (Stations and RailLines built)
 
 ---
 
@@ -52,7 +55,7 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 * Map
 * City
-* Location (used by Industry and Station)
+* Station
 
 ---
 
@@ -77,58 +80,68 @@ To identify domain conceptual classes, start by making a list of candidate conce
 **Descriptions of Things**
 
 * Map (Size, Name)
-* Station (Name, Building, Upgrades, Cargo info)
-* Train (type, capabilities)
+* Station (Name, Building, Upgrades)
+* Train (Type, Capabilities, Cost, PlateNumber)
+* RailLine (Cost, Type)
 
 ---
 
 **Catalogs**
 
 * List of Available Locomotives
-* Scenario parameters (e.g., Locomotion Types)
+* Scenario parameters (e.g., Locomotion Types, Port Behavior)
 
 ---
 
 **Containers**
 
 * City (contains House Blocks)
-* Map (contains Cities, Industries, RailLines)
+* Map (contains Cities, Industries, RailLines, Stations)
+
 
 ---
 
 **Elements of Containers**
 
 * House Blocks (within City)
-* Industries / Cities (within Map)
+* Industries / Cities / Stations (within Map)
 
 ---
 
 **Organizations**
 
-* 
+* Player’s Railway Company 
+
 ---
 
 **Other External/Collaborating Systems**
 
-*
+* Editor (editing tool)
+
 ---
 
 **Records of finance, work, contracts, legal matters**
 
-*
+* Player’s budget tracking
+* Construction cost records
 
 ---
 
 **Financial Instruments**
 
-* 
+* Player budget
+* Infrastructure investments
+
 ---
 
 **Documents mentioned/used to perform some work**
 
-* Scenario definition
-* Map design (by Editor)
-* Game configuration
+* Scenario definition document
+* "Railroad Tycoon II,"Fandom, [Online].Available: https://railroad-tycoon.fandom.com/wiki/Railroad_Tycoon_II. [Accessed: 06-Apr-2025].
+* Larman, C. (2004). Applying UML and Patterns (3rd ed.). Prentice Hall. ISBN: 978-0-131-48906-6
+
+
+
 
 
 
