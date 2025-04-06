@@ -16,7 +16,7 @@ class Map {
 }
 class Size{
     width
-    height
+    length
 }
 
 class Location{
