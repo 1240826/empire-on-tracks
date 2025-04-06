@@ -26,7 +26,13 @@ class Scenario {
     portCargoBehavior
 }
 
+class Period {
+    start
+    end
+}
+
 Player "1" -- "*" Locomotive : buys >
 Scenario "*" -- "1*" Locomotive : restricts >
+Scenario "1" -- "1" Period : has >
 
 @enduml
