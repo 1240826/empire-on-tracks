@@ -12,39 +12,25 @@ hide methods
 
 'title Domain Model
 
-class Organization {
-    name
-    vatNumber
-    website
-    phoneNumber
-    email
+class Player {
+budget
 }
-
-class Task {
-    reference
-    description
-    informalDescription
-    technicalDescription
-    duration
+class Station {
+    name
+    range
+    type
     cost
 }
-
-class TaskCategory {
-    description
+class RailLine {
+    cost
+    type
+}
+class List {
+    detail
 }
 
-class Employee {
-    name
-    email
-    position
-    phone
-}
-
-Organization "1" - "*" Employee : has
-Organization "1" - "*" Task: owns
-
-Employee "1" -- "*" Task : creates
-
-Task "*" - "1" TaskCategory: cataloged as
-
+Player "1" --- "*" RailLine : builds >
+RailLine "1" --- "2" Station : connects >
+Player "1" --- "1" List : selects from >
+List "1" --- "*" Station : contains >
 @enduml
