@@ -12,14 +12,14 @@ isRunning
 class Industry {
     production
 }
-class PrimarySectorIndustries{
+class PrimarySectorIndustry{
     type
 }
-class TransformingIndustries{
+class TransformingIndustry{
     type
     demand
 }
-class MixedIndustries{
+class MixedIndustry{
     type
 }
 class Station {
@@ -34,11 +34,11 @@ class Cargo {
     quantity
     limit
 }
-class HouseBlocks{
+class HouseBlock{
     people
 }
 
-class RailLines{
+class RailLine{
 cost
 type
 }
@@ -54,38 +54,38 @@ class City {
     name
 }
 
-class Trains{
+class Train{
      type
      speed
      cargo
      cost
 }
 
-class Routes{
+class Route{
     starts
     ends
 }
 
 Simulator "1" -- "1*" Industry : start/pause >
 
-Industry "1*" -- "1" PrimarySectorIndustries : could be >
-Industry "1*" -- "1" TransformingIndustries : could be >
-Industry "*" -- "1" MixedIndustries : could be >
+Industry "1*" -- "1" PrimarySectorIndustry : could be >
+Industry "1*" -- "1" TransformingIndustry : could be >
+Industry "*" -- "1" MixedIndustry : could be >
 Industry "1" -- "1*" Cargo : produces >
 Industry "1*" -- "1*" Station : load/unload >
 Industry "1" - "1" Location : have >
 
 Station "1" - "1*" Cargo : assigned to <
 Station "1" -- "1" Location : has >
-Station "1" -left "1" RailLines : connect <
-Station "1*" -- "1*" Trains : Load/unload <
+Station "1" -left "1" RailLine : connect <
+Station "1*" -- "1*" Train : Load/unload <
 
-Station "1*" -- "1*" HouseBlocks : Load/unload >
+Station "1*" -- "1*" HouseBlock : Load/unload >
 
-Trains "1" -- "1*" Routes : follow >
+Train "1" -- "1*" Route : follow >
 
-Routes "1" -- "1*" RailLines : use >
-Routes "1" -- "2*" Station : connect >
+Route "1" -- "1*" RailLine : use >
+Route "1" -- "2*" Station : connect >
 City "1" -- "1" Location : has >
-City "1"-left"1*" HouseBlocks : contain >
+City "1"-left"1*" HouseBlock : contain >
 @enduml
