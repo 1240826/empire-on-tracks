@@ -1,10 +1,10 @@
-# US006 - Create a Task
+# US013 - Train route validation by type
 
 ## 1. Requirements Engineering
 
 ### 1.1. User Story Description
 
-As an organization employee, I want to create a new task in order to be further published.
+As a Player, I want to verify if a train of a specific type can go on a specific railway network
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -26,9 +26,10 @@ As an organization employee, I want to create a new task in order to be further 
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** All required fields must be filled in.
-* **AC2:** The task reference must have at least 5 alphanumeric characters.
-* **AC3:** When creating a task with an existing reference, the system must reject such operation and the user must be able to modify the typed reference.
+* **AC1:** The player should be able to choose the type of train (steam, diesel or electric) and station type (depot, station or terminal) in real time.
+* **AC2:** A visualization of the stations, and the lines connecting stations of this scenario should be displayed to the player, where electrified railway lines are drawn with a different color from the others.
+* **AC3:** All implemented procedures (except the used for graphic visualization) must use primitive operations only, and not existing functions in JAVA libraries.
+* **AC4:** The algorithm(s) implemented to solve this problem should be documented/detailed in the repository documentation (using markdown format).
 
 ### 1.4. Found out Dependencies
 
