@@ -127,7 +127,7 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 **Organizations**
 
-* Player’s Railway Company 
+* N/A 
 
 ---
 
@@ -153,7 +153,7 @@ To identify domain conceptual classes, start by making a list of candidate conce
 
 **Documents mentioned/used to perform some work**
 
-* Scenario definition document
+* Integrative Project Assignment pi-sem2-2024-25 - version 1.1
 * "Railroad Tycoon II,"Fandom, [Online].Available: https://railroad-tycoon.fandom.com/wiki/Railroad_Tycoon_II. [Accessed: 06-Apr-2025].
 * Larman, C. (2004). Applying UML and Patterns (3rd ed.). Prentice Hall. ISBN: 978-0-131-48906-6
 
