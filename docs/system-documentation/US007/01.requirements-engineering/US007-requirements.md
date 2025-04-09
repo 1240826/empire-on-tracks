@@ -11,8 +11,7 @@ As a Player, I want to list all the stations to select one to see its details, i
 **From the specifications document:**
 
 >	When viewing a station, in addition to the buildings present, the cargo that is ready for collection and the cargo that needs to be delivered should also be displayed. 
-
->  
+ 
 
 **From the client clarifications:**
 
