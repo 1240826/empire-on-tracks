@@ -1,4 +1,4 @@
-# US006 - Create a Task
+# US003 - Add a City
 
 ## 3. Design
 
@@ -6,11 +6,12 @@
 
 | Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
 |:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
+| Step 1         | ... interacting with the actor?                    | AddCityUI              | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
+|                | ... coordinating the US?                           | AddCityController      | Controller                                                                                                                          |
 |                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
+|                |                                                    | Map                    | IE: contains cities                                                                                                                 |
+|                |                                                    | City                   | IE: knows its own data (e.g. email)                                                                                                 |
+|                |                                                    | City                   | IE: knows its own data (e.g. email)                                                                                                 |
 | Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
 |                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
 | Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
@@ -49,7 +50,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![Sequence Diagram - Full](svg/US003-SD-full.svg)
 
 ### Split Diagrams
 
@@ -57,24 +58,24 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
+![Sequence Diagram - split](svg/US003-SD-split.svg)
 
 **Get Task Category List Partial SD**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
+![Sequence Diagram - Partial - Get Task Category List](svg/US003-SD-partial-get-task-category-list.svg)
 
 **Get Task Category Object**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
+![Sequence Diagram - Partial - Get Task Category Object](svg/US003-SD-partial-get-task-category.svg)
 
 **Get Employee**
 
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
+![Sequence Diagram - Partial - Get Employee](svg/US003-SD-partial-get-employee.svg)
 
 **Create Task**
 
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
+![Sequence Diagram - Partial - Create Task](svg/US003-SD-partial-create-task.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![Class Diagram](svg/US003-CD.svg)
