@@ -3,11 +3,6 @@
 left to right direction
 
 
- Editor --> (UC1 - Create a Map)
- Editor --> (UC2 - Add an Industry)
- Editor --> (UC3 - Add a City)
- Editor --> (UC4 - Create a Scenario)
-
  Player --> (UC5 - Build a Station)
  Player --> (UC6 - Upgrade a Station)
  Player --> (UC7 - List all the Stations)
@@ -15,9 +10,14 @@ left to right direction
  Player --> (UC9 - Buy a Locomotive)
  Player --> (UC10 - Assign a Train to a Route)
  Player --> (UC11 - List all Trains)
+ Player --> (UC12 - Operate a Simulation)
  Player --> (UC13 - Validate route by train type)
  Player --> (UC14 - Generate a Maintenance Route)
- ProductOwner --> (UC12 - Operate a Simulation)
+
+Editor --> (UC1 - Create a Map)
+ Editor --> (UC2 - Add an Industry)
+ Editor --> (UC3 - Add a City)
+ Editor --> (UC4 - Create a Scenario)
 
  @enduml
 
