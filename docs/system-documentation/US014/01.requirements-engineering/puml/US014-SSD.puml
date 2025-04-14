@@ -5,32 +5,32 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Organization\nEmployee" as Player
 participant ":System" as System
 
-activate Employee
+activate Player
 
-    Employee -> System : asks to create a new task
-    activate System
+    Player -> System : requests maintenance route
+        activate System
 
-        System --> Employee : shows task category list and asks to select one
-    deactivate System
+            System --> Player : shows maintenance options (all lines or only electrified)
+        deactivate System
 
-    Employee -> System : selects a task category
-    activate System
+        Player -> System : selects maintenance type
+        activate System
 
-        System --> Employee : requests data (i.e. reference, designation, informal\ndescription, technical description, duration, cost)
-    deactivate System
+            System --> Player : requests to select start station (if multiple options exist)
+        deactivate System
 
-    Employee -> System : types requested data
-    activate System
+        Player -> System : selects start station (if prompted)
+        activate System
 
-        System --> Employee : shows all data and requests confirmation
-    deactivate System
+            System --> Player : displays network visualization with highlighted route
+        deactivate System
 
-    Employee -> System : confirms data
-    activate System
+        Player -> System : confirms data
+        activate System
 
-        System --> Employee : displays operation success
-    deactivate System
+            System --> Player : displays operation success
+        deactivate System
 @enduml
