@@ -33,7 +33,8 @@ As a Player, I want to verify if a train of a specific type can go on a specific
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US003 - Create a task category" as there must be at least one task category to classify the task being created.
+* There is a dependency on "US005 - Build a Station" as there must be at least two stations so that the player can have trains to be validated.
+* There is a dependency on "US007 - List all the stations" 
 
 ### 1.5 Input and Output Data
 

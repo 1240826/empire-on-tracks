@@ -35,7 +35,10 @@ As a Player, given a railway with stations and railway lines, I want to see a ro
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US001 - Create a task category" as there must be at least one task category to classify the task being created.
+* There is a dependency on "US001 - Create a Map" as there must be a map so that you can create a route.
+* There is a dependency on "US005 - Build a Station" as there must at least two station to build a railway line and then generate a route.
+* There is a dependency on "US008 - Build a Railway Line" as there must be a railway line between stations so that you can generate a route.
+
 
 ### 1.5 Input and Output Data
 
@@ -53,7 +56,6 @@ As a Player, given a railway with stations and railway lines, I want to see a ro
     * a task category 
 
 **Output Data:**
-
 * List of existing task categories
 * (In)Success of the operation
 
@@ -65,4 +67,4 @@ As a Player, given a railway with stations and railway lines, I want to see a ro
 
 ### 1.7 Other Relevant Remarks
 
-* The created task stays in a "not published" state in order to distinguish from "published" tasks.
+* N/A
