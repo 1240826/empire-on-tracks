@@ -15,13 +15,13 @@ As a Player, I want to list all the stations to select one to see its details, i
 
 **From the client clarifications:**
 
-> **Question:** What information should be visible directly in the list? Just the station name, or also other details like type, location, and operational status (active/inactive), etc.?
->
-> **Answer:** name and a summary of available cargos to be collected and the ones that are demanded.
+> **Question:** Regarding trains with different types of fuels (steam, diesel and electricity) that work on certain types of railroad. Diesel and steam trains can work on any type of railroads, while electric trains should work exclusively on electrified railroads? If not, then which types of trains work on which types of railroads?
+> 
+> **Answer:** yes, Diesel and steam trains can work on any type of railroads, while electric trains should work exclusively on electrified railroads.
 
-> **Question:** Besides the existing buildings and demand/supply cargo, are there any other details that should be shown when viewing a station's information? For example, location, capacity, or operational status?
+> **Question:** Will this US be implemented as an automatic validation when the player establishes a train route between two stations? For instance: the player tries to add an electric train on a route that doesn't have electrified railroads, the game should detect that and deny the player's action? If this is incorrect, then this US is a manual verification the player can select?
 >
-> **Answer:** available cargos to be collected and the ones that are demanded.
+> **Answer:** There is an important difference between route and path, a route is ordered list of stations that should be visited and where the cargos should be dropped and loaded, the path is the sequence of lines to be used to complete a route. So, a route can be satisfied with multiple different paths. If a route is assigned to a train and there is no possible path to accomplish the route, then a message should raised.
 
 > **Question:** When the user selects an existing station, does it automatically show all the associated info to that station or the user selects the station then has to select the required option ? eg: 'show details'.
 > 
