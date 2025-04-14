@@ -82,7 +82,7 @@ class Route{
     ends
 }
 
-class Simulator{
+class Simulation{
 isRunning
 }
 
@@ -163,7 +163,7 @@ Route "1" -- "2*" Station : connects >
 City "1" -- "1*" HouseBlock : contains >
 City "1" -- "1" Location : bears >
 
-Simulator "1" -- "1*" Industry : starts/pauses >
-
+Simulation "1" -- "1*" Industry : starts/pauses >
+Simulation "1" -- "1*" City : starts/pauses >
 @enduml
 
