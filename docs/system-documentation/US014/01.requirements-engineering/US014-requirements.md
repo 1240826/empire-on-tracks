@@ -17,13 +17,13 @@ As a Player, given a railway with stations and railway lines, I want to see a ro
 
 **From the client clarifications:**
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** What kind of unit performs the maintenance route? can it be any kind of train? is there a specific train configuration that needs to be setup by the player?
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** Any kind of train will be good.
 
-> **Question:** Monetary data is expressed in any particular currency?
+> **Question:** 
 >
-> **Answer:** Monetary data (e.g. estimated cost of a task) is indicated in POT (virtual currency internal to the platform).
+> **Answer:**
 
 ### 1.3. Acceptance Criteria
 
