@@ -1,157 +1,113 @@
 @startuml
-'skinparam monochrome true
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-'hide footbox
-actor "Organization Employee" as ORG_EMPLOYEE
-participant ":CreateTaskUI" as UI
-participant ":CreateTaskController" as CTRL
-participant "Repositories" as REPOS
-participant "repositories\n:Repositories" as REPOS_SINGLETON
-participant "taskCategoryRepository\n:TaskCategoryRepository" as TASK_CAT_REPO
-participant "ApplicationSession" as APP_SESSION
-participant "appSession\n:ApplicationSession" as APP_SESSION_SINGLETON
-participant "currentSession\n:UserSession" as CURRENT_SESSION
-participant "organizationRepository\n:OrganizationRepository" as ORG_REPO
-participant "organization\n:Organization" as ORG
-participant "task\n:Task" as TASK
+actor "Editor" as Editor
+participant ":AddCityUI" as UI
+participant ":AddCityController" as Controller
+participant ":Map" as Map
+participant ":City" as City
+participant ":MapRepository" as Repository
 
-activate ORG_EMPLOYEE
+activate Editor
 
-        ORG_EMPLOYEE -> UI : asks to create a new task
-        activate UI
-            UI --> CTRL** : create()
-
-            UI -> CTRL : getTaskCategories()
-            activate CTRL
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
-
-                CTRL -> REPOS_SINGLETON : getTaskCategoryRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON --> CTRL: taskCategoryRepository
-                deactivate REPOS_SINGLETON
-
-                CTRL -> TASK_CAT_REPO : getTaskCategories()
-                activate TASK_CAT_REPO
-                    TASK_CAT_REPO --> CTRL : taskCategoryList
-                deactivate TASK_CAT_REPO
-
-                CTRL --> UI : taskCategoryList
-            deactivate CTRL
-
-            UI --> ORG_EMPLOYEE : shows task category list and asks to select one
-        deactivate UI
-
-    ORG_EMPLOYEE -> UI : selects a task category
+    Editor -> UI : asks to add a city
     activate UI
-        UI --> ORG_EMPLOYEE : requests data (reference, description, \ninformal description, technical description,\nduration, cost)
+
+        UI -> Controller : startAddCity()
+        activate Controller
+
+            Controller -> UI : requests city details (name, positionX, positionY, number of house blocks)
+        deactivate Controller
     deactivate UI
 
-    ORG_EMPLOYEE -> UI : types requested data
+    UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
+    Editor -> UI : types city details
     activate UI
-        UI --> ORG_EMPLOYEE : shows all data and requests confirmation
+
+        UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
+        activate Controller
+
+            Controller -> Map : getCurrentMap()
+            activate Map
+                Map --> Controller : currentMap
+            deactivate Map
+
+            Controller -> City : createCity(name, positionX, positionY, houseBlocks)
+            activate City
+
+                City -> City : validateName() \n(no digits or special chars)
+                City -> City : validateHouseBlocks() \n(must be positive)
+
+            deactivate City
+
+            Controller -> Map : isCityNameDuplicate(name)
+            activate Map
+                Map --> Controller : true/false
+            deactivate Map
+
+            alt if name is duplicate
+                Controller -> UI : warn("City name is already in use")
+            else
+                Controller -> UI : requests to select house block assignment method (manual or automatic)
+            end
+        deactivate Controller
     deactivate UI
 
-    ORG_EMPLOYEE -> UI : confirms data
+    UI --> Editor : select assignment method
+    Editor -> UI : selects assignment method
     activate UI
-        UI -> CTRL : createTask(reference,\ndescription,\ninformalDescription,\ntechnicalDescription,\nduration, cost,\ntaskCategoryDescription)
-        activate CTRL
-            CTRL -> CTRL : getTaskCategoryByDescription(taskCategoryDescription)
-            activate CTRL
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
 
-                CTRL -> REPOS_SINGLETON : getTaskCategoryRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON -> CTRL : taskCategoryRepository
-                deactivate REPOS_SINGLETON
+        alt method = "automatic"
+            UI -> Controller : selectedAssignmentMethod("automatic")
+            activate Controller
+                Controller -> City : assignHouseBlocksAutomatically()
+            deactivate Controller
 
-                CTRL -> TASK_CAT_REPO : getTaskCategoryByDescription(taskCategoryDescription)
-                activate TASK_CAT_REPO
-                    TASK_CAT_REPO --> CTRL : taskCategory
-                deactivate TASK_CAT_REPO
-                    CTRL --> CTRL : taskCategory
-            deactivate CTRL
+        else method = "manual"
+            UI -> Editor : request positions of house blocks
+            Editor -> UI : submits positions
+            UI -> Controller : selectedAssignmentMethod("manual", positionX, positionY)
+            activate Controller
 
-            |||
-            CTRL -> CTRL : getEmployeeFromSession()
-            activate CTRL
-                CTRL -> APP_SESSION: getInstance()
-                activate APP_SESSION
-                    APP_SESSION -> CTRL: appSession
-                deactivate APP_SESSION
+                Controller -> Map : validateCoordinates(positionX, positionY)
+                activate Map
+                    Map -> Controller : coordinates are valid / invalid
+                deactivate Map
 
-                CTRL -> APP_SESSION_SINGLETON: getCurrentSession()
-                activate APP_SESSION_SINGLETON
-                    APP_SESSION_SINGLETON --> CTRL: currentSession
-                deactivate APP_SESSION_SINGLETON
+                alt if coordinates are valid
+                    Controller -> City : assignHouseBlocksManually(positions)
+                else
+                    Controller -> UI : warn("Coordinates are out of bounds or invalid")
+                end
+            deactivate Controller
+        end
 
-                CTRL -> CURRENT_SESSION: getUserEmail()
-                activate CURRENT_SESSION
-                    CURRENT_SESSION --> CTRL: email
-                deactivate CURRENT_SESSION
-
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
-
-                CTRL -> REPOS_SINGLETON: getOrganizationRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON --> CTRL: organizationRepository
-                deactivate REPOS_SINGLETON
-
-                CTRL -> ORG_REPO: getOrganizationByEmployeeEmail(email)
-                activate ORG_REPO
-
-                    loop [for each organization
-                        ORG_REPO -> ORG : anyEmployeeHasEmail(email)
-                        activate ORG
-                             ORG --> ORG_REPO : true/false
-                        deactivate ORG
-                    end
-                    ORG_REPO --> CTRL : organization
-                deactivate ORG_REPO
-
-                CTRL -> ORG: getEmployeeByEmail(email)
-                activate ORG
-                    ORG --> CTRL : employee
-                deactivate ORG
-
-                CTRL --> CTRL : employee
-            deactivate CTRL
-
-            |||
-            CTRL -> ORG: createTask(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, employee)
-            activate ORG
-                ORG --> TASK**: create(reference, description, informalDescription, \ntechnicalDescription, duration, cost, taskCategory, employee)
-
-                ORG -> ORG: addTask (task)
-                activate ORG
-                    ORG -> ORG: validateTask(task)
-                    activate ORG
-                        ORG --> ORG : true
-                    deactivate ORG
-
-                    ORG --> ORG : true
-                deactivate ORG
-
-                ORG --> CTRL : task
-            deactivate ORG
-
-            CTRL --> UI: task
-            deactivate CTRL
-            UI --> ORG_EMPLOYEE: displays operation success
+        UI -> Editor : shows all data and requests confirmation
     deactivate UI
 
-deactivate ORG_EMPLOYEE
+    Editor -> UI : confirms data
+    activate UI
 
+        UI -> Controller : confirmCityCreation()
+        activate Controller
+
+            Controller -> Map : addCity(city)
+            activate Map
+
+                Map -> Repository : saveCity(city)
+                activate Repository
+                    Repository --> Map : city saved
+                deactivate Repository
+
+            deactivate Map
+
+            Controller -> UI : display operation success
+        deactivate Controller
+    deactivate UI
+
+deactivate Editor
 @enduml

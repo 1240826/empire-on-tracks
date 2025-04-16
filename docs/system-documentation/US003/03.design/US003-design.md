@@ -8,7 +8,6 @@
 |:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
 | Step 1         | ... interacting with the actor?                    | AddCityUI              | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
 |                | ... coordinating the US?                           | AddCityController      | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
 |                |                                                    | Map                    | IE: contains cities                                                                                                                 |
 |                |                                                    | City                   | IE: knows its own data (e.g. name, number of house blocks)                                                                         |
 | Step 2         | ... validating the city name?                      | City                   | IE: validates its own name (no digits or special characters), per AC1.                                                              |
@@ -41,7 +40,6 @@ Other software classes (i.e. Pure Fabrication) identified:
 * AddCityUI  
 * AddCityController
 * MapRepository
-* UserSession
 
 
 ## 3.2. Sequence Diagram (SD)

@@ -13,7 +13,7 @@ activate Editor
     Editor -> System : asks to add a city
     activate System
 
-        System --> Editor : requests city details (name, XY position, number of house blocks)
+        System --> Editor : requests city details (name, positionX, positionY, number of house blocks)
     deactivate System
 
     Editor -> System : types city details
