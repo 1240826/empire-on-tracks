@@ -11,8 +11,6 @@ left to right direction
  Player --> (UC10 - Assign a Train to a Route)
  Player --> (UC11 - List all Trains)
  Player --> (UC12 - Operate a Simulation)
- Player --> (UC13 - Validate route by train type)
- Player --> (UC14 - Generate a Maintenance Route)
 
 Editor --> (UC1 - Create a Map)
  Editor --> (UC2 - Add an Industry)
