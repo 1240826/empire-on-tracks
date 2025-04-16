@@ -10,37 +10,37 @@
 |                | ... coordinating the US?                           | AddCityController      | Controller                                                                                                                          |
 |                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
 |                |                                                    | Map                    | IE: contains cities                                                                                                                 |
-|                |                                                    | City                   | IE: knows its own data (e.g. email)                                                                                                 |
-|                |                                                    | City                   | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+|                |                                                    | City                   | IE: knows its own data (e.g. name, number of house blocks)                                                                         |
+| Step 2         | ... validating the city name?                      | City                   | IE: validates its own name (no digits or special characters), per AC1.                                                              |
+|                | ... validating the number of house blocks?         | City                   | IE: ensures the number of house blocks is positive, per AC3.                                                                        |
+| Step 3         | ... choosing assignment method?                    | AddCityUI              | IE: responsible for user interaction (manual or automatic selection), per AC2.                                                      |
+|                | ... assigning house blocks (automatic)?            | City                   | Strategy: responsible for placing house blocks around its center (normal distribution).                                             |
+|                | ... assigning house blocks (manual)?               | AddCityUI              | IE: responsible for manual assignment of house blocks by the user.                                                                  |
+|                | ... creating house blocks?                         | City                   | Creator: contains house blocks, thus should create them.                                                                            |
+| Step 4         | ... saving the new city?                           | MapRepository          | IE: responsible for persisting cities, with Low Coupling.                                                                           |
+| Step 5         | ... informing operation success?                   | AddCityUI              | IE: responsible for communicating with the user.                                                                                    |
+| Step 6         | ... showing all data and requesting confirmation?  | AddCityUI              | IE: responsible for presenting city data before final confirmation.                                                                 |
+| Step 7         | ... instantiating a new City?                      | Map                    | Creator (Rule 1): Map contains cities, so it creates them.                                                                          |
+|                | ... validating all data (local validation)?        | City                   | IE: owns and validates its own data.                                                                                                | 
+|                | ... validating all data (global validation)?       | Map                    | IE: knows all existing cities (e.g. for warning about duplicate names).                                                             | 
+|                | ... saving the created city?                       | MapRepository          | IE: responsible for persisting the newly created city.                                                                              |
+| Step 8         | ... informing operation success?                   | AddCityUI              | IE: responsible for user interactions.                                                                                              |
+
 
 ### Systematization ##
 
 According to the taken rationale, the conceptual classes promoted to software classes are: 
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+* City
+* Map
+* Location
+* HouseBlock
 
 Other software classes (i.e. Pure Fabrication) identified: 
 
-* CreateTaskUI  
-* CreateTaskController
-* Repositories
-* TaskCategoryRepository
-* OrganizationRepository
-* ApplicationSession
+* AddCityUI  
+* AddCityController
+* MapRepository
 * UserSession
 
 

@@ -26,7 +26,6 @@ However, be aware, this is a pedagogical simplification. On further projects and
 | US010 | [Assign a Train to a Route](../../US010/US010-README.md)      |
 | US011 | [List all Trains](../../US011/US011-README.md)                |
 | US012 | [Operate a Simulation ](../../US012/US012-README.md)          |
-| US013 | [Validate a route by train type](../../US013/US013-README.md) |
-| US014 | [Generate a Maintenance Route ](../../US014/US014-README.md)  |
+
 
 

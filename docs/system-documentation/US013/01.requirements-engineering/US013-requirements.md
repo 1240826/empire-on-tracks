@@ -16,13 +16,14 @@ As a Player, I want to verify if a train of a specific type can go on a specific
 
 **From the client clarifications:**
 
-> **Question:** Which is the unit of measurement used to estimate duration?
+> **Question:** Regarding trains with different types of fuels (steam, diesel and electricity) that work on certain types of railroad. Diesel and steam trains can work on any type of railroads, while electric trains should work exclusively on electrified railroads? If not, then which types of trains work on which types of railroads?
 >
-> **Answer:** Duration is estimated in days.
+> **Answer:** yes, Diesel and steam trains can work on any type of railroads, while electric trains should work exclusively on electrified railroads.
 
-> **Question:** Monetary data is expressed in any particular currency?
+> **Question:** Will this US be implemented as an automatic validation when the player establishes a train route between two stations? For instance: the player tries to add an electric train on a route that doesn't have electrified railroads, the game should detect that and deny the player's action? If this is incorrect, then this US is a manual verification the player can select?
 >
-> **Answer:** Monetary data (e.g. estimated cost of a task) is indicated in POT (virtual currency internal to the platform).
+> **Answer:** There is an important difference between route and path, a route is ordered list of stations that should be visited and where the cargos should be dropped and loaded, the path is the sequence of lines to be used to complete a route. So, a route can be satisfied with multiple different paths. If a route is assigned to a train and there is no possible path to accomplish the route, then a message should raised.
+
 
 ### 1.3. Acceptance Criteria
 
@@ -33,7 +34,8 @@ As a Player, I want to verify if a train of a specific type can go on a specific
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on "US003 - Create a task category" as there must be at least one task category to classify the task being created.
+* There is a dependency on "US005 - Build a Station" as there must be at least two stations so that the player can have trains to be validated.
+* There is a dependency on "US007 - List all the stations" 
 
 ### 1.5 Input and Output Data
 
