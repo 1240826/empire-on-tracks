@@ -7,6 +7,7 @@ autonumber
 
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
+participant ":MapController" as Controller
 participant ":MapValidator" as Validator
 participant ":MapRepository" as Repository
 participant ":Map" as Map
@@ -19,66 +20,58 @@ activate Employee
         UI --> Employee : Ask the name, width, and length
     deactivate UI
 
-    Employee -> UI : Gives name, width, and length
+    Employee -> UI : Gives name and size
     activate UI
 
-        UI -> Validator : validateWidthLength(width, length)
-        activate Validator
+        UI -> Controller** : createMap(name, width, height)
+        activate Controller
 
-        Validator -> Validator : isPositiveInteger(width)
-        Validator -> Validator : isPositiveInteger(length)
-        Validator -> UI : validationResult(valid or error)
-
-        alt If width and length are valid
-
-        else If width or length is invalid
-            UI --> Employee : displayError("Invalid width or length")
-        end
-        deactivate Validator
-
-        alt If width and length are valid
-            UI -> Validator : validateMapName(name)
+            Controller -> Validator : validateWidthLength(width, height)
             activate Validator
 
-            Validator -> Repository : check if name is unique(name)
-            activate Repository
+            Validator -> Validator : isPositiveInteger(width)
+            Validator -> Validator : isPositiveInteger(height)
+            Validator -> Controller : validationResult(valid or error)
 
-                Repository --> Validator : name availability result (unique or not)
-            deactivate Repository
+            alt If width/length are invalid
+                Controller -> UI : displayError("Invalid width or length")
+            else If width/length are valid
+                Controller -> Validator : validateMapName(name)
+                activate Validator
 
-            alt If name is unique
-                Validator --> UI : name valid
-            else If name is not unique
-                UI -> Employee : displayError("Name is not unique")
+                Validator -> Repository : getListNameMap()
+                activate Repository
+
+                    Repository --> Validator : listOfNames
+                deactivate Repository
+
+                Validator -> Validator : nameExist(name)
+                deactivate Validator
+
+                alt If name is valid
+                    Controller -> UI : asks for confirmation to create map
+                    activate UI
+
+                    Employee -> UI : confirms map creation
+                    activate UI
+
+                    UI -> Map**: createMap(name, width, height)
+                    activate Map
+
+                        Map --> Repository : saveMap(map)
+                        activate Repository
+
+                            Repository --> Map : map saved
+                        deactivate Repository
+                    deactivate Map
+
+                    UI --> Employee : displaySuccess("Map created successfully")
+                else If name is invalid
+                    UI -> Employee : displayError("Invalid name")
+                end
             end
-            deactivate Validator
 
-            alt If name is valid
-                UI --> Employee : asks for confirmation to create map
-                activate UI
-
-                Employee -> UI : confirms map creation
-                activate UI
-
-                UI -> Map : createMap(name, width, length)
-                activate Map
-
-                    Map --> Repository : saveMap(map)
-                    activate Repository
-
-                        Repository --> Map : map saved
-                    deactivate Repository
-                deactivate Map
-
-                UI --> Employee : displaySuccess("Map created successfully")
-            else If name is invalid
-                UI -> Employee : displayError("Invalid name")
-            end
-        else If width/length is invalid
-            UI -> Employee : displayError("Invalid width or length")
-        end
-
+        deactivate Controller
     deactivate UI
 
 @enduml
-
