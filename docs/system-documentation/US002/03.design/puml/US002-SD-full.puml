@@ -1,0 +1,60 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Editor
+participant "AddIndustryUI" as UI
+participant "IndustryController" as Controller
+participant "PositionValidator" as Validator
+participant "IndustryRepository" as Repository
+participant "IndustryFactory" as Factory
+participant "Map" as Map
+
+activate Editor
+
+Editor -> UI : Request to add an industry
+activate UI
+UI --> Controller : startIndustryCreation()
+activate Controller
+
+UI --> Editor : Please enter the XY coordinates
+Editor -> UI : Here are the XY coordinates
+UI --> Controller : provideCoordinates(X, Y)
+
+Controller -> Validator : validateFormat(X, Y)
+
+
+Validator --> Map : checkCoordinates(X, Y)
+alt Invalid coordinates (out of bounds)
+    Map --> Controller : false
+    Controller --> UI : notifyError("Coordinates out of bounds")
+    UI -> Editor : The coordinates are invalid
+    deactivate Controller
+    deactivate UI
+else Valid coordinates
+    Map --> Controller : true
+
+    Controller -> Repository : getIndustryTypes()
+    Repository --> Controller : listOfTypes
+
+    Controller --> UI : displayTypes(listOfTypes)
+    UI -> Editor : Choose the industry type
+    Editor -> UI : I choose TypeB
+    UI -> Controller : typeSelected("TypeB")
+
+    Controller -> Factory** : createIndustry("TypeB", X, Y)
+
+
+    Factory --> Map : addIndustry(newIndustry)
+
+    Controller --> UI : notifySuccess("Industry created successfully!")
+    UI -> Editor : Industry created successfully!
+end
+
+deactivate Controller
+deactivate UI
+deactivate Editor
+@enduml
