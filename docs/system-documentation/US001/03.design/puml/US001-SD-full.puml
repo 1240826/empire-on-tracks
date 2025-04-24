@@ -34,7 +34,7 @@ activate Employee
             Validator -> Controller : validationResult(valid or error)
 
             alt If width/length are invalid
-                Controller -> UI : displayError("Invalid width or length")
+                UI -> Employee : displayError("Invalid width or length")
             else If width/length are valid
                 Controller -> Validator : validateMapName(name)
                 activate Validator
