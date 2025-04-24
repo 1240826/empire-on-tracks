@@ -1,0 +1,54 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Player" as Owner
+participant "UI" as UI
+participant "SimulationController" as Controller
+participant "Map" as Map
+
+activate Owner
+
+Owner -> UI : create simulation with industries, cities, stations, railroads
+activate UI
+UI --> Controller : startSimulation()
+activate Controller
+Controller --> Map : initializeMap()  // initializes map with the simulation
+activate Map
+Map --> Controller : mapInitialized()
+deactivate Map
+deactivate Controller
+UI --> Owner : Simulation created successfully!
+deactivate UI
+Owner -> UI : asks to start the simulation
+loop Start Simulation
+
+    activate UI
+    UI --> Controller : startSimulation()
+    activate Controller
+    Controller --> Map : updateMap()  // updates cargoes and train movements
+    activate Map
+    Map --> Controller : mapUpdated()
+    deactivate Map
+    deactivate Controller
+    UI --> Owner : Simulation started
+    deactivate UI
+
+    Owner -> UI : asks to pause the simulation
+    activate UI
+    UI --> Controller : pauseSimulation()
+    activate Controller
+    Controller --> Map : stopUpdatingMap()  // stop moving trains and generating cargos
+    activate Map
+    Map --> Controller : mapPaused()
+    deactivate Map
+    deactivate Controller
+    UI --> Owner : Simulation paused
+    deactivate UI
+end
+
+deactivate Owner
+@enduml
