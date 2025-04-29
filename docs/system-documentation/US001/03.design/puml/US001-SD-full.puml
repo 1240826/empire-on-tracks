@@ -1,0 +1,77 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Employee
+participant ":CreateMapUI" as UI
+participant ":MapController" as Controller
+participant ":MapValidator" as Validator
+participant ":MapRepository" as Repository
+participant ":Map" as Map
+
+activate Employee
+
+    Employee -> UI : ask to "Create a Map"
+    activate UI
+
+        UI --> Employee : Ask the name, width, and length
+    deactivate UI
+
+    Employee -> UI : Gives name and size
+    activate UI
+
+        UI -> Controller** : createMap(name, width, height)
+        activate Controller
+
+            Controller -> Validator : validateWidthLength(width, height)
+            activate Validator
+
+            Validator -> Validator : isPositiveInteger(width)
+            Validator -> Validator : isPositiveInteger(height)
+            Validator -> Controller : validationResult(valid or error)
+
+            alt If width/length are invalid
+                UI -> Employee : displayError("Invalid width or length")
+            else If width/length are valid
+                Controller -> Validator : validateMapName(name)
+                activate Validator
+
+                Validator -> Repository : getListNameMap()
+                activate Repository
+
+                    Repository --> Validator : listOfNames
+                deactivate Repository
+
+                Validator -> Validator : nameExist(name)
+                deactivate Validator
+
+                alt If name is valid
+                    Controller -> UI : asks for confirmation to create map
+                    activate UI
+
+                    Employee -> UI : confirms map creation
+                    activate UI
+
+                    UI -> Map**: createMap(name, width, height)
+                    activate Map
+
+                        Map --> Repository : saveMap(map)
+                        activate Repository
+
+                            Repository --> Map : map saved
+                        deactivate Repository
+                    deactivate Map
+
+                    UI --> Employee : displaySuccess("Map created successfully")
+                else If name is invalid
+                    UI -> Employee : displayError("Invalid name")
+                end
+            end
+
+        deactivate Controller
+    deactivate UI
+
+@enduml
