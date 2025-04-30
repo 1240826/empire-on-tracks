@@ -34,6 +34,7 @@ As a Player, I want to verify if a train of a specific type can go on a specific
 
 ### 1.4. Found out Dependencies
 
+* There is a dependency on "US001 - Create a Map" as there must be a map so that you can do all sorts of validations
 * There is a dependency on "US005 - Build a Station" as there must be at least two stations so that the player can have trains to be validated.
 * There is a dependency on "US007 - List all the stations" 
 
