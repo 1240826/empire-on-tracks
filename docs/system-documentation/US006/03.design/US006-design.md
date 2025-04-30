@@ -27,20 +27,17 @@
 
 According to the taken rationale, the conceptual classes promoted to software classes are: 
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+* Map
+* Station
+* StationUpgrade
 
 Other software classes (i.e. Pure Fabrication) identified: 
 
-* CreateTaskUI  
-* CreateTaskController
-* Repositories
-* TaskCategoryRepository
-* OrganizationRepository
-* ApplicationSession
+* MapRepository
 * UserSession
+* AddStationUI
+* PossibleUpgrades
+
 
 
 ## 3.2. Sequence Diagram (SD)
