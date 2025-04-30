@@ -7,9 +7,12 @@ autonumber
 
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
-participant ":MapController" as Controller
-participant ":MapValidator" as Validator
-participant ":MapRepository" as Repository
+participant ":CreateMapController" as Controller
+participant ":CreateMapValidator" as Validator
+participant "Repositories" as Rep
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "MapRepository \n: MapRepository" as Repository
+
 participant ":Map" as Map
 
 activate Employee
@@ -17,13 +20,25 @@ activate Employee
     Employee -> UI : ask to "Create a Map"
     activate UI
 
-        UI --> Employee : Ask the name, width, and length
+            UI --> Controller** : startController()
+
+            activate Controller
+
+            Controller->UI : displayform()
+            deactivate Controller
+
+        UI --> Employee : Ask the name, width, and height
+
+
+
+
+
     deactivate UI
 
     Employee -> UI : Gives name and size
     activate UI
 
-        UI -> Controller** : createMap(name, width, height)
+        UI --> Controller  : createMap(name, width, height)
         activate Controller
 
             Controller -> Validator : validateWidthLength(width, height)
@@ -32,42 +47,60 @@ activate Employee
             Validator -> Validator : isPositiveInteger(width)
             Validator -> Validator : isPositiveInteger(height)
             Validator -> Controller : validationResult(valid or error)
+            deactivate Validator
 
             alt If width/length are invalid
-                UI -> Employee : displayError("Invalid width or length")
+                Controller --> UI : displayError("Invalid width or heigth")
+
+
             else If width/length are valid
+
+            Controller->Rep: getInstance()
+            activate Rep
+            Rep-->Controller:repositories
+            deactivate Rep
+            Controller -> REPOS_SINGLETON : getCategoryRepository()
+                            activate REPOS_SINGLETON
+                                REPOS_SINGLETON --> Controller: CategoryRepository
+                            deactivate REPOS_SINGLETON
+            Controller->Repository:getMapsNames()
+            activate Repository
+            Repository-->Controller:listOfNames()
+            deactivate Repository
+
+
+
                 Controller -> Validator : validateMapName(name)
                 activate Validator
 
-                Validator -> Repository : getListNameMap()
-                activate Repository
-
-                    Repository --> Validator : listOfNames
-                deactivate Repository
-
                 Validator -> Validator : nameExist(name)
+                Validator -->Controller: validationResult(valid or error)
                 deactivate Validator
+                deactivate Controller
 
                 alt If name is valid
-                    Controller -> UI : asks for confirmation to create map
+                    UI --> Employee : asks for confirmation to create map
                     activate UI
 
                     Employee -> UI : confirms map creation
                     activate UI
 
-                    UI -> Map**: createMap(name, width, height)
-                    activate Map
+                    UI -> Controller: createMap()
+                    activate Controller
 
-                        Map --> Repository : saveMap(map)
-                        activate Repository
+                    Controller->Map**:createMap(Name,whidht,height)
 
-                            Repository --> Map : map saved
+
+
+
+
+                            Controller -> Repository : saveMap()
                         deactivate Repository
-                    deactivate Map
 
-                    UI --> Employee : displaySuccess("Map created successfully")
+
+                    Controller --> UI : displaySuccess("Map created successfully")
                 else If name is invalid
-                    UI -> Employee : displayError("Invalid name")
+                    Controller -> UI : displayError("Invalid name")
                 end
             end
 

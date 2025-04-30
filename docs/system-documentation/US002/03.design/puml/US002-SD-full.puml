@@ -15,62 +15,57 @@ participant "Map" as Map
 
 activate Editor
 
-Editor -> UI : Ask to add an industry.
+Editor -> UI : requestIndustryCreation()
 activate UI
-UI --> Controller : startIndustryCreation()
-UI --> Editor : Ask for the XY position.
+UI -> Controller : startIndustryCreation()
 deactivate UI
 
+UI -> Editor : requestCoordinates()
 
-
-Editor -> UI : Gives XY
+Editor -> UI : provideCoordinates(X, Y)
 activate UI
+UI -> Controller : submitCoordinates(X, Y)
+
 activate Controller
-UI --> Controller : provideCoordinates(X, Y)
+Controller -> Validator : validateCoordinates(X, Y)
+activate Validator
 
+Validator -> Map : checkCoordinates(X, Y)
 
-Controller -> Validator : validateFormat(X, Y)
-
-
-Validator --> Map : checkCoordinates(X, Y)
-alt Invalid coordinates (out of bounds)
-    Map --> Controller : false
-    Controller --> UI : display("Coordinates out of bounds")
-    UI --> Editor : The coordinates are invalid
+alt Invalid coordinates
+    Validator --> Controller : invalid()
+    Controller -> UI : displayError("Coordinates out of bounds")
+    deactivate Validator
     deactivate Controller
-
-
 else Valid coordinates
-    Map --> Controller : true
+    Validator --> Controller : valid()
+    deactivate Validator
 
-    Controller -> Repository : getIndustryTypes()
+    Controller -> Repository : fetchIndustryTypes()
     Repository --> Controller : listOfTypes
 
-    Controller --> UI : displayTypes(listOfTypes)
-    UI --> Editor : Show the different types of industry and ask one option.
-deactivate UI
-    Editor -> UI : Select one option.
-activate UI
-    UI -> Controller : typeSelected()
+    Controller -> UI : displayIndustryTypes(listOfTypes)
+    deactivate Controller
 
+    UI -> Editor : showOptions(listOfTypes)
+
+    Editor -> UI : selectIndustryType(selectedTypeId)
+    activate UI
+    UI -> Controller : submitSelectedType(selectedTypeId)
     activate Controller
 
-    Controller -> Factory** : createIndustry("Type", X, Y)
-
+    Controller -> Factory : createIndustry(selectedTypeId, X, Y)
     activate Factory
-
-
-    Factory --> Map : addIndustry(newIndustry)
-
+    Factory --> Controller : newIndustry
     deactivate Factory
 
-    Controller --> UI : display("Industry created successfully!")
+    Controller -> Map : addIndustry(newIndustry)
+    Controller -> UI : displaySuccess("Industry created successfully!")
     deactivate Controller
-    UI -> Editor : Confirm the creation of this industry.
+
+    UI -> Editor : confirmCreation()
     deactivate UI
 end
 
-
-deactivate UI
 deactivate Editor
 @enduml
