@@ -9,6 +9,36 @@ skinparam classAttributeIconSize 0
 
 'left to right direction
 
+class CreateMapController {
+    + starController()
+    + getMapNames()
+    + createMap(name, widht, height)
+    +display()
+}
+
+class CategoryRepository {
+    + getCategories()
+
+}
+class Repositories {
+    - Repositories()
+    + {static} getInstance()
+    + getCategoryRepository()
+
+}
+class MapRepository {
+    + getMapNames()
+}
+
+class Map {
+    - name : String
+    - weight : int
+    - height : int
+}
+
+
+
+
 class ApplicationSession
 {
     - ApplicationSession()
@@ -43,81 +73,46 @@ class TaskCategory {
     - description : String
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
 
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
-}
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
-}
 
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
-}
 
-class Repositories {
-    - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
-}
 
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
-}
 
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
-end note
 
-note bottom of TaskCategoryRepository
+
+
+note bottom of CategoryRepository
     - used for displaying
     the task category list
 end note
 
-class CreateTaskUI {
+class CreateMapUI {
 }
 
-CreateTaskUI .> CreateTaskController
+CreateMapUI .> CreateMapController
 
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
+CreateMapController ..> ApplicationSession
+CreateMapController ..> UserSession
+CreateMapController ..> TaskCategory
+CreateMapController ..> CategoryRepository
+CreateMapController ..> Map
+CreateMapController ..> MapRepository
+CreateMapController .> Repositories
 
 Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
+Repositories --> "1" MapRepository : organizationRepository
+Repositories -> "1" CategoryRepository : CategoryRepository
 
 ApplicationSession -> "1" ApplicationSession : instance
 ApplicationSession ..> UserSession
 
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
+CategoryRepository --> "*" TaskCategory : taskCategories
 
-OrganizationRepository --> "*" Organization : organizations
+MapRepository --> "*" Map : organizations
 
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
+Map --> "*" Task : tasks
+Map --> "*" Employee : employees
 
 Task --> "1" TaskCategory : taskCategory
 Task --> "1" Employee : createdBy
