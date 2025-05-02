@@ -116,13 +116,13 @@ class Carriage{
 ' Ajustando as posições das classes
 
 Editor "1" -down- "1..*" Map : creates >
-Editor "1" -- "*" Scenario : creates >
+Editor "1" --- "*" Scenario : creates >
 Editor "1" -right- "*" City : adds >
 Editor "1" -- "*" Industry : adds >
 
 Player "1" -- "1..*" Station : buys >
-Player "1" - "1" Map : places elements >
-Player "1" -- "1..*" Train : buys >
+Player "1" -- "1" Map : places elements >
+Player "1" - "1..*" Train : buys >
 Player "1" - "1..*" RailLine : builds >
 Player "1"-"*" Building: buys >
 
@@ -134,7 +134,7 @@ Map "1" -- "*" RailLine : contains >
 
 Industry "1..*" -down-> "1..*" PrimarySectorIndustry : can be >
 Industry "1..*" -down-> "1..*" TransformingIndustry : can be >
-Industry "*" -down-> "1..*" MixedIndustry : can be >
+Industry "*" -down--> "1..*" MixedIndustry : can be >
 Industry "1" - "1" Location : has >
 Industry "1..*" -- "1..*" Station : loads/unloads >
 Industry "1" -- "1..*" Cargo : produces >
