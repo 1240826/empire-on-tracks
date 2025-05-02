@@ -70,14 +70,15 @@ class StationType{
 }
 
 class Train{
-   plateNumber
+
    name
 }
 class RailLine{
 cost
-type
+isEletrified
+isDouble
 }
-class StationStructure{
+class Building{
 
 }
 class Route{
@@ -95,9 +96,13 @@ class Cargo {
     limit
 }
 class Locomotive {
+    plateNumber
     powerSource
     acceleration
-    cost
+    BuyCost
+    startYear
+    fuelCost
+    maintenanceCost
 }
 
 class Carriage{
@@ -119,7 +124,7 @@ Player "1" -- "1..*" Station : buys >
 Player "1" - "1" Map : places elements >
 Player "1" -- "1..*" Train : buys >
 Player "1" - "1..*" RailLine : builds >
-Player "1"-"*" StationStructure: buys >
+Player "1"-"*" Building: buys >
 
 
 Map "1" - "1" Size : has >
@@ -139,13 +144,14 @@ Scenario "*" -- "1..*" MixedIndustry : changes Class >
 Scenario "*" -- "1..*" Industry : changes Production >
 Scenario "*" - "1" Map : uses >
 Scenario "*" - "1..*" Train : restricts >
+Scenario "*" - "1..*" Train : Station >
 
 MixedIndustry "*" -down-> "*" PrimarySectorIndustry : transforms >
 MixedIndustry "*" -down-> "*" TransformingIndustry : transforms >
 
 Station "1" -- "1" Location : has >
 Station "1" - "1" RailLine : connects <
-Station "1" -- "*" StationStructure : upgrades <
+Station "1" -- "*" Building : upgrades <
 Station "1..*" -- "1..*" Train : loads/unloads <
 Station "1..*" --- "1..*" City : loads/unloads >
 Station "1" -- "1..*" Cargo : is assigned to <
@@ -166,6 +172,9 @@ City "1" -- "1..*" HouseBlock : contains >
 City "1" -- "1" Location : bears >
 
 Simulation "1" -- "1..*" Industry : starts/pauses >
+Simulation "1" --- "1" Map : starts/pauses >
 Simulation "1" -- "1..*" City : starts/pauses >
+
+Location "1"--"1"HouseBlock: have <
 @enduml
 
