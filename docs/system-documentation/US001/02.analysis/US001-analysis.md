@@ -1,4 +1,4 @@
-# US001 - Create a map
+# US001 - Create a Map with a size and a name
 
 ## 2. Analysis
 

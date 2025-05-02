@@ -1,4 +1,4 @@
-# US007- List all the Stations
+# US007- List all the Stations by Details
 
 ## 4. Tests 
 

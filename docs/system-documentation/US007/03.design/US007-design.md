@@ -1,27 +1,27 @@
-# US007- List all the Stations
+# US007- List all the Stations by Details
 
 ## 3. Design
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question: Which class is responsible for...       | Answer                 | Justification (with patterns)                                                                                                       |
+|:---------------|:--------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
+| Step 1         | ... interacting with the actor?                   | ListStationsUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
+|                | ... coordinating the US?                          | ListStationsController | Controller                                                                                                                          |
+|                | ... knowing the user using the system?            |                        |                                                                                                                                     |
+|                |                                                   |                        |                                                                                                                                     |
+|                |                                                   |                        |                                                                                                                                     |
+| Step 2         | ... knowing all existing stations to show?        | StationRepository      | IE: Repository is responsible for                                                                                                   |
+|                |                                                   | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
+| Step 3         | ... saving the selected category?                 | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
+| Step 4         | ... requesting data?                              | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
+| Step 5         | ... saving the inputted data?                     | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
+| Step 6         | ... showing all data and requesting confirmation? | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
+| Step 7         | ... instantiating a new Task?                     | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
+|                | ... validating all data (local validation)?       | Task                   | IE: owns its data.                                                                                                                  | 
+|                | ... validating all data (global validation)?      | Organization           | IE: knows all its tasks.                                                                                                            | 
+|                | ... saving the created task?                      | Organization           | IE: owns all its tasks.                                                                                                             | 
+| Step 8         | ... informing operation success?                  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
 
 ### Systematization ##
 

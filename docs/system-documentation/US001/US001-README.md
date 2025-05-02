@@ -1,4 +1,4 @@
-# US001 - Create a Map 
+# US001 - Create a Map with a size and a name
 
 [Requirements Engineering](01.requirements-engineering/US001-requirements.md)
 

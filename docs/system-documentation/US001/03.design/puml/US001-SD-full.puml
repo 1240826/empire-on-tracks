@@ -8,7 +8,7 @@ autonumber
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
-participant ":CreateMapValidator" as Validator
+participant ":MapValidator" as Validator
 participant "Repositories" as Rep
 participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant "MapRepository \n: MapRepository" as Repository
@@ -33,10 +33,10 @@ activate Employee
 
 
 
-    deactivate UI
+
 
     Employee -> UI : Gives name and size
-    activate UI
+
 
         UI --> Controller  : createMap(name, width, height)
         activate Controller
@@ -59,10 +59,7 @@ activate Employee
             activate Rep
             Rep-->Controller:repositories
             deactivate Rep
-            Controller -> REPOS_SINGLETON : getCategoryRepository()
-                            activate REPOS_SINGLETON
-                                REPOS_SINGLETON --> Controller: CategoryRepository
-                            deactivate REPOS_SINGLETON
+
             Controller->Repository:getMapsNames()
             activate Repository
             Repository-->Controller:listOfNames()
@@ -80,10 +77,10 @@ activate Employee
 
                 alt If name is valid
                     UI --> Employee : asks for confirmation to create map
-                    activate UI
+
 
                     Employee -> UI : confirms map creation
-                    activate UI
+
 
                     UI -> Controller: createMap()
                     activate Controller
