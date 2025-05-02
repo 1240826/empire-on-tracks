@@ -19,7 +19,7 @@ activate Employee
     Employee -> System : selects two stations
     activate System
 
-        System --> Employee : asks to select line details (i.e. if it's electrified,\nit's length, if it's single or double)
+        System --> Employee : asks to select line details (i.e. if it's electrified,\n if it's single or double)
     deactivate System
 
     Employee -> System : selects railway line details
