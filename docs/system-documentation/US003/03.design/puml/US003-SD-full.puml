@@ -6,108 +6,143 @@ skinparam shadowing false
 autonumber
 
 actor "Editor" as Editor
-participant ":AddCityUI" as UI
-participant ":AddCityController" as Controller
-participant ":Map" as Map
-participant ":City" as City
-participant ":MapRepository" as Repository
+participant ":AddCityUI"            as UI
+participant ":AddCityController"    as Controller
+participant "Repositories"          as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "mapRepository\n:MapRepository" as MAP_REPO
+participant ":Map"                  as Map
+participant ":City"                 as City
+participant ":HouseBlock"           as HouseBlock
+participant ":Location"             as Location
 
 activate Editor
 
-    Editor -> UI : asks to add a city
-    activate UI
+Editor -> UI : asks to add a city
+activate UI
 
-        UI -> Controller : startAddCity()
+    UI -> Controller : startAddCity()
+    activate Controller
+
+        Controller -> REPOS : getInstance()
+        activate REPOS
+            REPOS --> Controller : repositories
+        deactivate REPOS
+
+        Controller -> REPOS_SINGLETON : getMapRepository()
+        activate REPOS_SINGLETON
+            REPOS_SINGLETON --> Controller : mapRepository
+        deactivate REPOS_SINGLETON
+
+        Controller -> MAP_REPO : getCurrentMap()
+        activate MAP_REPO
+            MAP_REPO --> Controller : currentMap
+        deactivate MAP_REPO
+
+        Controller -> UI : requests city details\n(name, positionX, positionY, number of house blocks)
+    deactivate Controller
+deactivate UI
+
+UI --> Editor : shows fields for city details
+Editor -> UI : types name, positionX, positionY, houseBlocks
+activate UI
+
+    UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
+    activate Controller
+
+        Controller -> City : createCity(name, positionX, positionY, houseBlocks)
+        activate City
+            City -> City : validateName()
+            City -> City : validateHouseBlocks()  ' Verifica se > 0
+        deactivate City
+
+        Controller -> Map : isCityNameDuplicate(name)
+        activate Map
+            Map --> Controller : true / false
+        deactivate Map
+
+        alt name duplicated
+            Controller -> UI : warn("City name is already in use")
+        else
+            Controller -> UI : requests assignment method\n(manual or automatic)
+        end
+    deactivate Controller
+deactivate UI
+
+UI --> Editor : select assignment method
+Editor -> UI : selects "automatic" or "manual"
+activate UI
+
+    alt method = "automatic"
+        UI -> Controller : selectedAssignmentMethod("automatic")
         activate Controller
 
-            Controller -> UI : requests city details (name, positionX, positionY, number of house blocks)
-        deactivate Controller
-    deactivate UI
-
-    UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
-    Editor -> UI : types city details
-    activate UI
-
-        UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
-        activate Controller
-
-            Controller -> Map : getCurrentMap()
-            activate Map
-                Map --> Controller : currentMap
-            deactivate Map
-
-            Controller -> City : createCity(name, positionX, positionY, houseBlocks)
+            Controller -> City : getCityCenter()
             activate City
-
-                City -> City : validateName() \n(no digits or special chars)
-                City -> City : validateHouseBlocks() \n(must be positive)
-
+                City --> Controller : center
             deactivate City
 
-            Controller -> Map : isCityNameDuplicate(name)
-            activate Map
-                Map --> Controller : true/false
-            deactivate Map
+            loop houseBlocks times
+                Controller -> Location : computeBlockPosition(center)
+                activate Location
+                    Location --> Controller : position
+                deactivate Location
 
-            alt if name is duplicate
-                Controller -> UI : warn("City name is already in use")
-            else
-                Controller -> UI : requests to select house block assignment method (manual or automatic)
+                Controller -> HouseBlock : createAt(position)
+                activate HouseBlock
+                    HouseBlock --> Controller : houseBlock
+                deactivate HouseBlock
+
+                Controller -> City : addHouseBlock(houseBlock)
             end
         deactivate Controller
-    deactivate UI
 
-    UI --> Editor : select assignment method
-    Editor -> UI : selects assignment method
-    activate UI
-
-        alt method = "automatic"
-            UI -> Controller : selectedAssignmentMethod("automatic")
-            activate Controller
-                Controller -> City : assignHouseBlocksAutomatically()
-            deactivate Controller
-
-        else method = "manual"
-            UI -> Editor : request positions of house blocks
-            Editor -> UI : submits positions
-            UI -> Controller : selectedAssignmentMethod("manual", positionX, positionY)
-            activate Controller
-
-                Controller -> Map : validateCoordinates(positionX, positionY)
-                activate Map
-                    Map -> Controller : coordinates are valid / invalid
-                deactivate Map
-
-                alt if coordinates are valid
-                    Controller -> City : assignHouseBlocksManually(positions)
-                else
-                    Controller -> UI : warn("Coordinates are out of bounds or invalid")
-                end
-            deactivate Controller
-        end
-
-        UI -> Editor : shows all data and requests confirmation
-    deactivate UI
-
-    Editor -> UI : confirms data
-    activate UI
-
-        UI -> Controller : confirmCityCreation()
+    else method = "manual"
+        UI -> Editor : request positions of house blocks
+        Editor -> UI : submits positions
+        UI -> Controller : selectedAssignmentMethod("manual", positions)
         activate Controller
 
-            Controller -> Map : addCity(city)
+            Controller -> Map : validateCoordinates(positions)
             activate Map
-
-                Map -> Repository : saveCity(city)
-                activate Repository
-                    Repository --> Map : city saved
-                deactivate Repository
-
+                Map --> Controller : valid / invalid
             deactivate Map
 
-            Controller -> UI : display operation success
+            alt positions valid
+                Controller -> City : assignHouseBlocksManually(positions)
+            else
+                Controller -> UI : warn("Coordinates out of bounds")
+            end
         deactivate Controller
-    deactivate UI
+    end
+
+    UI -> Editor : shows all data and asks confirmation
+deactivate UI
+
+Editor -> UI : confirms data
+activate UI
+
+    UI -> Controller : confirmCityCreation()
+    activate Controller
+
+        Controller -> REPOS : getInstance()
+        activate REPOS
+            REPOS --> Controller : repositories
+        deactivate REPOS
+
+        Controller -> REPOS_SINGLETON : getMapRepository()
+        activate REPOS_SINGLETON
+            REPOS_SINGLETON --> Controller : mapRepository
+        deactivate REPOS_SINGLETON
+
+        Controller -> MAP_REPO : addCity(city)
+        activate MAP_REPO
+            MAP_REPO -> MAP_REPO : saveCity(city)
+        deactivate MAP_REPO
+
+        Controller -> UI : display operation success
+    deactivate Controller
+deactivate UI
 
 deactivate Editor
 @enduml

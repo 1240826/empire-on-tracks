@@ -1,4 +1,4 @@
-# US013 - Train route validation by type
+# US013 - Validate a route by train type
 
 ## 1. Requirements Engineering
 
