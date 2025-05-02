@@ -1,4 +1,4 @@
-# US006 - Create a Task 
+# US001 - Create a Map with a size and a name
 
 ## 4. Tests 
 

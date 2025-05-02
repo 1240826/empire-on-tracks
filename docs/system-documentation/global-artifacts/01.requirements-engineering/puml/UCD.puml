@@ -5,14 +5,14 @@ left to right direction
 
  Player --> (UC5 - Build a Station)
  Player --> (UC6 - Upgrade a Station)
- Player --> (UC7 - List all the Stations)
+ Player --> (UC7 - List all the Stations by Details)
  Player --> (UC8 - Build a Railway Line)
  Player --> (UC9 - Buy a Locomotive)
  Player --> (UC10 - Assign a Train to a Route)
  Player --> (UC11 - List all Trains)
  Player --> (UC12 - Operate a Simulation)
 
-Editor --> (UC1 - Create a Map)
+Editor --> (UC1 - Create a Map with a size and a name)
  Editor --> (UC2 - Add an Industry)
  Editor --> (UC3 - Add a City)
  Editor --> (UC4 - Create a Scenario)
