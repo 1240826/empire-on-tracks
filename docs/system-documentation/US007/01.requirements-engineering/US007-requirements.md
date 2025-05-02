@@ -54,7 +54,7 @@ As a Player, I want to list all the stations to select one to see its details, i
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US007-SSD.svg)
+![US007-SSD.svg](svg/US007-SSD.svg)
 
 **_Other alternatives might exist._**
 
