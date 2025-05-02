@@ -26,7 +26,16 @@ this context, the goods that the Ports import and export are also defined.
 
 > **Answer:** One scenario uses one map; one map can be used in multiple scenarios. 
 
+> **Question:** In the acceptance criterion 3, it talks about "the factors that alter the generation (frequency) of generating industries", what exactly are these factors? Are we talking about the rate at which these industries produce resources? or is it something else? Also, are we supposed to give the editor the freedom to edit the generation rate of of each generating industry or is it 1 rate for all the generating industries?
 
+> **Answer:** The generation rates of the industries can be defined in a configuration file, it is not expected that there will be any US to edit them.
+Each entry must define the industry and the number of cargos generated per unit of time like year or month.
+(e.g., CoalMine, 4). A factor allows you to change this rate as a percentage. (e.g., CoalMine, 50%) meaning that the coal mine will now produce 6 cargos per unit of time.
+
+> **Question:** Are the rates of production and quantity produce from industries decided in the scenario's specifications?
+
+> **Answer:**
+The rates are predefined values but can be redefined in the scenario.
 
 ### 1.3. Acceptance Criteria
 
@@ -46,7 +55,7 @@ this context, the goods that the Ports import and export are also defined.
   * Start date
   * End date
   * Locomotion type 
-  * Port cargo behavior
+  * Industry production rate
   * Behavior of mixed Industries
   
   
