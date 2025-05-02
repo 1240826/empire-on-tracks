@@ -1,4 +1,4 @@
-# US001 - Create a Map with name and Size
+# US001 - Create a Map with a size and a name
 
 ## 1. Requirements Engineering
 
