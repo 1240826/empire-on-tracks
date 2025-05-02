@@ -5,10 +5,7 @@
 _Specifies functionalities that:  
 &nbsp; &nbsp; (i) are common across several US/UC;  
 &nbsp; &nbsp; (ii) are not related to US/UC, namely: Audit, Reporting and Security._
-    
 
-  *  **Reporting**
-      * "The JaCoCo plugin should be used to generate the coverage report."
 
   *  **Security**
      * "All those who wish to use the application must be authenticated with a password of seven alphanumeric characters, including three capital letters and two digits." 
@@ -21,18 +18,15 @@ _Evaluates the user interface. It has several subcategories,
 among them: error prevention; interface aesthetics and design; help and
 documentation; consistency and standards._
 
-* **Help and documentation**
-   * "The application documentation must be in English."
-
+* **Localizability**
+* "The application documentation must be in English."
 
 
 ## Reliability
 
 _Refers to the integrity, compliance and interoperability of the software. The requirements to be considered are: frequency and severity of failure, possibility of recovery, possibility of prediction, accuracy, average time between failures._
 
-
-* **Accuracy** 
-    *  "Validation of business rules must be respected when recording and updating data."
+* TBD
   
   
 
@@ -50,7 +44,7 @@ configurability, installability, scalability and more._
 
 * **Testability**
    * "The development team must implement unit tests for all methods, except for the methods that implement Input/Output operations. Unit tests should be implemented using the JUnit 5 framework."
-
+   * "The JaCoCo plugin should be used to generate the coverage report."
 
 * **Maintainability**
   * "To increase the solution maintainability and respect good software development practices, the implementation must follow a Test-Driven Development (TDD) approach."
@@ -74,10 +68,10 @@ _Specifies or constraints the system design process. Examples may include: progr
 
 * **Mandatory standards/patterns**
     * "During system development, the team must: (i) adopt best practices for identifying requirements and for OO software analysis and design;"
+    * "All the images/figures produced during the software development process should be recorded in SVG format."
 
 
-* **Use of development tools**
-    * "(iii) use Javadoc to generate useful documentation for Java code."
+
 
   
 
@@ -89,8 +83,7 @@ database integrity, resource limits, operating system._
 
 * **Mandatory standards/patterns**
   * "(ii) adopt recognized coding standards (e.g., CamelCase);"
-  * "All the images/figures produced during the software development process should be recorded in SVG format."
- 
+  * "(iii) use Javadoc to generate useful documentation for Java code."
 
 * **Database integrity** 
    * "The application ought to employ object serialization to guarantee the persistence of the data in two successive runs."
