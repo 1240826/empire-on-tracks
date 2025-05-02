@@ -5,32 +5,32 @@ skinparam shadowing false
 
 autonumber
 
-actor "Organization\nEmployee" as Employee
+actor "Player" as Player
 participant ":System" as System
 
-activate Employee
+activate Player
 
-    Employee -> System : asks to create a new railway line
+    Player -> System : asks to create a new railway line
     activate System
 
-        System --> Employee : shows existing stations and asks to select two of them
+        System --> Player : shows existing stations and asks to select two of them
     deactivate System
 
-    Employee -> System : selects two stations
+    Player -> System : selects two stations
     activate System
 
-        System --> Employee : asks to select line details (i.e. if it's electrified,\n if it's single or double)
+        System --> Player : asks to select line details (i.e. if it's electrified,\n if it's single or double)
     deactivate System
 
-    Employee -> System : selects railway line details
+    Player -> System : selects railway line details
     activate System
 
-        System --> Employee : shows all data and requests confirmation
+        System --> Player : shows all data and requests confirmation
     deactivate System
 
-    Employee -> System : confirms data
+    Player -> System : confirms data
     activate System
 
-        System --> Employee : displays operation success
+        System --> Player : displays operation success
     deactivate System
 @enduml
