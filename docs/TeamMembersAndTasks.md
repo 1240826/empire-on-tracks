@@ -47,7 +47,6 @@ At last, remember that each User Story does not stand alone... it needs to be in
 | US10 (SDP Activities)                                                                                                           | [1241949](system-documentation/US010/US010-README.md) |     [1241949](system-documentation/US010/US010-README.md)                                                   |          |
 | US11 (SDP Activities)                                                                                                           | [1241949](system-documentation/US011/US011-README.md) |    [1241949](system-documentation/US011/US011-README.md)                                                   |          |
 | US12 (SDP Activities)                                                                                                           | [1240821](system-documentation/US012/US012-README.md) |[1240821](system-documentation/US012/US012-README.md)                                                       |          |
-| US13 (SDP Activities)                                                                                                           |                                          | [1240796](system-documentation/US013/US013-README.md)                                            |          |
-| US14 (SDP Activities)                                                                                                           |                                         | [1240824](system-documentation/US014/US014-README.md) |          |
+
 
 
