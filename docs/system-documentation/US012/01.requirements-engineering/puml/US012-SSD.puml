@@ -10,7 +10,7 @@ participant ":System" as System
 
 activate Owner
 
-    Owner -> System : create a simulation with industries, cities, stations, railroad networks, and scenarios
+    Owner -> System : create a simulation with industries, cities, stations, railroad \n networks, and scenarios
     activate System
         System --> Owner : ask if they want to start/pause
     deactivate System
@@ -19,11 +19,13 @@ activate Owner
         alt Player selects "start"
             Owner -> System : selects start
             activate System
+
                 System --> Owner : generates cargoes at stations, automatically, considering the cities and industries that the railway network serves
             deactivate System
         else Player selects "pause"
             Owner -> System : selects pause
             activate System
+
                 System --> Owner : stop generates cargoes
             deactivate System
         end

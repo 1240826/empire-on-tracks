@@ -8,9 +8,8 @@ autonumber
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
-participant ":MapValidator" as Validator
+participant ":ValueValidator" as Validator
 participant "Repositories" as Rep
-participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant "MapRepository \n: MapRepository" as Repository
 
 participant ":Map" as Map

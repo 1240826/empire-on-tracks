@@ -7,65 +7,52 @@ autonumber
 
 actor "Editor" as Editor
 participant "AddIndustryUI" as UI
-participant "IndustryController" as Controller
-participant "PositionValidator" as Validator
-participant "IndustryRepository" as Repository
-participant "IndustryFactory" as Factory
+participant ":AddIndustryController" as Controller
+participant ":ValueValidator" as Validator
 participant "Map" as Map
+participant "IndustryRepository \n: IndustryRepository" as Repository
 
 activate Editor
 
-Editor -> UI : requestIndustryCreation()
+Editor -> UI : Ask to add an industry
 activate UI
-UI -> Controller : startIndustryCreation()
+UI --> Controller**: startAddIndustryController()
+
+
+UI --> Editor : Ask for the XY position
 deactivate UI
 
-UI -> Editor : requestCoordinates()
-
-Editor -> UI : provideCoordinates(X, Y)
+Editor -> UI : Gives X,Y
 activate UI
 UI -> Controller : submitCoordinates(X, Y)
 
 activate Controller
-Controller -> Validator : validateCoordinates(X, Y)
+Controller->Validator:ValidateCoordinates
 activate Validator
+Validator->Validator:isPositiveInteger(X)
+Validator->Validator:isPositiveInteger(Y)
+Validator-->Controller:valid/invalid
+deactivate Validator
+alt Invalid
+Controller-->UI: displayError(invalid coordinates)
+else valid
+Controller->Map:validatePosition(X,Y)
+activate Map
+Map->Map:isEmpty(X,Y)
+Map-->Controller:true/false
+alt false
+Controller-->UI: displayError(occupied place)
+else true
+Controller->Repository:getListOfIndustry
+Controller-->UI: display(List)
 
-Validator -> Map : checkCoordinates(X, Y)
-
-alt Invalid coordinates
-    Validator --> Controller : invalid()
-    Controller -> UI : displayError("Coordinates out of bounds")
-    deactivate Validator
-    deactivate Controller
-else Valid coordinates
-    Validator --> Controller : valid()
-    deactivate Validator
-
-    Controller -> Repository : fetchIndustryTypes()
-    Repository --> Controller : listOfTypes
-
-    Controller -> UI : displayIndustryTypes(listOfTypes)
-    deactivate Controller
-
-    UI -> Editor : showOptions(listOfTypes)
-
-    Editor -> UI : selectIndustryType(selectedTypeId)
-    activate UI
-    UI -> Controller : submitSelectedType(selectedTypeId)
-    activate Controller
-
-    Controller -> Factory : createIndustry(selectedTypeId, X, Y)
-    activate Factory
-    Factory --> Controller : newIndustry
-    deactivate Factory
-
-    Controller -> Map : addIndustry(newIndustry)
-    Controller -> UI : displaySuccess("Industry created successfully!")
-    deactivate Controller
-
-    UI -> Editor : confirmCreation()
-    deactivate UI
 end
+end
+
+
+
+    deactivate UI
+
 
 deactivate Editor
 @enduml

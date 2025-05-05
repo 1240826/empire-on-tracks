@@ -1,0 +1,70 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+'skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+
+'left to right direction
+
+class CreateMapController {
+    + starController()
+    + createMap(name, width, height)
+    + saveMap()
+    +display()
+}
+
+
+class Repositories {
+    - Repositories()
+    + {static} getInstance()
+
+
+}
+class MapRepository {
+    + getMapNames()
+}
+
+class Map {
+    - name : String
+    - widht : int
+    - height : int
+}
+
+class CreateMapUI {
+}
+
+class MapValidator{
++isPositiveInteger()
+
+}
+
+CreateMapUI .> CreateMapController
+
+
+
+
+
+CreateMapController ..> Map
+CreateMapController ..> MapRepository
+CreateMapController .> Repositories
+CreateMapController ..>MapValidator
+
+Repositories -> "1" Repositories : instance
+Repositories --> "1" MapRepository : MapRepository
+
+
+
+
+
+
+MapRepository --> "*" Map : Maps
+
+
+
+
+
+
+@enduml

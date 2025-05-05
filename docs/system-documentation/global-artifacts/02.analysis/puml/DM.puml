@@ -125,6 +125,7 @@ Player "1" -- "1" Map : places elements >
 Player "1" - "1..*" Train : buys >
 Player "1" - "1..*" RailLine : builds >
 Player "1"-"*" Building: buys >
+Player "1"-"1" Scenario :start/pause >
 
 
 Map "1" - "1" Size : has >
@@ -132,9 +133,9 @@ Map "1" -- "*" Industry : contains >
 Map "1" -- "*" City : contains >
 Map "1" -- "*" RailLine : contains >
 
-Industry "1..*" -down-|> "1..*" PrimarySectorIndustry : can be >
-Industry "1..*" -down-|> "1..*" TransformingIndustry : can be >
-Industry "*" -down--|> "1..*" MixedIndustry : can be >
+Industry "1..*" <|-down- "1..*" PrimarySectorIndustry : can be >
+Industry "1..*" <|-down- "1..*" TransformingIndustry : can be >
+Industry "*" <|-down-- "1..*" MixedIndustry : can be >
 Industry "1" - "1" Location : has >
 Industry "1..*" -- "1..*" Station : loads/unloads >
 Industry "1" -- "1..*" Cargo : produces >
@@ -146,8 +147,8 @@ Scenario "*" - "1" Map : uses >
 Scenario "*" - "1..*" Train : restricts >
 Scenario "*" - "1..*" Train : Station >
 
-MixedIndustry "*" -down-|> "*" PrimarySectorIndustry : transforms >
-MixedIndustry "*" -down-|> "*" TransformingIndustry : transforms >
+MixedIndustry "*" <|-down- "*" PrimarySectorIndustry : transforms >
+MixedIndustry "*" <|-down- "*" TransformingIndustry : transforms >
 
 Station "1" -- "1" Location : has >
 Station "1" - "1" RailLine : connects <
@@ -155,7 +156,7 @@ Station "1" -- "*" Building : upgrades <
 Station "1..*" -- "1..*" Train : loads/unloads <
 Station "1..*" --- "1..*" City : loads/unloads >
 Station "1" -- "1..*" Cargo : is assigned to <
-Station "1"--|>"1" StationType:could be >
+Station "1"<|--"1" StationType:could be >
 
 
 Train "1" -- "1..*" RailLine : uses >
