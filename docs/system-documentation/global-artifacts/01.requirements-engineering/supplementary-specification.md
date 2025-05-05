@@ -19,7 +19,7 @@ among them: error prevention; interface aesthetics and design; help and
 documentation; consistency and standards._
 
 * **Localizability**
-* "The application documentation must be in English."
+   * "The application documentation must be in English."
 
 
 ## Reliability
