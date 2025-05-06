@@ -40,18 +40,30 @@ Controller->Map:validatePosition(X,Y)
 activate Map
 Map->Map:isEmpty(X,Y)
 Map-->Controller:true/false
+deactivate Map
 alt false
 Controller-->UI: displayError(occupied place)
 else true
 Controller->Repository:getListOfIndustry
-Controller-->UI: display(List)
+activate Repository
+Repository-->Controller:ListOfIndustry
+deactivate Repository
+Controller-->UI: display(ListOfIndustry)
+deactivate Controller
+UI-->Editor:Show the different types \nof industry and ask one option.
+deactivate UI
+Editor->UI:Select one option.
+UI->Controller: addIndustry(option)
+activate Controller
+Controller->Map: addIndustry(option)
+Controller-->UI: display(success)
+deactivate Controller
+UI-->Editor:Confirm the creation of this industry.
+deactivate UI
+
 
 end
 end
-
-
-
-    deactivate UI
 
 
 deactivate Editor
