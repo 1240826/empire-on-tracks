@@ -1,0 +1,50 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor ":Player" as Player
+participant ":BuyLocomotiveUI" as UI
+participant ":BuyLocomotiveController" as Controller
+participant ":LocomotiveCatalog" as Catalog
+participant ":Player" as PlayerObject
+
+autonumber
+'hide footbox
+
+
+activate Player
+    Player -> UI : requests to buy a locomotive
+    activate UI
+        UI -> Controller : requestAvailableLocomotives()
+        activate Controller
+            Controller -> Catalog : getAvailableLocomotives(date, scenario)
+            activate Catalog
+                Catalog --> Controller : list of available locomotives
+            deactivate Catalog
+        Controller --> UI : list of available locomotives
+    deactivate Controller
+    UI --> Player : shows list and requests selection
+
+deactivate UI
+
+    Player -> UI : selects a locomotive
+    activate UI
+        UI -> Controller : selectLocomotive(locomotiveID)
+        activate Controller
+            Controller -> PlayerObject : hasSufficientBudget(price)
+            activate PlayerObject
+                PlayerObject --> Controller : true/false
+            deactivate PlayerObject
+            alt if budget is sufficient
+                Controller -> PlayerObject : buyLocomotive(locomotive)
+                activate PlayerObject
+                    PlayerObject --> Controller : locomotive instance
+                deactivate PlayerObject
+                Controller --> UI : show success message
+            else insufficient budget
+                Controller --> UI : show failure message
+            end
+        deactivate Controller
+    deactivate UI
+@enduml
