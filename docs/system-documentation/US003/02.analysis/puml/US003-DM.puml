@@ -21,7 +21,6 @@ class Size{
     width
 }
 class City {
-    numberOfHouseBlocks
     name
 }
 class HouseBlock{
@@ -40,4 +39,5 @@ Map "1" -- "*" City : contains >
 City "1" -- "1*" HouseBlock : contains >
 City "1" -- "1" Location : bears >
 
+Location "1"--"1"HouseBlock: have <
 @enduml

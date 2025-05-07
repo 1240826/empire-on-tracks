@@ -25,9 +25,9 @@ class Size{
 }
 
 class Scenario {
-    behaviorOfMixedIndustries
-    locomotionType
-    portCargoBehavior
+  behaviorOfMixedIndustries
+  locomotiveType
+  industryProductionRate
 }
 
 class Period {

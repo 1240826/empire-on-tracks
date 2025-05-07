@@ -53,7 +53,7 @@ activate UI
         Controller -> City : createCity(name, positionX, positionY, houseBlocks)
         activate City
             City -> City : validateName()
-            City -> City : validateHouseBlocks()  ' Verifica se > 0
+            City -> City : validateHouseBlocks()
         deactivate City
 
         Controller -> Map : isCityNameDuplicate(name)
@@ -99,7 +99,7 @@ activate UI
 
     else method = "manual"
         UI -> Editor : request positions of house blocks
-        Editor -> UI : submits positions
+        Editor -> UI : submits positionX, positionY
         UI -> Controller : selectedAssignmentMethod("manual", positions)
         activate Controller
 
@@ -135,10 +135,15 @@ activate UI
             REPOS_SINGLETON --> Controller : mapRepository
         deactivate REPOS_SINGLETON
 
-        Controller -> MAP_REPO : addCity(city)
+        Controller -> MAP_REPO : getCurrentMap()
         activate MAP_REPO
-            MAP_REPO -> MAP_REPO : saveCity(city)
+            MAP_REPO --> Controller : currentMap
         deactivate MAP_REPO
+
+        Controller -> Map : addCity(city)
+        activate Map
+            Map -> Map : integrate city internally
+        deactivate Map
 
         Controller -> UI : display operation success
     deactivate Controller

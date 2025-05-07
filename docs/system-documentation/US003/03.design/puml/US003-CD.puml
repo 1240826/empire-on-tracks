@@ -1,126 +1,125 @@
 @startuml
-'skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
-'skinparam linetype orto
-
 skinparam classAttributeIconSize 0
 
-'left to right direction
+class "LoginController" {
+    + authenticateUser(username: String, password: String): Boolean
+    - validatePassword(password: String): Boolean
+}
 
-class ApplicationSession
-{
+class "User" {
+    - username: String
+    - password: String
+}
+
+class "PasswordValidator" {
+    + validate(password: String): Boolean
+}
+
+class "ApplicationSession" {
     - ApplicationSession()
     + {static} getInstance()
-    + getCurrentSession()
+    + getCurrentSession(): UserSession
 }
 
-class UserSession
-{
-    + getUserEmail()
+class "UserSession" {
+    + getUsername(): String
 }
 
-class Employee {
-    - name : String
-    - email : String
-    - position : String
-    - phone : String
+class "SessionManager" {
+    + startSession(user: User)
+    + endSession()
 }
 
-class Task {
-    - reference :String
-    - description : String
-    - informalDescription : String
-    - technicalDescription : String
-    - duration : int
-    - cost : double
-
-    + Task(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, createdBy)
+class "City" {
+    - name: String
+    - positionX: int
+    - positionY: int
+    - houseBlocks: int
+    + createCity(name: String, positionX: int, positionY: int, houseBlocks: int)
+    + validateName(): Boolean
+    + validateHouseBlocks(): Boolean
+    + assignHouseBlocksManually(positions: List[Location])
+    + getCityCenter(): Location
+    + addHouseBlock(houseBlock: HouseBlock)
 }
 
-class TaskCategory {
-    - description : String
+class "Location" {
+    - x: int
+    - y: int
+    + computeBlockPosition(center: Location): Location
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
-
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
+class "HouseBlock" {
+    - position: Location
+    + createAt(position: Location): HouseBlock
 }
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
+class "Map" {
+    + getCity(name: String): City
+    + addCity(city: City)
+    + isCityNameDuplicate(name: String): Boolean
+    + validateCoordinates(positions: List[Location]): Boolean
 }
 
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
-}
-
-class Repositories {
+class "Repositories" {
     - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
+    + {static} getInstance(): Repositories
+    + getMapRepository(): MapRepository
 }
 
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
+class "MapRepository" {
+    + getCurrentMap(): Map
 }
 
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
-end note
-
-note bottom of TaskCategoryRepository
-    - used for displaying
-    the task category list
-end note
-
-class CreateTaskUI {
+class "AddCityController" {
+    + startAddCity()
+    + submitCityDetails(name: String, positionX: int, positionY: int, houseBlocks: int)
+    + selectedAssignmentMethod(method: String, positions: List[Location])
+    + confirmCityCreation()
 }
 
-CreateTaskUI .> CreateTaskController
+class "AddCityUI" {
+    + showFieldsForCityDetails()
+    + requestCityDetails()
+    + showWarning(message: String)
+    + showSuccess(message: String)
+}
 
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
 
-Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
 
-ApplicationSession -> "1" ApplicationSession : instance
-ApplicationSession ..> UserSession
+LoginController ..> User : authenticates
+LoginController ..> PasswordValidator : validates password
+LoginController ..> ApplicationSession : manages session
 
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
+ApplicationSession ..> UserSession : retrieves session
+UserSession ..> User : has user
 
-OrganizationRepository --> "*" Organization : organizations
+SessionManager ..> ApplicationSession : manages session lifecycle
 
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
+AddCityUI .> AddCityController : submits data
 
-Task --> "1" TaskCategory : taskCategory
-Task --> "1" Employee : createdBy
+AddCityController ..> Repositories : uses
+AddCityController ..> MapRepository : uses
+AddCityController ..> City : creates
+AddCityController ..> Location : computes
+AddCityController ..> HouseBlock : creates
+AddCityController ..> Map : validates
 
+Repositories --> "1" MapRepository : mapRepository
+Repositories --> "1" Repositories : instance
+
+MapRepository --> "1" Map : currentMap
+
+Map --> "*" City : cities
+Map --> "*" Location : locations
+Map --> "*" HouseBlock : houseBlocks
+
+City --> "*" HouseBlock : houseBlocks
+City --> "1" Location : position
+
+HouseBlock --> "1" Location : position
 
 @enduml
