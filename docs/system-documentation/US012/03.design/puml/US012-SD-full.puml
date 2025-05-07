@@ -6,48 +6,134 @@ skinparam shadowing false
 autonumber
 
 actor "Player" as Owner
-participant "UI" as UI
-participant "SimulationController" as Controller
-participant "Map" as Map
+participant ":SimulatorUI" as UI
+participant ":SimulatorController" as Controller
+participant ":Map" as Map
+
+participant "MapStations" as Rep_Stations
+participant "MapStations \n :Station" as Stations
+
+participant "MapIndustries" as Rep_Industries
+participant "MapIndustries\n Industry" as Industries
+
+participant "MapTrains" as Rep_Trains
+participant "MapTrains \n Train" as Trains
+
+participant ":SimulationTime" as Time
+participant "RepositorieScenario" as Rep_Scenario
+participant "RepositorieScenario\n Seneario" as Scenario
+
 
 activate Owner
 
-Owner -> UI : create simulation with industries, cities, stations, railroads
+Owner -> UI : create a simulation with industries, cities, stations, railroad \n networks, and scenarios
 activate UI
-UI --> Controller : startSimulation()
-activate Controller
-Controller --> Map : initializeMap()  // initializes map with the simulation
-activate Map
-Map --> Controller : mapInitialized()
-deactivate Map
-deactivate Controller
-UI --> Owner : Simulation created successfully!
+UI -> Controller : loadSimulator(Map, Rep_Scenario)
+
+UI --> Owner : ask if they want to start/pause
 deactivate UI
-Owner -> UI : asks to start the simulation
-loop Start Simulation
 
-    activate UI
-    UI --> Controller : startSimulation()
-    activate Controller
-    Controller --> Map : updateMap()  // updates cargoes and train movements
-    activate Map
-    Map --> Controller : mapUpdated()
-    deactivate Map
-    deactivate Controller
-    UI --> Owner : Simulation started
-    deactivate UI
+loop Simulation
+    alt Player selects "start"
+        Owner -> UI : selects start
+        activate UI
+        UI -> Controller : start()
+        loop
+            activate Controller
+            Controller -> Map : updateMap(True)
+            Controller->Rep_Scenario: change()
+            activate Rep_Scenario
+            Rep_Scenario->Date:getDate()
+            activate Date
+            Date-->Rep_Scenario:Date
+            deactivate Date
+            Rep_Scenario->Scenario:activate()
+            activate Scenario
+            opt
+            Scenario-->Industries:ChangeProduction()
+            end
+            opt
+            Scenario-->Industries:ChangeClassMIxed()
+            end
+            opt
+            Scenario-->Trains:Disable()
+            end
+          deactivate Scenario
 
-    Owner -> UI : asks to pause the simulation
-    activate UI
-    UI --> Controller : pauseSimulation()
-    activate Controller
-    Controller --> Map : stopUpdatingMap()  // stop moving trains and generating cargos
-    activate Map
-    Map --> Controller : mapPaused()
-    deactivate Map
-    deactivate Controller
-    UI --> Owner : Simulation paused
-    deactivate UI
+
+
+
+            activate Map
+
+            ' Atualização das indústrias (geração de carga)
+            Map -> Rep_Industries : updateIndustries()
+            activate Rep_Industries
+            Rep_Industries -> Industries : generateCargoAllStations()
+            activate Industries
+            Industries --> Industries : generateCargo()
+            deactivate Industries
+            deactivate Rep_Industries
+
+            ' Atualização das estações (coleta até 24 cargas)
+            Map -> Rep_Stations : updateStations()
+            activate Rep_Stations
+            Rep_Stations -> Stations : findNearbyIndustries()
+            activate Stations
+            Stations -> Rep_Industries : getIndustriesInRange()
+            activate Rep_Industries
+            Rep_Industries --> Stations : listOfNearbyIndustries
+
+             loop Station.cargo < 24
+                Stations -> Industries : collectCargo()
+                Industries --> Stations : Cargo
+            end
+
+            deactivate Rep_Industries
+            deactivate Stations
+            deactivate Rep_Stations
+
+            ' Atualização dos trens (cada um com limite próprio)
+            Map -> Rep_Trains : updateTrains()
+            activate Rep_Trains
+            Rep_Trains -> Trains : move()
+            activate Trains
+            Trains -> Map : hasStationNearby()
+              opt station nearby
+                    Trains -> Stations : collectCargo()
+                    Stations --> Trains : Cargo
+                end
+
+
+            deactivate Trains
+            deactivate Rep_Trains
+
+            Map --> Controller : updatedMap
+            deactivate Map
+
+            Controller --> UI : display(updatedMap)
+            Controller-->Date:addTime(True)
+
+            deactivate Controller
+        end
+
+        UI --> Owner : simulation step completed
+        deactivate UI
+
+    else Player selects "pause"
+        Owner -> UI : selects pause
+        activate UI
+        UI --> Controller : pause()
+            activate Controller
+                    Controller -> Map : updateMap(False)
+                    activate Map
+                    Map-->Controller: Map
+                    deactivate Map
+                    Controller-->UI:display(Map)
+                    Controller-->Date:addTime(False)
+
+        UI --> Owner : stop generating cargoes
+        deactivate UI
+    end
 end
 
 deactivate Owner

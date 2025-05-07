@@ -20,7 +20,7 @@ activate Owner
             Owner -> System : selects start
             activate System
 
-                System --> Owner : generates cargoes at stations, automatically, considering the cities and industries that the railway network serves
+                System --> Owner : generates cargoes at stations, automatically, considering \nthe cities and industries that the railway network serves
             deactivate System
         else Player selects "pause"
             Owner -> System : selects pause

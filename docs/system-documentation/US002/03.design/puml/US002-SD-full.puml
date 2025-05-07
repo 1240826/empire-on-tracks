@@ -6,10 +6,10 @@ skinparam shadowing false
 autonumber
 
 actor "Editor" as Editor
-participant "AddIndustryUI" as UI
+participant ":AddIndustryUI" as UI
 participant ":AddIndustryController" as Controller
 participant ":ValueValidator" as Validator
-participant "Map" as Map
+participant ":Map" as Map
 participant "IndustryRepository \n: IndustryRepository" as Repository
 
 activate Editor
