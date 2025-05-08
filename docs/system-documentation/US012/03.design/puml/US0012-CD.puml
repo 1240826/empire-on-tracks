@@ -46,7 +46,6 @@ class ScenarioRepository {
 class Scenario {
     +changeProduction()
     +changeClassMixed()
-    +disableTrains()
     +transformIndustry()
 }
 
@@ -54,16 +53,8 @@ class Scenario {
 ' CLASSES DE INDÚSTRIA
 '====================
 
-interface Producer {
+interface Industry {
     +generateCargo()
-}
-
-interface Consumer {
-    +consumeCargo()
-}
-
-class Industry {
-    +setProductionLevel()
 }
 
 class PrimarySectorIndustry {
@@ -110,12 +101,6 @@ Scenario --> MixedIndustry : transforms
 Industry <|-- PrimarySectorIndustry
 Industry <|-- TransformingIndustry
 Industry <|-- MixedIndustry
-
-PrimarySectorIndustry ..|> Producer
-TransformingIndustry ..|> Producer
-TransformingIndustry ..|> Consumer
-MixedIndustry ..|> Producer
-MixedIndustry ..|> Consumer
 
 ' Transformação entre indústrias
 MixedIndustry ..|> PrimarySectorIndustry : changeToPrimary
