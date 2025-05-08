@@ -1,126 +1,124 @@
 @startuml
-'skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
-'skinparam linetype orto
-
 skinparam classAttributeIconSize 0
 
-'left to right direction
+'====================
+' CLASSES PRINCIPAIS
+'====================
 
-class ApplicationSession
-{
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession()
+class SimulatorUI {
 }
 
-class UserSession
-{
-    + getUserEmail()
+class "SimulatorController"{
+    +start()
+    +pause()
+    +loadSimulator(map: Map, scenarioRepo: ScenarioRepository)
+    +display()
 }
 
-class Employee {
-    - name : String
-    - email : String
-    - position : String
-    - phone : String
+class Map {
+    +update()
 }
 
-class Task {
-    - reference :String
-    - description : String
-    - informalDescription : String
-    - technicalDescription : String
-    - duration : int
-    - cost : double
-
-    + Task(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, createdBy)
+class SimulationTime {
+    +getDate()
+    +advance()
 }
 
-class TaskCategory {
-    - description : String
+class IndustryRepository {
+    +updateIndustries()
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
-
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
+class StationRepository {
+    +updateStations()
 }
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
+class TrainRepository {
+    +updateTrains()
 }
 
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
+class ScenarioRepository {
+    +changeScenario(date: LocalDateTime)
 }
 
-class Repositories {
-    - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
+class Scenario {
+    +changeProduction()
+    +changeClassMixed()
+    +disableTrains()
+    +transformIndustry()
 }
 
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
+'====================
+' CLASSES DE INDÚSTRIA
+'====================
+
+interface Producer {
+    +generateCargo()
 }
 
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
-end note
-
-note bottom of TaskCategoryRepository
-    - used for displaying
-    the task category list
-end note
-
-class CreateTaskUI {
+interface Consumer {
+    +consumeCargo()
 }
 
-CreateTaskUI .> CreateTaskController
+class Industry {
+    +setProductionLevel()
+}
 
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
+class PrimarySectorIndustry {
+    -type
+    +generateCargo()
+}
 
-Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
+class TransformingIndustry {
+    -type
+    -demand
+    +generateCargo()
+    +consumeCargo()
+}
 
-ApplicationSession -> "1" ApplicationSession : instance
-ApplicationSession ..> UserSession
+class MixedIndustry {
+    -type
+    +generateCargo()
+    +consumeCargo()
+    +changeToPrimary()
+    +changeToTransforming()
+}
 
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
+'====================
+' RELACIONAMENTOS
+'====================
 
-OrganizationRepository --> "*" Organization : organizations
+SimulatorUI .> SimulatorController : uses
 
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
+SimulatorController ..> Map : uses
+SimulatorController ..> SimulationTime : uses
+SimulatorController ..> ScenarioRepository : uses
 
-Task --> "1" TaskCategory : taskCategory
-Task --> "1" Employee : createdBy
+Map *-- IndustryRepository
+Map *-- StationRepository
+Map *-- TrainRepository
 
+ScenarioRepository *-- Scenario
+
+Scenario --> SimulationTime : consults
+Scenario --> IndustryRepository : modifies
+Scenario --> MixedIndustry : transforms
+
+' Herança das indústrias
+Industry <|-- PrimarySectorIndustry
+Industry <|-- TransformingIndustry
+Industry <|-- MixedIndustry
+
+PrimarySectorIndustry ..|> Producer
+TransformingIndustry ..|> Producer
+TransformingIndustry ..|> Consumer
+MixedIndustry ..|> Producer
+MixedIndustry ..|> Consumer
+
+' Transformação entre indústrias
+MixedIndustry ..|> PrimarySectorIndustry : changeToPrimary
+MixedIndustry ..|> TransformingIndustry : changeToTransforming
 
 @enduml

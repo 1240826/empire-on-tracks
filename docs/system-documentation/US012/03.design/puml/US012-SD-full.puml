@@ -16,17 +16,20 @@ participant "MapStations \n :Station" as Stations
 participant "MapIndustries" as Rep_Industries
 participant "MapIndustries\n Industry" as Industries
 
+participant "MapIndustries\n PrimaryIndustry" as PrimaryIndustry
+participant "MapIndustries\n TransformingIndustry" as TransformingIndustry
+participant "MapIndustries\n MixedIndustry" as MixedIndustry
+
 participant "MapTrains" as Rep_Trains
 participant "MapTrains \n Train" as Trains
 
 participant ":SimulationTime" as Time
 participant "RepositorieScenario" as Rep_Scenario
-participant "RepositorieScenario\n Seneario" as Scenario
-
+participant "RepositorieScenario\n Scenario" as Scenario
 
 activate Owner
 
-Owner -> UI : create a simulation with industries, cities, stations, railroad \n networks, and scenarios
+Owner -> UI : create simulation with industries, cities, stations, \n railroad networks, and scenarios
 activate UI
 UI -> Controller : loadSimulator(Map, Rep_Scenario)
 
@@ -38,35 +41,50 @@ loop Simulation
         Owner -> UI : selects start
         activate UI
         UI -> Controller : start()
+
         loop
             activate Controller
-            Controller -> Map : updateMap(True)
-            Controller->Rep_Scenario: change()
+            Controller -> Controller : updateMap(True)
+            Controller -> Map : getMap()
+            activate Map
+            Map --> Controller : Map
+            deactivate Map
+
+            Controller -> Rep_Scenario : change()
             activate Rep_Scenario
-            Rep_Scenario->Date:getDate()
-            activate Date
-            Date-->Rep_Scenario:Date
-            deactivate Date
-            Rep_Scenario->Scenario:activate()
+            Rep_Scenario -> Time : getDate()
+            activate Time
+            Time --> Rep_Scenario : Date
+            deactivate Time
+
+            Rep_Scenario -> Scenario : activate()
             activate Scenario
-            opt
-            Scenario-->Industries:ChangeProduction()
-            end
-            opt
-            Scenario-->Industries:ChangeClassMIxed()
-            end
-            opt
-            Scenario-->Trains:Disable()
-            end
-          deactivate Scenario
+
+            opt Scenario changes industry production
+                Scenario -> Industries : changeProductionRate()
+                end
+                opt Industry is Mixed
+                    Scenario -> MixedIndustry : changeToPrimary()
+                    MixedIndustry --> MixedIndustry : demand(False)
+                end
+                opt Industry is Transforming
+                    Scenario -> MixedIndustry : changeToTransforming()
+                    MixedIndustry --> MixedIndustry : demand(true)
+                end
 
 
+            opt Scenario changes industry class (Mixed)
+                Scenario -> Industries : changeClassMixed()
+            end
 
+            opt Scenario disables trains
+                Scenario -> Trains : disable()
+            end
+            deactivate Scenario
 
             activate Map
-
             ' Atualização das indústrias (geração de carga)
-            Map -> Rep_Industries : updateIndustries()
+            Controller -> Rep_Industries : updateIndustries()
             activate Rep_Industries
             Rep_Industries -> Industries : generateCargoAllStations()
             activate Industries
@@ -75,7 +93,7 @@ loop Simulation
             deactivate Rep_Industries
 
             ' Atualização das estações (coleta até 24 cargas)
-            Map -> Rep_Stations : updateStations()
+            Controller -> Rep_Stations : updateStations()
             activate Rep_Stations
             Rep_Stations -> Stations : findNearbyIndustries()
             activate Stations
@@ -83,7 +101,7 @@ loop Simulation
             activate Rep_Industries
             Rep_Industries --> Stations : listOfNearbyIndustries
 
-             loop Station.cargo < 24
+            loop Station.cargo < 24
                 Stations -> Industries : collectCargo()
                 Industries --> Stations : Cargo
             end
@@ -93,25 +111,25 @@ loop Simulation
             deactivate Rep_Stations
 
             ' Atualização dos trens (cada um com limite próprio)
-            Map -> Rep_Trains : updateTrains()
+            Controller -> Rep_Trains : updateTrains()
             activate Rep_Trains
             Rep_Trains -> Trains : move()
             activate Trains
-            Trains -> Map : hasStationNearby()
-              opt station nearby
-                    Trains -> Stations : collectCargo()
-                    Stations --> Trains : Cargo
-                end
+            Trains -> Controller : hasStationNearby()
 
+            opt station nearby
+                Trains -> Stations : collectCargo()
+                Stations --> Trains : Cargo
+            end
 
             deactivate Trains
             deactivate Rep_Trains
 
-            Map --> Controller : updatedMap
+            Controller --> Map : updatedMap
             deactivate Map
 
             Controller --> UI : display(updatedMap)
-            Controller-->Date:addTime(True)
+            Controller --> Time : addTime(True)
 
             deactivate Controller
         end
@@ -123,14 +141,13 @@ loop Simulation
         Owner -> UI : selects pause
         activate UI
         UI --> Controller : pause()
-            activate Controller
-                    Controller -> Map : updateMap(False)
-                    activate Map
-                    Map-->Controller: Map
-                    deactivate Map
-                    Controller-->UI:display(Map)
-                    Controller-->Date:addTime(False)
-
+        activate Controller
+            Controller -> Map : updateMap(False)
+            activate Map
+            Map --> Controller : Map
+            deactivate Map
+            Controller --> UI : display(Map)
+            Controller --> Time : addTime(False)
         UI --> Owner : stop generating cargoes
         deactivate UI
     end

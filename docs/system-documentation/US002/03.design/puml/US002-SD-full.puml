@@ -27,7 +27,7 @@ activate UI
 UI -> Controller : submitCoordinates(X, Y)
 
 activate Controller
-Controller->Validator:ValidateCoordinates
+Controller->Validator:ValidateCoordinates()
 activate Validator
 Validator->Validator:isPositiveInteger(X)
 Validator->Validator:isPositiveInteger(Y)
