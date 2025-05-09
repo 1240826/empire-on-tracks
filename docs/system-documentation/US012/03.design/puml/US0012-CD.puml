@@ -27,15 +27,15 @@ class SimulationTime {
     +advance()
 }
 
-class IndustryRepository {
+class MapIndustry {
     +updateIndustries()
 }
 
-class StationRepository {
+class MapStation {
     +updateStations()
 }
 
-class TrainRepository {
+class MapTrain {
     +updateTrains()
 }
 
@@ -87,14 +87,14 @@ SimulatorController ..> Map : uses
 SimulatorController ..> SimulationTime : uses
 SimulatorController ..> ScenarioRepository : uses
 
-Map *-- IndustryRepository
-Map *-- StationRepository
-Map *-- TrainRepository
+Map *-- MapIndustry
+Map *-- MapStation
+Map *-- MapTrain
 
 ScenarioRepository *-- Scenario
 
 Scenario --> SimulationTime : consults
-Scenario --> IndustryRepository : modifies
+Scenario --> MapIndustry : modifies
 Scenario --> MixedIndustry : transforms
 
 ' Herança das indústrias
@@ -103,7 +103,9 @@ Industry <|-- TransformingIndustry
 Industry <|-- MixedIndustry
 
 ' Transformação entre indústrias
-MixedIndustry ..|> PrimarySectorIndustry : changeToPrimary
+MapIndustry --> Industry: contains
+
+MixedIndustry ...|> PrimarySectorIndustry : changeToPrimary
 MixedIndustry ..|> TransformingIndustry : changeToTransforming
 
 @enduml
