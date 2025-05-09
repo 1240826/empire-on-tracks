@@ -6,7 +6,7 @@ skinparam shadowing false
 autonumber
 
 'hide footbox
-actor "Organization Employee" as ORG_EMPLOYEE
+actor "Player" as ORG_EMPLOYEE
 participant ":CreateTaskUI" as UI
 participant ":CreateTaskController" as CTRL
 participant "Repositories" as REPOS
