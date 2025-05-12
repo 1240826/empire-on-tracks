@@ -30,6 +30,22 @@ As a Player, I want to assign a selected train to a route with a valid station a
 >
 > **Answer:** If there is no path between any pair of consecutive points of the route, the player should be warned, then the player can opt between cancel/proceed.
 
+> **Question:** Does a train collect all the cargo available in a station or just the cargo required for other stations in its route?
+>
+> **Answer:** It collects the defined in the route if available in the station otherwise it departs with the carriages empty.
+
+> **Question:** When the route of a train is changed in the middle of its previous route, does it finish the route it was currently in or does it immediately start to follow the new one? If the train had cargo obtained from the previous route, what happens to it?
+>
+> **Answer:** There is no US for changing routes.
+
+> **Question:** Should the route already be defined, with the player choosing from a list of valid routes (a route being a list of stations to pass through), or should the player select the stations one by one after picking the train to assign?
+> 
+> **Answer:** Each train has an associated route, and a route is a list of pairs (station - carriages to be loaded). There is no need to manage routes independently of trains.
+
+> **Question:** The user selects the list of cargoes to be picked up. Can that cargo only be delivered to the destination station, or can other stations along the route receive parts of it or even the entire cargo when the train arrives at those stations?
+> 
+> **Answer:** In the Sprint 2 one can consider that the current carriages are all unloaded in the next point of the route.
+
 
 ### 1.3. Acceptance Criteria
 
