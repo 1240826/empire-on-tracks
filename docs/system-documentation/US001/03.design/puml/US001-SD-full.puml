@@ -21,10 +21,7 @@ activate Employee
 
             UI --> Controller** : startController()
 
-            activate Controller
 
-            Controller->UI : displayform()
-            deactivate Controller
 
         UI --> Employee : Ask the name, width, and height
 
@@ -66,12 +63,9 @@ activate Employee
 
 
 
-                Controller -> Validator : validateMapName(name)
-                activate Validator
+                Controller -> Controller : validateMapName(name)
+                Controller-->Controller:valid/invalid
 
-                Validator -> Validator : nameExist(name)
-                Validator -->Controller: validationResult(valid or error)
-                deactivate Validator
                 deactivate Controller
 
                 alt If name is valid
