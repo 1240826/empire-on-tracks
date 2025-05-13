@@ -1,13 +1,13 @@
 package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.controller.AuthenticationController;
-import pt.ipp.isep.dei.domain.Employee;
-import pt.ipp.isep.dei.domain.Organization;
-import pt.ipp.isep.dei.domain.TaskCategory;
+import pt.ipp.isep.dei.example_US6.Employee;
+import pt.ipp.isep.dei.example_US6.Organization;
+import pt.ipp.isep.dei.example_US6.TaskCategory;
 import pt.ipp.isep.dei.repository.AuthenticationRepository;
-import pt.ipp.isep.dei.repository.OrganizationRepository;
+import pt.ipp.isep.dei.example_US6.OrganizationRepository;
 import pt.ipp.isep.dei.repository.Repositories;
-import pt.ipp.isep.dei.repository.TaskCategoryRepository;
+import pt.ipp.isep.dei.example_US6.TaskCategoryRepository;
 
 public class Bootstrap implements Runnable {
 
