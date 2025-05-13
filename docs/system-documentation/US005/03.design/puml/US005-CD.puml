@@ -1,126 +1,77 @@
 @startuml
-'skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
-'skinparam linetype orto
-
 skinparam classAttributeIconSize 0
 
-'left to right direction
-
-class ApplicationSession
-{
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession()
+class "BuildStationController" {
+    + startBuildingStation()
+    + submitStationDetails(name: String, type: StationType, x: int, y: int)
+    + setStationCenter(orientation: String)  ' caso necessário
+    + confirmStationCreation(): boolean
 }
 
-class UserSession
-{
-    + getUserEmail()
+class "Player" {
+    - budget: double
+    + buildStation(name: String, type: StationType, location: Location, center: Location): Station
 }
 
-class Employee {
-    - name : String
-    - email : String
-    - position : String
-    - phone : String
+class "Station" {
+    - name: String
+    - type: StationType
+    - location: Location
+    - center: Location
+    + create(name: String, type: StationType, location: Location, center: Location): Station
 }
 
-class Task {
-    - reference :String
-    - description : String
-    - informalDescription : String
-    - technicalDescription : String
-    - duration : int
-    - cost : double
-
-    + Task(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, createdBy)
+class "StationType" {
+    - name: String
+    - range: int
+    - cost: double
 }
 
-class TaskCategory {
-    - description : String
+class "Location" {
+    - x: int
+    - y: int
+    + Location(x: int, y: int)
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
-
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
+class "Map" {
+    + isOccupied(location: Location): boolean
+    + addStation(station: Station)
 }
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
-}
-
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
-}
-
-class Repositories {
+class "Repositories" {
     - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
+    + {static} getInstance(): Repositories
+    + getMapRepository(): MapRepository
 }
 
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
+class "MapRepository" {
+    + getCurrentMap(): Map
 }
 
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
-end note
-
-note bottom of TaskCategoryRepository
-    - used for displaying
-    the task category list
-end note
-
-class CreateTaskUI {
+class "BuildStationUI" {
+    + requestStationDetails()
+    + showInvalidCoordinates()
+    + showSuccessMessage()
+    + showInsufficientBudget()
 }
 
-CreateTaskUI .> CreateTaskController
+BuildStationUI .> BuildStationController : interacts >
 
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
+BuildStationController ..> Repositories : accesses >
+BuildStationController ..> MapRepository : accesses >
+BuildStationController ..> Player : requests action >
+BuildStationController ..> Station : creates >
+BuildStationController ..> Location : constructs >
 
-Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
+Repositories --> "1" MapRepository : mapRepository
+MapRepository --> "1" Map : currentMap
 
-ApplicationSession -> "1" ApplicationSession : instance
-ApplicationSession ..> UserSession
-
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
-
-OrganizationRepository --> "*" Organization : organizations
-
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
-
-Task --> "1" TaskCategory : taskCategory
-Task --> "1" Employee : createdBy
-
+Map --> "*" Station : stations
+Station --> "1" Location : location
+Station --> "1" StationType : has >
+Station --> "1" Location : center
 
 @enduml
