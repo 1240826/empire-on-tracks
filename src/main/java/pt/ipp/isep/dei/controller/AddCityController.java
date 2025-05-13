@@ -4,7 +4,7 @@ import pt.ipp.isep.dei.domain.City;
 import pt.ipp.isep.dei.domain.HouseBlock;
 import pt.ipp.isep.dei.domain.Location;
 import pt.ipp.isep.dei.domain.Map;
-import pt.ipp.isep.dei.repository.MapRepository;
+import pt.ipp.isep.dei.repository.RepositoryMap;
 import pt.ipp.isep.dei.repository.Repositories;
 import pt.ipp.isep.dei.ui.console.AddCityUI;
 
@@ -16,14 +16,14 @@ import java.util.Random;
  */
 public class AddCityController {
 
-    private MapRepository mapRepository;
+    private RepositoryMap repositoryMap;
     private City city;
 
     /**
      * Initializes the controller with a MapRepository instance.
      */
     public AddCityController() {
-        this.mapRepository = Repositories.getInstance().getMapRepository();
+        this.repositoryMap = Repositories.getInstance().getMapRepository();
     }
 
     /**
@@ -59,7 +59,7 @@ public class AddCityController {
         }
 
         // Check if the city name is unique in the map
-        if (mapRepository.getCurrentMap().isCityNameDuplicate(name)) {
+        if (repositoryMap.getCurrentMap().isCityNameDuplicate(name)) {
             AddCityUI.showWarning("City name is already in use.");
             return;
         }
@@ -87,7 +87,7 @@ public class AddCityController {
             }
         } else if (method.equals("manual")) {
             // Validate and assign house blocks manually based on user input
-            if (!mapRepository.getCurrentMap().validateCoordinates(positions)) {
+            if (!repositoryMap.getCurrentMap().validateCoordinates(positions)) {
                 AddCityUI.showWarning("Coordinates out of bounds.");
                 return;
             }
@@ -113,7 +113,7 @@ public class AddCityController {
         int newY = center.getY() + (int) yOffset;
 
         // Ensure the position is valid within the map's constraints
-        if (mapRepository.getCurrentMap().validatePosition(newX, newY)) {
+        if (repositoryMap.getCurrentMap().validatePosition(newX, newY)) {
             return new Location(newX, newY);
         }
 
@@ -125,7 +125,7 @@ public class AddCityController {
      * Confirms the city creation and adds it to the current map.
      */
     public void confirmCityCreation() {
-        Map map = mapRepository.getCurrentMap();
+        Map map = repositoryMap.getCurrentMap();
         map.addCity(city);
         AddCityUI.showSuccess("City has been successfully added to the map.");
     }

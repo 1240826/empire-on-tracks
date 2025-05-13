@@ -12,6 +12,7 @@ activate Owner
 
     Owner -> System : create a simulation with industries, cities, stations, railroad \n networks, and scenarios
     activate System
+
         System --> Owner : ask if they want to start/pause
     deactivate System
 

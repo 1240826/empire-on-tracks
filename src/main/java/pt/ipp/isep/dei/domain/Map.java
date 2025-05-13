@@ -1,13 +1,23 @@
 package pt.ipp.isep.dei.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Map {
     private String name;
     private Object[][] map;
 
-    public Map(String name,int height, int width) {
+    public Map() {
+        this.name = "name";
+        map = new Object[10][10];
+    }
+
+    public Map(String name, int width, int height) {
         this.name = name;
         map = new Object[height][width];
     }
+
+
     public String getName() {
         return new String(name);
     }
@@ -32,5 +42,14 @@ public class Map {
        }
        this.map = copy;
     }
+    public int getHeight() {
+        return map.length;
+    }
+    public int getWidth() {
+        return map[0].length;
+    }
 
+    public List<String> getCities() {
+        return null;
+    }
 }

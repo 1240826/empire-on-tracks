@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Repository responsible for managing maps and cities.
  */
-public class MapRepository {
+public class RepositoryMap {
 
     private List<Map> maps;
     private Map currentMap;
@@ -16,7 +16,7 @@ public class MapRepository {
     /**
      * Initializes the repository with a default or empty map.
      */
-    public MapRepository() {
+    public RepositoryMap() {
         this.maps = new ArrayList<>();
         this.currentMap = new Map();  // Initial empty or default map
         this.maps.add(currentMap);
@@ -46,7 +46,13 @@ public class MapRepository {
      * @param map the map to be added
      */
     public void addMap(Map map) {
+
         this.maps.add(map);
+    }
+
+    public void saveMap(Map map) {
+        addMap(map);
+        setCurrentMap(map);
     }
 
     /**
@@ -57,6 +63,15 @@ public class MapRepository {
      */
     public boolean isCityNameDuplicate(String cityName) {
         return currentMap.getCities().stream().anyMatch(city -> city.getName().equals(cityName));
+    }
+
+
+    public List<String> getMapsNames() {
+        List<String> names = new ArrayList<>();
+        for (Map map : maps) {
+            names.add(map.getName());
+        }
+        return names;
     }
 }
 
