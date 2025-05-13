@@ -22,9 +22,7 @@ class Station {
     type
     cost
 }
-class StationUpgrade {
-    structure
-}
+
 class Cargo {
     type
     quantity
@@ -36,7 +34,7 @@ class List {
 
 Player "1" --- "1" List : views >
 List "1" -right- "*" Station : contains >
-Station "1" --- "*" StationUpgrade : has >
+
 Station "1" --- "*" Cargo : assigned to <
 
 @enduml
