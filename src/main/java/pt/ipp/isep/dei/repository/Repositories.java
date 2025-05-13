@@ -1,24 +1,18 @@
 package pt.ipp.isep.dei.repository;
-
 /**
- * Inspired on https://refactoring.guru/design-patterns/singleton/java/example
+ * Inspired by Singleton pattern to manage all repositories in the application.
  *
  * The Repositories class works as a Singleton. It defines the getInstance method that serves as an alternative
  * to the constructor and lets client classes access the same instance of this class over and over.
  */
 public class Repositories {
     private static Repositories instance;
-    private final OrganizationRepository organizationRepository;
-    private final TaskCategoryRepository taskCategoryRepository;
-    private final AuthenticationRepository authenticationRepository;
-
+    private final MapRepository mapRepository;
     /**
      * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
      */
     private Repositories() {
-        organizationRepository = new OrganizationRepository();
-        taskCategoryRepository = new TaskCategoryRepository();
-        authenticationRepository = new AuthenticationRepository();
+        mapRepository = new MapRepository();  // Initialize the MapRepository
     }
 
     /**
@@ -35,15 +29,12 @@ public class Repositories {
         return instance;
     }
 
-    public OrganizationRepository getOrganizationRepository() {
-        return organizationRepository;
-    }
-
-    public TaskCategoryRepository getTaskCategoryRepository() {
-        return taskCategoryRepository;
-    }
-
-    public AuthenticationRepository getAuthenticationRepository() {
-        return authenticationRepository;
+    /**
+     * Returns the MapRepository instance.
+     *
+     * @return the MapRepository instance
+     */
+    public MapRepository getMapRepository() {
+        return mapRepository;
     }
 }
