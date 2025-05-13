@@ -23,7 +23,6 @@
 According to the taken rationale, the conceptual classes promoted to software classes are: 
 
 * Station
-* StationUpgrade
 * Cargo
 * Player
 
