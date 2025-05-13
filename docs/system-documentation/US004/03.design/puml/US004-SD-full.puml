@@ -1,0 +1,202 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Editor
+participant ":AddScenarioUI"            as UI
+participant ":AddScenarioController"    as Controller
+participant "Repositories"              as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
+participant ":Scenario"                as Scenario
+participant ":CargoType"               as CargoType
+participant ":LocomotionType"          as LocomotionType
+participant ":MapRepository"           as MapRepo
+participant ":Period"                  as Period
+
+activate Editor
+
+Editor -> UI : asks to create a scenario for a selected map
+activate UI
+
+    UI -> Controller : startCreateScenario()
+    activate Controller
+
+        Controller -> REPOS : getInstance()
+        activate REPOS
+            REPOS --> Controller : repositories
+        deactivate REPOS
+
+        Controller -> REPOS_SINGLETON : getScenarioRepository()
+        activate REPOS_SINGLETON
+            REPOS_SINGLETON --> Controller : scenarioRepository
+        deactivate REPOS_SINGLETON
+
+        Controller -> SCENARIO_REPO : getCurrentScenario()
+        activate SCENARIO_REPO
+            SCENARIO_REPO --> Controller : currentScenario
+        deactivate SCENARIO_REPO
+
+        Controller -> UI : request scenario period (start and end date)
+    deactivate Controller
+deactivate UI
+
+UI --> Editor : shows fields for scenario period
+Editor -> UI : types start and end date
+activate UI
+
+    UI -> Controller : submitScenarioPeriod(start, end)
+    activate Controller
+
+        Controller -> Period : new(start, end)
+        activate Period
+        Controller -> Scenario : setPeriod(period)
+        deactivate Period
+        deactivate Controller
+
+    System --> Editor : requests available locomotion types (diesel, electric, steam)
+    deactivate System
+
+Editor -> UI : selects locomotion types
+activate UI
+
+    UI -> Controller : submitLocomotionTypes(types)
+    activate Controller
+
+        Controller -> LocomotionType : setTypes(types)
+        activate LocomotionType
+        deactivate LocomotionType
+
+    loop for each locomotion type selected
+        System --> Editor : requests availability for locomotion type (options: "always available", "never available", "period")
+        deactivate System
+        Editor -> UI : selects availability option (always, never, period)
+        activate UI
+
+        alt "always available"
+            UI -> Controller : setLocomotionAvailability(type, "always")
+            activate Controller
+            deactivate Controller
+        else "never available"
+            UI -> Controller : setLocomotionAvailability(type, "never")
+            activate Controller
+            deactivate Controller
+        else "period"
+            UI -> Controller : setLocomotionAvailability(type, "period")
+            activate Controller
+            Controller -> UI : request period (start, end)
+            UI -> Controller : provides period (start, end)
+            Controller -> Period : new(start, end)
+            activate Period
+            Controller -> LocomotionType : setAvailability(type, period)
+            deactivate Period
+            deactivate Controller
+        end
+    end
+
+alt locomotion becomes obsolete during scenario period
+    System --> Editor : request obsolescence for locomotion type (options: "never obsolete", "immediately obsolete", "period")
+    deactivate System
+    Editor -> UI : selects obsolescence option (never, immediately, period)
+    activate UI
+
+    alt "never obsolete"
+        UI -> Controller : setLocomotionObsolescence(type, "never")
+        activate Controller
+        deactivate Controller
+    else "immediately obsolete"
+        UI -> Controller : setLocomotionObsolescence(type, "immediately")
+        activate Controller
+        deactivate Controller
+    else "period"
+        UI -> Controller : setLocomotionObsolescence(type, "period")
+        activate Controller
+        Controller -> UI : request period (start, end)
+        UI -> Controller : provides period (start, end)
+        Controller -> Period : new(start, end)
+        activate Period
+        Controller -> LocomotionType : setObsolescence(type, period)
+        deactivate Period
+        deactivate Controller
+    end
+end
+
+System --> Editor : requests cargo types to be part of the scenario
+deactivate System
+
+Editor -> UI : selects cargo types
+activate UI
+
+    UI -> Controller : submitCargoTypes(types)
+    activate Controller
+
+        Controller -> CargoType : setTypes(types)
+        activate CargoType
+        deactivate CargoType
+
+    loop for each cargo type in scenario
+        System --> Editor : request behavior for cargo (select from import, export, transform)
+        deactivate System
+        Editor -> UI : selects cargo behavior (import, export, transform)
+        activate UI
+
+        loop for each selected behavior
+            UI -> Controller : setCargoBehavior(type, behavior)
+            activate Controller
+            deactivate Controller
+        end
+    end
+
+System --> Editor : requests production frequency for generating industries
+deactivate System
+
+Editor -> UI : defines production frequency for industries (percentage)
+activate UI
+
+    UI -> Controller : setIndustryProductionFrequency(percent)
+    activate Controller
+    deactivate Controller
+
+System --> Editor : shows all data and asks confirmation
+deactivate System
+
+Editor -> UI : confirms data
+activate UI
+
+    UI -> Controller : confirmScenarioCreation()
+    activate Controller
+
+        Controller -> REPOS : getInstance()
+        activate REPOS
+            REPOS --> Controller : repositories
+        deactivate REPOS
+
+        Controller -> MapRepo : getMapRepository()
+        activate MapRepo
+            MapRepo --> Controller : mapRepository
+        deactivate MapRepo
+
+        Controller -> MapRepo : getCurrentMap()
+        activate MapRepo
+            MapRepo --> Controller : currentMap
+        deactivate MapRepo
+
+        Controller -> MapRepo : addScenario(scenario)
+        activate MapRepo
+            MapRepo -> MapRepo : integrate scenario internally
+        deactivate MapRepo
+
+        Controller -> SCENARIO_REPO : saveScenario(scenario)
+        activate SCENARIO_REPO
+            SCENARIO_REPO -> SCENARIO_REPO : storeScenario(scenario)
+        deactivate SCENARIO_REPO
+
+        Controller -> UI : display operation success
+    deactivate Controller
+deactivate UI
+
+deactivate Editor
+@enduml

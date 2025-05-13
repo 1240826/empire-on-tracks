@@ -1,0 +1,94 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam classAttributeIconSize 0
+
+class "LoginController" {
+    + authenticateUser(username: String, password: String): Boolean
+    - validatePassword(password: String): Boolean
+}
+
+class "User" {
+    - username: String
+    - password: String
+}
+
+class "PasswordValidator" {
+    + validate(password: String): Boolean
+}
+
+class "ApplicationSession" {
+    - ApplicationSession()
+    + {static} getInstance()
+    + getCurrentSession(): UserSession
+}
+
+class "UserSession" {
+    + getUsername(): String
+}
+
+class "SessionManager" {
+    + startSession(user: User)
+    + endSession()
+}
+
+class "Scenario" {
+    - period: Period
+    - locomotionTypes: List[LocomotionType]
+    - cargoTypes: List[CargoType]
+    - productionFrequency: float
+    + createScenario(period: Period, locomotionTypes: List[LocomotionType], cargoTypes: List[CargoType], productionFrequency: float)
+}
+
+class "LocomotionType" {
+    - type: String
+    - availability: String
+    - obsolescence: String
+    + setAvailability(availability: String)
+    + setObsolescence(obsolescence: String)
+}
+
+class "CargoType" {
+    - type: String
+    - behavior: String
+    + setBehavior(behavior: String)
+}
+
+class "Period" {
+    - start: String
+    - end: String
+    + new(start: String, end: String)
+}
+
+class "ScenarioController" {
+    + createScenario(period: Period, locomotionTypes: List[LocomotionType], cargoTypes: List[CargoType], productionFrequency: float)
+    + setLocomotionTypes(types: List[LocomotionType])
+    + setCargoTypes(types: List[CargoType])
+    + setProductionFrequency(frequency: float)
+}
+
+class "ScenarioUI" {
+    + showScenarioFields()
+    + requestScenarioDetails()
+    + showWarning(message: String)
+    + showSuccess(message: String)
+}
+
+LoginController ..> User : authenticates
+LoginController ..> PasswordValidator : validates password
+LoginController ..> ApplicationSession : manages session
+
+ApplicationSession ..> UserSession : retrieves session
+UserSession ..> User : has user
+
+SessionManager ..> ApplicationSession : manages session lifecycle
+
+ScenarioUI .> ScenarioController : submits data
+
+ScenarioController ..> Scenario : creates
+ScenarioController ..> LocomotionType : sets locomotion types
+ScenarioController ..> CargoType : sets cargo types
+ScenarioController ..> Period : creates period
+
+@enduml

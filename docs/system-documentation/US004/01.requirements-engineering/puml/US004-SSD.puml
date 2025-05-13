@@ -10,22 +10,61 @@ participant ":System" as System
 
 activate Editor
 
-    Editor -> System : asks to create a scenario for a selected map
+
+Editor -> System : asks to create a scenario for a selected map
+activate System
+System --> Editor : requests scenario period (start and end date)
+deactivate System
+
+
+Editor -> System : provides start and end date
+activate System
+System --> Editor : requests available locomotion types (diesel, electric, steam)
+deactivate System
+Editor -> System : indicates locomotion types to include in the scenario
+activate System
+
+loop for each locomotion type selected
+    System --> Editor : requests availability date or indicate "always available" or "never available" for locomotion type
+    deactivate System
+    Editor -> System : provides availability date or indicates "always available" or "never available"
     activate System
 
-        System --> Editor : requests data (start/end date, locomotion type - steam, diesel, and/or electric,\n port cargo behavior - import/export/transform, behavior of mixed industries)
-    deactivate System
+    alt locomotion type becomes obsolete during scenario period
+        System --> Editor : requests obsolescence date for locomotion type
+        deactivate System
+        Editor -> System : provides obsolescence date
+        activate System
+    end
+end loop
+        System --> Editor : requests cargo types to be part of the scenario
+        deactivate System
 
-    Editor -> System : provides scenario details
+
+Editor -> System : defines cargo types to be part of the scenario (Iron, Coal, Silver, etc.)
+activate System
+System --> Editor : requests cargo behavior (import, export, transform)
+deactivate System
+
+loop for each cargo type in scenario
+    Editor -> System : defines behavior for cargo (import, export, transform)
     activate System
-
-        System --> Editor : validates data and requests confirmation
+end loop
+    System --> Editor : requests production frequency for generating industries
     deactivate System
 
-    Editor -> System : confirms scenario creation
-    activate System
 
-        System --> Editor : displays operation success
-    deactivate System
+
+Editor -> System : defines production frequency for generating industries (as a percentage)
+activate System
+System --> Editor : shows all data and asks for confirmation
+deactivate System
+
+' Editor confirma dados
+Editor -> System : confirms data
+activate System
+System --> Editor : displays operation success
+deactivate System
+deactivate Editor
 
 @enduml

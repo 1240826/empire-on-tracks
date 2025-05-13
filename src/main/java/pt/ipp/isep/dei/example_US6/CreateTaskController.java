@@ -1,7 +1,7 @@
 package pt.ipp.isep.dei.example_US6;
 
 import pt.ipp.isep.dei.repository.AuthenticationRepository;
-import pt.ipp.isep.dei.repository.RepositoriesExample;
+import pt.ipp.isep.dei.repository.Repositories;
 import pt.isep.lei.esoft.auth.domain.model.Email;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class CreateTaskController {
 
     private TaskCategoryRepository getTaskCategoryRepository() {
         if (taskCategoryRepository == null) {
-            RepositoriesExample repositories = RepositoriesExample.getInstance();
+            Repositories repositories = Repositories.getInstance();
 
             //Get the TaskCategoryRepository
             taskCategoryRepository = repositories.getTaskCategoryRepository();
@@ -40,7 +40,7 @@ public class CreateTaskController {
 
     private OrganizationRepository getOrganizationRepository() {
         if (organizationRepository == null) {
-            RepositoriesExample repositories = RepositoriesExample.getInstance();
+            Repositories repositories = Repositories.getInstance();
             organizationRepository = repositories.getOrganizationRepository();
         }
         return organizationRepository;
@@ -49,7 +49,7 @@ public class CreateTaskController {
 
     private AuthenticationRepository getAuthenticationRepository() {
         if (authenticationRepository == null) {
-            RepositoriesExample repositories = RepositoriesExample.getInstance();
+            Repositories repositories = Repositories.getInstance();
 
             //Get the AuthenticationRepository
             authenticationRepository = repositories.getAuthenticationRepository();

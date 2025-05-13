@@ -2,14 +2,16 @@ package pt.ipp.isep.dei.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Represents a city, including its name, position on the map, and associated house blocks.
+ * Represents a city, including its name, location on the map, and associated house blocks.
  */
 public class City {
 
     private String name;
-    private int positionX;
-    private int positionY;
+    private Location location;
     private int houseBlocks;
     private List<HouseBlock> houseBlockList;
 
@@ -23,8 +25,7 @@ public class City {
      */
     public City(String name, int positionX, int positionY, int houseBlocks) {
         this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
+        this.location = new Location(positionX, positionY);
         this.houseBlocks = houseBlocks;
         this.houseBlockList = new ArrayList<>();
     }
@@ -38,20 +39,12 @@ public class City {
         this.name = name;
     }
 
-    public int getPositionX() {
-        return positionX;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
-    }
-
-    public int getPositionY() {
-        return positionY;
-    }
-
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public int getHouseBlocks() {
@@ -81,7 +74,7 @@ public class City {
      * @return true if the name is valid, false otherwise
      */
     public boolean validateName() {
-        return true; // Temporary, needs actual validation
+        return true; // Placeholder - to be implemented with proper name uniqueness check
     }
 
     /**
@@ -90,7 +83,7 @@ public class City {
      * @return true if the house blocks count is valid, false otherwise
      */
     public boolean validateHouseBlocks() {
-        return houseBlocks > 0; // Simple validation for now
+        return houseBlocks > 0; // Simple validation
     }
 
     /**
@@ -99,7 +92,6 @@ public class City {
      * @return the center location of the city
      */
     public Location getCityCenter() {
-        return new Location(positionX, positionY);
+        return location;
     }
 }
-
