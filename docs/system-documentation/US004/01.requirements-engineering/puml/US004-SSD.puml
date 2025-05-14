@@ -24,7 +24,7 @@ deactivate System
 Editor -> System : indicates locomotion types to include in the scenario
 activate System
 
-loop for each locomotion type selected
+loop for each locomotion type 
     System --> Editor : requests availability date or indicate "always available" or "never available" for locomotion type
     deactivate System
     Editor -> System : provides availability date or indicates "always available" or "never available"

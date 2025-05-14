@@ -4,6 +4,7 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
+' AUTENTICAÇÃO
 class "LoginController" {
     + authenticateUser(username: String, password: String): Boolean
     - validatePassword(password: String): Boolean
@@ -33,39 +34,59 @@ class "SessionManager" {
     + endSession()
 }
 
+LoginController ..> User
+LoginController ..> PasswordValidator
+LoginController ..> ApplicationSession
+ApplicationSession ..> UserSession
+UserSession ..> User
+SessionManager ..> ApplicationSession
+
+' CENÁRIO
 class "Scenario" {
     - period: Period
-    - locomotionTypes: List[LocomotionType]
-    - cargoTypes: List[CargoType]
+    - locomotionTypes: List<LocomotionType>
+    - cargoTypes: List<CargoType>
     - productionFrequency: float
-    + createScenario(period: Period, locomotionTypes: List[LocomotionType], cargoTypes: List[CargoType], productionFrequency: float)
+    + setPeriod(p: Period)
+    + setLocomotionTypes(types: List<LocomotionType>)
+    + setCargoTypes(types: List<CargoType>)
+    + setProductionFrequency(frequency: float)
 }
 
 class "LocomotionType" {
-    - type: String
-    - availability: String
-    - obsolescence: String
-    + setAvailability(availability: String)
-    + setObsolescence(obsolescence: String)
+    - name: String
+    - availabilityPeriod: Period
+    - obsolescencePeriod: Period
+    + setAvailability(period: Period)
+    + setObsolescence(period: Period)
 }
 
 class "CargoType" {
-    - type: String
-    - behavior: String
-    + setBehavior(behavior: String)
+    - name: String
+    - behaviors: List<CargoBehavior>
+    + setBehaviors(behaviors: List<CargoBehavior>)
+}
+
+class "CargoBehavior" {
+    - type: String «import | export | transform»
 }
 
 class "Period" {
-    - start: String
-    - end: String
-    + new(start: String, end: String)
+    - startDate: String
+    - endDate: String
+    + Period(start: String, end: String)
 }
 
 class "ScenarioController" {
-    + createScenario(period: Period, locomotionTypes: List[LocomotionType], cargoTypes: List[CargoType], productionFrequency: float)
-    + setLocomotionTypes(types: List[LocomotionType])
-    + setCargoTypes(types: List[CargoType])
-    + setProductionFrequency(frequency: float)
+    + startCreateScenario()
+    + submitScenarioPeriod(start: String, end: String)
+    + submitLocomotionTypes(types: List<String>)
+    + setLocomotionAvailability(type: String, period: Period)
+    + setLocomotionObsolescence(type: String, period: Period)
+    + submitCargoTypes(types: List<String>)
+    + setCargoBehavior(type: String, behavior: String)
+    + setIndustryProductionFrequency(percent: float)
+    + confirmScenarioCreation(): boolean
 }
 
 class "ScenarioUI" {
@@ -75,20 +96,36 @@ class "ScenarioUI" {
     + showSuccess(message: String)
 }
 
-LoginController ..> User : authenticates
-LoginController ..> PasswordValidator : validates password
-LoginController ..> ApplicationSession : manages session
+class "ScenarioRepository" {
+    + getCurrentScenario(): Scenario
+    + saveScenario(s: Scenario)
+}
 
-ApplicationSession ..> UserSession : retrieves session
-UserSession ..> User : has user
+class "MapRepository" {
+    + getCurrentMap(): Map
+    + addScenario(scenario: Scenario)
+}
 
-SessionManager ..> ApplicationSession : manages session lifecycle
+class "Map" {
+    - name: String
+    - scenarios: List<Scenario>
+}
 
-ScenarioUI .> ScenarioController : submits data
+' Relações
+ScenarioController ..> Scenario
+ScenarioController ..> Period
+ScenarioController ..> LocomotionType
+ScenarioController ..> CargoType
+ScenarioController ..> ScenarioRepository
+ScenarioController ..> MapRepository
+ScenarioController .down.> ScenarioUI : uses
 
-ScenarioController ..> Scenario : creates
-ScenarioController ..> LocomotionType : sets locomotion types
-ScenarioController ..> CargoType : sets cargo types
-ScenarioController ..> Period : creates period
+Scenario ..* LocomotionType
+Scenario ..* CargoType
+CargoType ..* CargoBehavior
+MapRepository --> Map
+Map o-- "0..*" Scenario
+
+ScenarioUI .> ScenarioController
 
 @enduml

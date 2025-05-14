@@ -13,6 +13,6 @@ public class Main {
             menu.run();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+
     }
 }
