@@ -44,6 +44,14 @@ As a Player, I want to buy a locomotive.
 >
 > **Answer:** He can't buy! Bonds and loans will not be considered right now.
 
+> **Question:** What is the price for an electrical, diesel, or steam locomotive?
+>
+> **Answer:** The price depends on the locomotive model, not in the locomotion type, please refer to game wiki.
+
+> **Question:** Can the player purchase multiple locomotives at once?
+>
+> **Answer:** Not planned.
+
 ### 1.3. Acceptance Criteria
 
 * **AC1:** The player should choose the locomotive from a list of available locomotives for the scenario as well as a current date.

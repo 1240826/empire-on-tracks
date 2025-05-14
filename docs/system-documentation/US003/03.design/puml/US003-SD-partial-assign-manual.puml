@@ -1,0 +1,34 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":CreateCityController" as Controller
+participant ":Map" as Map
+participant ":City" as City
+
+autonumber 32
+-> Controller : selectedAssignmentMethod("manual", positions)
+
+autonumber 32.1
+
+activate Controller
+
+    group Assign Manual
+        Controller -> Map : validateCoordinates(positions)
+           activate Map
+           Map --> Controller : valid / invalid
+           deactivate Map
+
+           alt positions valid
+           Controller -> City : assignHouseBlocksManually(positions)
+           else
+           <-- Controller : warn("Coordinates out of bounds")
+           end
+    end
+    autonumber 33
+    <-- Controller : city details
+
+deactivate Controller
+
+@enduml

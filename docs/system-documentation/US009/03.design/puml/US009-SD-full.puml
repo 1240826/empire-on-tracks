@@ -2,49 +2,69 @@
 'skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+autonumber
 
 actor ":Player" as Player
 participant ":BuyLocomotiveUI" as UI
 participant ":BuyLocomotiveController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant ":LocomotiveCatalog" as Catalog
 participant ":Player" as PlayerObject
 
-autonumber
-'hide footbox
-
-
 activate Player
-    Player -> UI : requests to buy a locomotive
-    activate UI
-        UI -> Controller : requestAvailableLocomotives()
-        activate Controller
-            Controller -> Catalog : getAvailableLocomotives(date, scenario)
-            activate Catalog
-                Catalog --> Controller : list of available locomotives
-            deactivate Catalog
-        Controller --> UI : list of available locomotives
-    deactivate Controller
-    UI --> Player : shows list and requests selection
 
+Player -> UI : requests to buy a locomotive
+activate UI
+
+UI -> Controller : requestAvailableLocomotives()
+activate Controller
+
+Controller -> REPOS : getInstance()
+activate REPOS
+REPOS --> Controller : repositories
+deactivate REPOS
+
+Controller -> REPOS_SINGLETON : getLocomotiveCatalog()
+activate REPOS_SINGLETON
+REPOS_SINGLETON --> Controller : locomotiveCatalog
+deactivate REPOS_SINGLETON
+
+Controller -> Catalog : getAvailableLocomotives(currentDate, currentScenario)
+activate Catalog
+Catalog --> Controller : list of available locomotives
+deactivate Catalog
+
+Controller --> UI : list of available locomotives
+deactivate Controller
+
+UI --> Player : shows list and requests selection
 deactivate UI
 
-    Player -> UI : selects a locomotive
-    activate UI
-        UI -> Controller : selectLocomotive(locomotiveID)
-        activate Controller
-            Controller -> PlayerObject : hasSufficientBudget(price)
-            activate PlayerObject
-                PlayerObject --> Controller : true/false
-            deactivate PlayerObject
-            alt if budget is sufficient
-                Controller -> PlayerObject : buyLocomotive(locomotive)
-                activate PlayerObject
-                    PlayerObject --> Controller : locomotive instance
-                deactivate PlayerObject
-                Controller --> UI : show success message
-            else insufficient budget
-                Controller --> UI : show failure message
-            end
-        deactivate Controller
-    deactivate UI
+Player -> UI : selects a locomotive
+activate UI
+
+UI -> Controller : selectLocomotive(locomotiveID)
+activate Controller
+
+Controller -> PlayerObject : hasSufficientBudget(price)
+activate PlayerObject
+PlayerObject --> Controller : true/false
+deactivate PlayerObject
+
+alt if budget is sufficient
+    Controller -> PlayerObject : buyLocomotive(locomotive)
+    activate PlayerObject
+    PlayerObject --> Controller : locomotive instance
+    deactivate PlayerObject
+    Controller --> UI : show success message
+else insufficient budget
+    Controller --> UI : show failure message
+end
+
+deactivate Controller
+deactivate UI
+
 @enduml

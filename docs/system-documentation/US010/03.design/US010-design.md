@@ -60,12 +60,12 @@ It uses Interaction Occurrence (a.k.a. Interaction Use).
 
 **Get Employee**
 
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
+![Sequence Diagram - Partial - Get Employee](svg/US010-SD-assign-route-to-train.svg)
 
 **Create Task**
 
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
+![Sequence Diagram - Partial - Create Task](svg/US010-SD-partial-create-route.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![Class Diagram](svg/US010-CD.svg)
