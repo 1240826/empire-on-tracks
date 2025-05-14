@@ -9,118 +9,72 @@ skinparam classAttributeIconSize 0
 
 'left to right direction
 
-class ApplicationSession
-{
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession()
+class Player {
+    - budget : double
 }
 
-class UserSession
-{
-    + getUserEmail()
-}
-
-class Employee {
+class Station {
+    - id : String
     - name : String
-    - email : String
-    - position : String
-    - phone : String
-}
-
-class Task {
-    - reference :String
-    - description : String
-    - informalDescription : String
-    - technicalDescription : String
-    - duration : int
+    - type : String
+    - range : int
     - cost : double
 
-    + Task(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, createdBy)
+    + getName()
+    + getUpgrades()
+    + getCargoes()
 }
 
-class TaskCategory {
-    - description : String
+class Upgrade {
+    - type : String
+    - dateAdded : Date
+    - isActive : boolean
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
-
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
+class Cargo {
+    - type : String
+    - quantity : int
+    - isSupply : boolean
 }
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
+class Map {
+    + getStation()
+    + getAllNamesStation()
+    + getDetails()
 }
 
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
+
+class StationController {
+    + StationController()
+    + getAllStations()
+    + getStationDetails(stationId)
+    - getStationByName(name)
 }
 
-class Repositories {
-    - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
-}
-
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
-}
-
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
+note right of StationController
+    Station details are retrieved
+    from selected station ID
 end note
 
-note bottom of TaskCategoryRepository
-    - used for displaying
-    the task category list
-end note
 
-class CreateTaskUI {
+
+class StationListUI {
 }
 
-CreateTaskUI .> CreateTaskController
+' Relationships
+StationListUI .> StationController
 
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
+StationController ..> Player
+StationController ..> Station
+StationController ..> Map
 
-Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
 
-ApplicationSession -> "1" ApplicationSession : instance
-ApplicationSession ..> UserSession
+Map --> "*" Station : stations
 
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
 
-OrganizationRepository --> "*" Organization : organizations
+Station  o--  Upgrade : upgrades
+Station  o--  Cargo : cargoes
 
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
-
-Task --> "1" TaskCategory : taskCategory
-Task --> "1" Employee : createdBy
 
 
 @enduml
