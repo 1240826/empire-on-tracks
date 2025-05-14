@@ -9,7 +9,7 @@ public class TransformingIndustry implements Industry {
     private CargoType inputCargo;
     private CargoType outputCargo;
 
-    public TransformingIndustry(String name, int cost, double production, double ,CargoType inputCargo,CargoType outputCargo ) {
+    public TransformingIndustry(String name, int cost, double production, double demand,CargoType inputCargo,CargoType outputCargo ) {
         this.industryName = name;
         this.industryCost = cost;
         this.production = production;
