@@ -1,0 +1,45 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":CreateCityController" as Controller
+participant ":City" as City
+participant ":Location" as Location
+participant ":HouseBlock" as HouseBlock
+
+autonumber 22
+-> Controller : selectedAssignmentMethod("automatic")
+autonumber 22.1
+
+
+    group Assign automatic
+       activate Controller
+
+           Controller -> City : getCityCenter()
+           activate City
+               City --> Controller : center
+           deactivate City
+
+           loop houseBlocks times
+               Controller -> Location : computeBlockPosition(center)
+               activate Location
+                   Location --> Controller : position
+               deactivate Location
+
+               Controller -> HouseBlock : createAt(position)
+               activate HouseBlock
+                   HouseBlock --> Controller : houseBlock
+               deactivate HouseBlock
+
+               activate City
+               Controller -> City : addHouseBlock(houseBlock)
+           end
+           deactivate City
+           end
+    autonumber 23
+    <-- Controller: city details
+
+deactivate Controller
+
+@enduml

@@ -3,33 +3,26 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-participant "organization\n:Organization" as ORG
-participant "task\n:Task" as TASK
+participant ":CreateCityController"    as Controller
+participant ":City"                 as City
+participant ":Map"                  as Map
 
-autonumber 16
--> ORG: createTask(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, employee )
+autonumber 13
+-> Controller: submitCityDetails(name, positionX, positionY, houseBlocks)
 
-autonumber 16.1
-activate ORG
-    group Create Task
+autonumber 13.1
+activate Controller
+    group Create City
 
-        ORG --> TASK**: create(reference, description, informalDescription, \ntechnicalDescription, duration, cost, taskCategory, employee)
-        ORG -> ORG: addTask (task)
-
-        activate ORG
-            ORG -> ORG: validateTask(task)
-            activate ORG
-                ORG --> ORG : true
-            deactivate ORG
-
-            ORG --> ORG : true
-            |||
-        deactivate ORG
+       activate City
+       Controller -> City : createCity(name, positionX, positionY, houseBlocks)
+                   City -> City : validateName()
+                   City -> City : validateHouseBlocks()
+               deactivate City
+               Controller -> Map : isCityNameDuplicate(name)
+                       activate Map
+                           Map --> Controller : true / false
+                       deactivate Map
     end
-
-    autonumber 17
-    <-- ORG : task
-deactivate ORG
-
 
 @enduml

@@ -6,8 +6,8 @@ skinparam shadowing false
 autonumber
 
 actor "Editor" as Editor
-participant ":AddCityUI"            as UI
-participant ":AddCityController"    as Controller
+participant ":CreateCityUI"            as UI
+participant ":CreateCityController"    as Controller
 participant "Repositories"          as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant "mapRepository\n:MapRepository" as MAP_REPO
@@ -21,7 +21,7 @@ activate Editor
 Editor -> UI : asks to add a city
 activate UI
 
-    UI -> Controller : startAddCity()
+    UI -> Controller : startCreateCity()
     activate Controller
 
         Controller -> REPOS : getInstance()
@@ -41,9 +41,8 @@ activate UI
 
         Controller --> UI : requests city details\n(name, positionX, positionY, number of house blocks)
     deactivate Controller
-deactivate UI
-
 UI --> Editor : shows fields for city details
+deactivate UI
 Editor -> UI : types city details
 activate UI
 
@@ -115,8 +114,9 @@ activate UI
             else
                 Controller --> UI : warn("Coordinates out of bounds")
             end
-        deactivate Controller
     end
+    Controller --> UI: city details
+            deactivate Controller
 
     UI --> Editor : shows all data (city details) and requests confirmation
 deactivate UI
