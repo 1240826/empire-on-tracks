@@ -52,4 +52,23 @@ public class Map {
     public List<String> getCities() {
         return null;
     }
+
+    public boolean isEmpty(int x, int y) {
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
+            return false;
+        }
+        return map[y][x] == null;
+    }
+
+    public boolean addIndustry(Industry industry) {
+        Location location = industry.getLocation();
+        int x = location.getX();
+        int y = location.getY();
+
+        if (isEmpty(x, y)) {
+            map[y][x] = industry;
+            return true;
+        }
+        return false;
+    }
 }

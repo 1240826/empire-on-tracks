@@ -3,10 +3,11 @@ package pt.ipp.isep.dei.domain;
 public class TransformingIndustry implements Industry {
     private String industryName;
     private int industryCost;
-    private float production;
-    private float demand;
+    private double production;
+    private double demand;
+    private Location location;
 
-    public TransformingIndustry(String name, int cost, float production, float demand) {
+    public TransformingIndustry(String name, int cost, double production, double demand) {
         this.industryName = name;
         this.industryCost = cost;
         this.production = production;
@@ -28,4 +29,19 @@ public class TransformingIndustry implements Industry {
         return "Producing: " + this.getindustryname() + " (Cost: " + this.getIndustryCost() + ")";
     }
 
+    @Override
+    public double getProduction() {
+        return production;
+    }
+    @Override
+    public double getDemand() {
+        return demand;
+    }
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+    public Location getLocation() {
+        return location;
+    }
 }
+

@@ -19,6 +19,7 @@ activate Editor
 Editor -> UI : Ask to add an industry
 activate UI
 UI --> Controller**: startAddIndustryController()
+activate Controller
 
 
 UI --> Editor : Ask for the XY position
@@ -72,6 +73,7 @@ Map-->Industry**:createIndustry(option,Location)
 deactivate Map
 
 Controller-->UI: display(success)
+deactivate Controller
 deactivate Controller
 UI-->Editor:Confirm the creation of this industry.
 deactivate UI

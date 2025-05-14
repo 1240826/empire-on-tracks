@@ -8,11 +8,13 @@ package pt.ipp.isep.dei.repository;
 public class Repositories {
     private static Repositories instance;
     private final RepositoryMap repositoryMap;
+    private final IndustryRepository industryRepository;
     /**
      * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
      */
     private Repositories() {
         repositoryMap = new RepositoryMap();  // Initialize the MapRepository
+        industryRepository = IndustryRepository.getInstance();
     }
 
     /**
@@ -36,5 +38,8 @@ public class Repositories {
      */
     public RepositoryMap getMapRepository() {
         return repositoryMap;
+    }
+    public IndustryRepository getIndustryRepository(){
+        return industryRepository;
     }
 }

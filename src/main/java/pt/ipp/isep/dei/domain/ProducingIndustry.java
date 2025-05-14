@@ -4,11 +4,16 @@ public class ProducingIndustry implements Industry {
     private String industryname;
     private int IndustryCost;
     private double production;
+    private double  demand;
+    private Location location;
 
-    public ProducingIndustry(String industryname, int IndustryCost, double production) {
+
+    public ProducingIndustry(String industryname, int IndustryCost, double production,double demand) {
         this.industryname = industryname;
         this.IndustryCost = IndustryCost;
         this.production = production;
+        this.demand = demand;
+
     }
     @Override
     public String getindustryname() {
@@ -20,5 +25,20 @@ public class ProducingIndustry implements Industry {
     }
     public String toString() {
         return "Producing: " + industryname + " (Cost: " + getIndustryCost()+")";
+    }
+    @Override
+    public double getProduction() {
+        return production;
+    }
+    @Override
+    public double getDemand() {
+        return demand;
+    }
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+    @Override
+    public Location getLocation() {
+        return location;
     }
 }
