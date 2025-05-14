@@ -10,6 +10,8 @@ participant ":AddIndustryUI" as UI
 participant ":AddIndustryController" as Controller
 participant ":ValueValidator" as Validator
 participant ":Map" as Map
+participant ":Industry" as Industry
+participant ":Repository" as Rep
 participant "IndustryRepository \n: IndustryRepository" as Repository
 
 activate Editor
@@ -44,6 +46,10 @@ deactivate Map
 alt false
 Controller-->UI: displayError(occupied place)
 else true
+Controller->Rep:getinstance()
+activate Rep
+Rep-->Controller:instance
+deactivate Rep
 Controller->Repository:getListOfIndustry
 activate Repository
 Repository-->Controller:ListOfIndustry
@@ -57,6 +63,10 @@ activate UI
 UI->Controller: addIndustry(option)
 activate Controller
 Controller->Map: addIndustry(option)
+activate Map
+Map->Industry**:createIndustry(option)
+deactivate Map
+
 Controller-->UI: display(success)
 deactivate Controller
 UI-->Editor:Confirm the creation of this industry.

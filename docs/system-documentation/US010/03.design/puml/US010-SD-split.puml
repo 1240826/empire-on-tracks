@@ -1,0 +1,64 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor Player
+participant ":AssignTrainToRouteUI" as UI
+participant ":AssignTrainToRouteController" as Controller
+participant ":TrainRepository" as TrainRepo
+participant ":StationRepository" as StationRepo
+participant ":Route" as Route
+participant ":Train" as Train
+participant ":RouteValidator" as Validator
+
+activate Player
+Player -> UI : request to assign a train to a route
+activate UI
+
+UI -> Controller : getOwnedTrains()
+activate Controller
+
+ref over Controller
+    GetOwnedTrains
+end ref
+
+Controller --> UI : list of trains
+deactivate Controller
+
+UI -> Player : display trains
+Player -> UI : selects a train
+
+UI -> Controller : getAllStationsAndCargo()
+activate Controller
+
+ref over Controller
+    GetStationsAndCargo
+end ref
+
+Controller --> UI : stations and cargoes
+deactivate Controller
+
+UI -> Player : display stations and cargo
+Player -> UI : selects stations and cargo
+
+UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
+activate Controller
+
+ref over Controller
+    CreateRoute
+end ref
+
+ref over Controller, TrainRepo, Train
+    AssignRouteToTrain
+end ref
+
+Controller --> UI : success message
+deactivate Controller
+UI -> Player : show success
+
+deactivate UI
+deactivate Player
+@enduml

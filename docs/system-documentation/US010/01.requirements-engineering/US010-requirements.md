@@ -46,6 +46,10 @@ As a Player, I want to assign a selected train to a route with a valid station a
 > 
 > **Answer:** In the Sprint 2 one can consider that the current carriages are all unloaded in the next point of the route.
 
+> **Question:** Does the player have a list of routes to which he can assign trains or does he create a route and have to assign a train to it?
+>
+> **Answer:** Already answered that question, no need to manage the routes independently from trains, each train has a route.
+
 
 ### 1.3. Acceptance Criteria
 
@@ -53,8 +57,6 @@ NA
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on **US001 - Create a Map**, as a scenario can only be created for an existing map previously selected.
-* There is a dependency on **US05 - Build a station**, as there must be stations to create a route.
 * There is a dependency on **US08 - Build a railway line between two stations**, as there must be railway lines connecting the stations on the route.
 * There is a dependency on **US09 - Buy a locomotive**, as there must be at least one train owned by the player.
 
@@ -68,6 +70,7 @@ NA
 * Selected data:
     * a train (from owned trains)
     * stations for route
+    * cargoes to be picked/delivered at each station in the route
 
 
 **Output Data:**
