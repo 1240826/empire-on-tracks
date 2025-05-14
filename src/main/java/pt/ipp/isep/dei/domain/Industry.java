@@ -8,4 +8,10 @@ public interface Industry {
     void setLocation(Location location);
     Location getLocation();
 
+    Cargo produceCargo();
+
+    default Cargo consumeCargo() {
+        return null;
+    }
+
 }

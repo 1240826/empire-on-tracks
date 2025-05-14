@@ -6,12 +6,16 @@ public class MixedIndustry implements Industry {
     private double production;
     private double  demand;
     private Location location;
+    private CargoType inputCargo;
+    private CargoType outputCargo;
 
-    public MixedIndustry(String name, int cost, double production, double demand) {
+    public MixedIndustry(String name, int cost, double production, double demand,CargoType inputCargo,CargoType outputCargo) {
         this.industryName = name;
         this.industryCost = cost;
         this.production = production;
         this.demand = demand;
+        this.inputCargo = inputCargo;
+        this.outputCargo = outputCargo;
     }
 
     @Override
@@ -24,9 +28,7 @@ public class MixedIndustry implements Industry {
         return industryCost;
     }
 
-    public String toString() {
-        return "Producing: " + this.getindustryname() + " (Cost: " + this.getIndustryCost() + ")";
-    }
+
 
     @Override
     public double getProduction() {
@@ -44,4 +46,46 @@ public class MixedIndustry implements Industry {
         return location;
     }
 
+    @Override
+    public Cargo produceCargo() {
+        return new Cargo(outputCargo, production);
+    }
+    @Override
+    public Cargo consumeCargo() {
+        if (demand > 0) {
+            return new Cargo(inputCargo, demand);
+        } else {
+            return null; // Atua como produtora apenas
+        }
+    }
+
+
+    public void setInputCargoType(CargoType cargoType) {
+        this.inputCargo = cargoType;
+    }
+    public void setOutputCargoType(CargoType cargoType) {
+        this.outputCargo = cargoType;
+    }
+
+    public CargoType getInputCargoType () {
+        return inputCargo;
+    }
+    public CargoType getOutputCargoType () {
+        return outputCargo;
+    }
+    @Override
+    public String toString() {
+        if (demand > 0) {
+            return "Transforming (Mixed): " + industryName +
+                    " | Consumes: " + inputCargo + " (" + demand + ")" +
+                    ", Produces: " + outputCargo + " (" + production + ")";
+        } else {
+            return "Producing (Mixed): " + industryName +
+                    " | Produces: " + outputCargo + " (" + production + ")";
+        }
+    }
+
 }
+
+
+

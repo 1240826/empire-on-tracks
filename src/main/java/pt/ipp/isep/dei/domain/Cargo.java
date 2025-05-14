@@ -2,7 +2,7 @@ package pt.ipp.isep.dei.domain;
 
 public class Cargo {
     private final CargoType type;
-    private final double quantity;
+    private  double quantity;
 
     public Cargo(CargoType type, double quantity) {
         this.type = type;
@@ -20,5 +20,19 @@ public class Cargo {
     @Override
     public String toString() {
         return quantity + " units of " + type.name();
+    }
+
+    public void addQuantity(double value) {
+        if (value > 0) {
+            this.quantity += value;
+        }
+    }
+
+    public boolean removeQuantity(double value) {
+        if (value > 0 && this.quantity >= value) {
+            this.quantity -= value;
+            return true;
+        }
+        return false;
     }
 }
