@@ -62,9 +62,13 @@ Editor->UI:Select one option.
 activate UI
 UI->Controller: addIndustry(option)
 activate Controller
-Controller->Map: addIndustry(option)
+Controller->Map: addIndustry(option,x,y)
 activate Map
-Map->Industry**:createIndustry(option)
+Map->Location:createLocation(x,y)
+activate Location
+Location-->Map:Location
+deactivate Location
+Map-->Industry**:createIndustry(option,Location)
 deactivate Map
 
 Controller-->UI: display(success)
