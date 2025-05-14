@@ -124,7 +124,7 @@ Scenario ..* LocomotionType
 Scenario ..* CargoType
 CargoType ..* CargoBehavior
 MapRepository --> Map
-Map o-- "0..*" Scenario
+Map o-- "*" Scenario
 
 ScenarioUI .> ScenarioController
 
