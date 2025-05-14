@@ -22,7 +22,7 @@ activate Player
         System --> Player : shows list of all stations and respective cargoes
     deactivate System
 
-    Player -> System : selects stations for the route
+    Player -> System : selects stations for the route and respective cargoes to be loaded/unloaded
     activate System
 
         System --> Player : asks for confirmation

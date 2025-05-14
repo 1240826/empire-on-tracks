@@ -39,12 +39,12 @@ activate UI
             MAP_REPO --> Controller : currentMap
         deactivate MAP_REPO
 
-        Controller -> UI : requests city details\n(name, positionX, positionY, number of house blocks)
+        Controller --> UI : requests city details\n(name, positionX, positionY, number of house blocks)
     deactivate Controller
 deactivate UI
 
 UI --> Editor : shows fields for city details
-Editor -> UI : types name, positionX, positionY, houseBlocks
+Editor -> UI : types city details
 activate UI
 
     UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
@@ -67,9 +67,10 @@ activate UI
             Controller -> UI : requests assignment method\n(manual or automatic)
         end
     deactivate Controller
-deactivate UI
 
-UI --> Editor : select assignment method
+
+UI --> Editor : requests to select house block assignment method (manual or automatic)
+deactivate UI
 Editor -> UI : selects "automatic" or "manual"
 activate UI
 
@@ -93,12 +94,14 @@ activate UI
                     HouseBlock --> Controller : houseBlock
                 deactivate HouseBlock
 
+                activate City
                 Controller -> City : addHouseBlock(houseBlock)
             end
+            deactivate City
         deactivate Controller
 
     else method = "manual"
-        UI -> Editor : request positions of house blocks
+        UI --> Editor : request positions of house blocks
         Editor -> UI : submits positionX, positionY
         UI -> Controller : selectedAssignmentMethod("manual", positions)
         activate Controller
@@ -111,12 +114,12 @@ activate UI
             alt positions valid
                 Controller -> City : assignHouseBlocksManually(positions)
             else
-                Controller -> UI : warn("Coordinates out of bounds")
+                Controller --> UI : warn("Coordinates out of bounds")
             end
         deactivate Controller
     end
 
-    UI -> Editor : shows all data and asks confirmation
+    UI --> Editor : shows all data (city details) and requests confirmation
 deactivate UI
 
 Editor -> UI : confirms data
@@ -145,7 +148,7 @@ activate UI
             Map -> Map : integrate city internally
         deactivate Map
 
-        Controller -> UI : display operation success
+        Controller --> UI : display operation success
     deactivate Controller
 deactivate UI
 

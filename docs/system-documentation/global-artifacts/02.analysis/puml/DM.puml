@@ -44,9 +44,9 @@ class HouseBlock{
 }
 
 class Scenario {
-    behaviorOfMixedIndustries
-    locomotiveType
     industryProductionRate
+    behaviorOfMixedIndustries
+    availableTrains
 }
 class Period {
     start
@@ -93,13 +93,14 @@ isRunning
 class Cargo {
     type
     quantity
-    limit
+
 }
+
 class Locomotive {
     plateNumber
     powerSource
     acceleration
-    BuyCost
+    buyCost
     startYear
     fuelCost
     maintenanceCost
@@ -111,9 +112,6 @@ class Carriage{
     }
 
 
-
-
-' Ajustando as posições das classes
 
 Editor "1" -down- "1..*" Map : creates >
 Editor "1" --- "*" Scenario : creates >
@@ -146,6 +144,9 @@ Scenario "*" -- "1..*" Industry : changes Production >
 Scenario "*" - "1" Map : uses >
 Scenario "*" - "1..*" Train : restricts >
 Scenario "*" - "1..*" Train : Station >
+Scenario "1" - "1..*" Locomotive : restricts locomotion types >
+Scenario "1" - "1..*" Cargo : restricts cargo types >
+
 
 MixedIndustry "*" <|-down- "*" PrimarySectorIndustry : transforms >
 MixedIndustry "*" <|-down- "*" TransformingIndustry : transforms >

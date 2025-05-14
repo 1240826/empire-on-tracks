@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'hide footbox
+
+participant ":AssignTrainToRouteController" as Controller
+participant "stationRepository:\nStationRepository" as StationRepo
+
+autonumber 6
+ -> Controller : getAllStationsAndCargo()
+autonumber 6.1
+activate Controller
+    group Get Stations and Cargo
+
+        Controller -> StationRepo : getAllStationsAndCargo()
+activate StationRepo
+StationRepo --> Controller : list of stations and cargoes
+deactivate StationRepo
+
+    end
+    autonumber 7
+    <-- Controller : stations and cargoes
+deactivate Controller
+
+
+@enduml

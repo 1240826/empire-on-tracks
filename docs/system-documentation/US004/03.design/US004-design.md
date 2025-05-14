@@ -1,44 +1,44 @@
-# US006 - Create a Task
+# US004 - Create a Scenario
 
 ## 3. Design
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question: Which class is responsible for...                    | Answer                   | Justification (with patterns)                                                                                              |
+|:---------------|:---------------------------------------------------------------|:-------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| Step 1         | ... interacting with the actor?                                | CreateScenarioUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.             |
+|                | ... coordinating the US?                                       | CreateScenarioController | Controller: manages the flow and logic of the use case.                                                                   |
+|                | ... knowing the user using the system?                         | UserSession              | IE: represents the user session throughout the interaction.                                                               |
+|                |                                                                | ApplicationSession       | IE: manages the session and provides access to the current UserSession.                                                    |
+| Step 2         | ... requesting the map to create the scenario?                 | CreateScenarioController | IE: asks for the map selection to proceed.                                                                                  |
+|                | ... fetching all available maps for selection?                 | MapRepository            | IE: retrieves map information from the data store.                                                                         |
+| Step 3         | ... storing the selected map?                                  | CreateScenarioController | IE: temporarily holds the map choice for the scenario.                                                                     |
+| Step 4         | ... requesting temporal information (start and end dates)?     | CreateScenarioController | IE: asks for temporal details for the scenario.                                                                            |
+| Step 5         | ... validating the period (start and end dates)?               | Period                   | IE: handles and validates the start and end dates for the scenario.                                                         |
+| Step 6         | ... asking for cargo type?                                     | CreateScenarioController | IE: asks the user to specify the cargo type for the scenario.                                                              |
+|                | ... selecting the cargo type?                                  | CargoType                | IE: defines the different types of cargo for the scenario.                                                                  |
+| Step 7         | ... asking for locomotion type?                                | CreateScenarioController | IE: asks the user to specify the locomotion type for the scenario.                                                          |
+|                | ... selecting the locomotion type?                             | LocomotionType           | IE: defines the different types of locomotives for the scenario.                                                            |
+| Step 8         | ... creating the new scenario with all data?                   | ScenarioRepository       | Creator: stores the new scenario with all relevant information, including map, period, cargo type, and locomotion type.     |
+|                | ... saving the scenario to the database?                        | ScenarioRepository       | IE: saves the scenario data permanently.                                                                                    |
+| Step 9         | ... informing the user of success?                             | CreateScenarioUI         | IE: informs the user of the successful creation of the scenario.                                                            |
 
 ### Systematization ##
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+According to the taken rationale, the conceptual classes promoted to software classes are:
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+* Scenario
+* Map
+* Period
+* CargoType
+* LocomotionType
 
-Other software classes (i.e. Pure Fabrication) identified: 
+Other software classes (i.e. Pure Fabrication) identified:
 
-* CreateTaskUI  
-* CreateTaskController
-* Repositories
-* TaskCategoryRepository
-* OrganizationRepository
+* CreateScenarioUI
+* CreateScenarioController
+* ScenarioRepository
+* MapRepository
 * ApplicationSession
 * UserSession
 

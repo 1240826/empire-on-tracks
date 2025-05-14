@@ -1,0 +1,79 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+'hide footbox
+actor Player
+participant ":AssignTrainToRouteUI" as UI
+participant ":AssignTrainToRouteController" as Controller
+participant ":TrainRepository" as TrainRepo
+participant ":StationRepository" as StationRepo
+participant ":Route" as Route
+participant ":Train" as Train
+participant ":RouteValidator" as Validator
+
+activate Player
+Player -> UI : request to assign a train to a route
+activate UI
+
+UI -> Controller : getOwnedTrains()
+activate Controller
+Controller -> TrainRepo : getOwnedTrains()
+activate TrainRepo
+TrainRepo --> Controller : list of owned trains
+deactivate TrainRepo
+Controller --> UI : list of owned trains
+deactivate Controller
+
+UI -> Player : display list of owned trains
+Player -> UI : selects a train
+
+UI -> Controller : getAllStationsAndCargo()
+activate Controller
+Controller -> StationRepo : getAllStationsAndCargo()
+activate StationRepo
+StationRepo --> Controller : list of stations and cargoes
+deactivate StationRepo
+Controller --> UI : list of stations and cargoes
+deactivate Controller
+
+UI -> Player : display list of stations and cargo
+Player -> UI : selects stations and cargo
+
+UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
+activate Controller
+Controller -> Validator : validate route connectivity
+activate Validator
+Validator --> Controller : route valid/invalid
+deactivate Validator
+
+Controller -> Route : createRoute(stationCargoList)
+activate Route
+Route --> Controller : route
+deactivate Route
+
+Controller -> TrainRepo : findTrainById()
+activate TrainRepo
+TrainRepo --> Controller : Train
+deactivate TrainRepo
+
+Controller -> Train : assignRoute(route)
+activate Train
+Train --> Controller : success
+deactivate Train
+
+Controller -> TrainRepo : save(train)
+activate TrainRepo
+TrainRepo --> Controller : saved
+deactivate TrainRepo
+
+Controller --> UI : success message
+deactivate Controller
+UI -> Player : show success
+
+deactivate UI
+deactivate Player
+@enduml

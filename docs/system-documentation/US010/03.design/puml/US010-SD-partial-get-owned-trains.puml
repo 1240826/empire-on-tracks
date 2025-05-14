@@ -1,0 +1,19 @@
+@startuml
+participant ":AssignTrainToRouteController" as Controller
+participant "trainRepository:\nTrainRepository" as TrainRepo
+
+autonumber 2
+ -> Controller : getOwnedTrains()
+autonumber 2.1
+activate Controller
+    group Get Owned Trains
+    Controller -> TrainRepo : getOwnedTrains()
+    activate TrainRepo
+    TrainRepo --> Controller : list of owned trains
+    deactivate TrainRepo
+
+    end
+    autonumber 3
+    <-- Controller : list of trains
+deactivate Controller
+@enduml
