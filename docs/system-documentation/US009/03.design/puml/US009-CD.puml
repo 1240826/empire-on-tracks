@@ -1,0 +1,75 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam classAttributeIconSize 0
+
+' Classes based on the sequence diagram
+
+class BuyLocomotiveUI {
+}
+
+class BuyLocomotiveController {
+    + requestAvailableLocomotives()
+    + selectLocomotive(locomotiveID)
+}
+
+class LocomotiveCatalog {
+    + getAvailableLocomotives(date, scenario)
+}
+
+class Player {
+    + hasSufficientBudget(price)
+    + buyLocomotive(locomotive)
+}
+
+class Locomotive {
+    - id : String
+    - type : String
+    - price : double
+    - availableFrom : Date
+    - requiresElectrification : boolean
+}
+
+class Scenario {
+}
+
+class Simulation {
+    + getCurrentDate()
+}
+
+class Repositories {
+    + {static} getInstance()
+    + getLocomotiveCatalog()
+}
+
+' Relationships
+
+BuyLocomotiveUI .> BuyLocomotiveController
+
+BuyLocomotiveController .> Repositories
+BuyLocomotiveController ..> LocomotiveCatalog
+BuyLocomotiveController ..> Player
+BuyLocomotiveController ..> Scenario
+BuyLocomotiveController ..> Simulation
+BuyLocomotiveController ..> Locomotive
+
+Repositories --> LocomotiveCatalog : locomotiveCatalog
+
+Player --> "*" Locomotive : ownedLocomotives
+LocomotiveCatalog --> "*" Locomotive : availableLocomotives
+
+Locomotive --> Scenario : availabilityRestrictedBy
+Locomotive --> Simulation : dependsOnDate
+
+note right of LocomotiveCatalog
+    Filters locomotives by date
+    and scenario restrictions
+end note
+
+note right of Player
+    Has a budget and can purchase
+    available locomotives
+end note
+
+@enduml
