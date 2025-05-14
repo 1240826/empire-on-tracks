@@ -2,10 +2,9 @@
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
+skinparam classAttributeIconSize 0
 
 left to right direction
-
-skinparam classAttributeIconSize 0
 
 hide circle
 hide methods
@@ -19,15 +18,15 @@ class Map {
     name
 }
 
-class Size{
+class Size {
     length
     width
 }
 
 class Scenario {
-  behaviorOfMixedIndustries
-  locomotiveType
-  industryProductionRate
+    industryProductionRate
+     behaviorOfMixedIndustries
+     availableTrains
 }
 
 class Period {
@@ -35,10 +34,27 @@ class Period {
     end
 }
 
-Editor "1" -down- "1*" Map : creates >
+class Cargo {
+    type
+    quantity
+}
+
+class Locomotive {
+    plateNumber
+        powerSource
+        acceleration
+        buyCost
+        startYear
+        fuelCost
+        maintenanceCost
+}
+
+Editor "1" -down- "1..*" Map : creates >
 Editor "1" -- "*" Scenario : creates >
-Map "1" - "1" Size : has >
-Scenario "1" -- "1" Period : has >
-Scenario "*" - "1" Map : uses >
+Map "1" -down- "1" Size : has >
+Scenario "1" -down- "1" Period : has >
+Scenario "1" - "1..*" Locomotive : restricts locomotion types >
+Scenario "1" - "1..*" Cargo : restricts cargo types >
+Scenario "*" -down- "1" Map : uses >
 
 @enduml
