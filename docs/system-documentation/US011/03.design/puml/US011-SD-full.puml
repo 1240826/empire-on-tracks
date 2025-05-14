@@ -1,0 +1,48 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber
+
+actor ":Player" as Player
+participant ":ListTrainsUI" as UI
+participant ":ListTrainsController" as Controller
+participant ":Player" as PlayerObject
+participant "Train"
+
+activate Player
+Player -> UI : requests to list all trains
+activate UI
+
+UI -> Controller : requestTrainList()
+activate Controller
+
+Controller -> PlayerObject : getOwnedTrains()
+activate PlayerObject
+PlayerObject --> Controller : list of trains
+deactivate PlayerObject
+
+loop for each train
+    Controller -> Train : getLocomotiveType()
+    activate Train
+    Train --> Controller : locomotive
+    deactivate Train
+
+    Controller -> Train : getName()
+    activate Train
+    Train --> Controller : name
+    deactivate Train
+
+    Controller -> Train : getCurrentCargoes()
+    activate Train
+    Train --> Controller : list of current cargoes
+    deactivate Train
+end
+
+Controller --> UI : grouped and sorted list of trains
+deactivate Controller
+
+UI --> Player : displays train list
+deactivate UI
+deactivate Player
+@enduml

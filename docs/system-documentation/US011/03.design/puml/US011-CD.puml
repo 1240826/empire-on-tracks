@@ -1,0 +1,36 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam linetype polyline
+
+' Domain classes
+class Player {
+    + getOwnedTrains() : List<Train>
+}
+
+class Train {
+    + getName() : String
+    + getLocomotiveType() : String
+    + getCurrentCargoes() : List<String>
+}
+
+' Application layer
+class ListTrainsUI {
+    + requestTrainList()
+    + displayTrainList()
+}
+
+class ListTrainsController {
+    + requestTrainList()
+    - groupByLocomotiveType()
+    - sortByName()
+}
+
+' Associations
+ListTrainsUI .> ListTrainsController
+ListTrainsController ..> Player
+ListTrainsController ..> Train
+Player --> "*" Train
+
+@enduml
