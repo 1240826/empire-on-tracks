@@ -4,43 +4,34 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question: Which class is responsible for...                          | Answer                        | Justification (with patterns)                                                                                  |
+|:---------------|:---------------------------------------------------------------------|:------------------------------|:---------------------------------------------------------------------------------------------------------------|
+| Step 1         | ... interacting with the actor?                                      | AssignTrainToRouteUI          | Pure Fabrication: no corresponding class in Domain Model; used for user interaction.                           |
+|                | ... coordinating the US?                                             | AssignTrainToRouteController  | Controller: manages the overall logic and coordinates the system behavior for this use case.                   |
+| Step 2         | ... retrieving owned trains?                                         | TrainRepository               | IE: knows all trains; responsible for fetching them.                                                           |
+| Step 3         | ... retrieving available stations and their cargo?                   | StationRepository             | IE: responsible for persisting and retrieving stations and their available cargo.                              |
+| Step 4         | ... selecting stations and cargo?                                    | AssignTrainToRouteUI          | IE: UI gathers the player’s choices (route + cargo at each station).                                           |
+| Step 5         | ... creating a route?                                                | Route                         | Creator: a Route is a domain entity; builds the route using selected stations and assigned cargo.              |
+| Step 6         | ... assigning a route to the selected train?                         | Train                         | IE: Train knows and updates its own route.                                                                     |
+| Step 7         | ... validating route connectivity (railway lines between stations)?  | RouteValidator                | IE: Validator knows all existing lines; responsible for checking connectivity.                                 |
+| Step 8         | ... persisting changes?                                              | TrainRepository               | IE: repository for persisting updated train state with new route.                                              |
+| Step 9         | ... informing operation success?                                     | AssignTrainToRouteUI          | IE: responsible for communicating outcome to the user.                                                         |
 
-### Systematization ##
+### Systematization
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+**Promoted Domain Classes:**
+- Train
+- Route
+- Station
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+**Repositories:**
+- TrainRepository
+- StationRepository
 
-Other software classes (i.e. Pure Fabrication) identified: 
-
-* CreateTaskUI  
-* CreateTaskController
-* Repositories
-* TaskCategoryRepository
-* OrganizationRepository
-* ApplicationSession
-* UserSession
+**Pure Fabrication:**
+- AssignTrainToRouteUI
+- AssignTrainToRouteController
+- RouteValidator
 
 
 ## 3.2. Sequence Diagram (SD)
@@ -49,7 +40,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![Sequence Diagram - Full](svg/US010-SD-full.svg)
 
 ### Split Diagrams
 
@@ -57,15 +48,15 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
+![Sequence Diagram - split](svg/US010-SD-split.svg)
 
 **Get Task Category List Partial SD**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
+![Sequence Diagram - Partial - Get Owned Trains](svg/US010-SD-partial-get-owned-trains.svg)
 
 **Get Task Category Object**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
+![Sequence Diagram - Partial - Get Stations And Cargo](svg/US010-SD-partial-get-stations-and-cargo.svg)
 
 **Get Employee**
 
