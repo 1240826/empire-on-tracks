@@ -62,10 +62,9 @@ activate UI
         deactivate Map
 
         alt name duplicated
-            Controller -> UI : warn("City name is already in use")
-        else
-            Controller -> UI : requests assignment method\n(manual or automatic)
+            Controller --> UI : warn("City name is already in use")
         end
+            Controller --> UI : requests assignment method\n(manual or automatic)
     deactivate Controller
 
 
@@ -146,10 +145,11 @@ activate UI
         Controller -> Map : addCity(city)
         activate Map
             Map -> Map : integrate city internally
-        deactivate Map
-
-        Controller --> UI : display operation success
+Map --> Controller: city
+Controller --> UI: city
+       deactivate Map
     deactivate Controller
+    UI -->  Editor: display operation success
 deactivate UI
 
 deactivate Editor
