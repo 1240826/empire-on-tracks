@@ -10,11 +10,8 @@ participant ":StationListUI" as UI
 participant ":StationController" as CTRL
 participant ":Map" as REPOS
 participant "Map \n :Station" as REPOS_SINGLETON
-participant "stationRepository\n:StationRepository" as STATION_REPO
-participant "ApplicationSession" as APP_SESSION
-participant "appSession\n:ApplicationSession" as APP_SESSION_SINGLETON
-participant "currentSession\n:UserSession" as CURRENT_SESSION
-participant "station\n:Station" as STATION
+
+
 
 activate PLAYER
 
@@ -26,9 +23,15 @@ activate PLAYER
                 activate REPOS
                     REPOS --> CTRL: listStation
                 deactivate REPOS
+
+                CTRL->REPOS_SINGLETON :getAllNamesStation
+                activate REPOS_SINGLETON
                 loop
-                CTRL->REPOS_SINGLETON:
+                REPOS_SINGLETON->REPOS_SINGLETON:getname()
                 end
+                REPOS_SINGLETON-->CTRL: listStationName
+
+                deactivate REPOS_SINGLETON
 
 
 
@@ -44,18 +47,36 @@ activate PLAYER
     activate UI
         UI -> CTRL : getStationDetails(stationId)
         activate CTRL
-            CTRL -> STATION_REPO : getStationById(stationId)
-            activate STATION_REPO
-                STATION_REPO -> STATION : getDetails()
-                activate STATION
-                    STATION -> STATION : getUpgrades()
-                    STATION -> STATION : getCargoes()
-                    STATION --> STATION_REPO : stationDetails
-                deactivate STATION
-                STATION_REPO --> CTRL : stationDetails
-            deactivate STATION_REPO
 
-            CTRL --> UI : stationDetails
+         CTRL -> REPOS : getStation()
+                        activate REPOS
+                            REPOS --> CTRL: listStation
+                        deactivate REPOS
+
+                        CTRL->REPOS_SINGLETON :getAllNamesStation
+                        activate REPOS_SINGLETON
+                        loop
+                        REPOS_SINGLETON->REPOS_SINGLETON:getname()
+                        end
+                        REPOS_SINGLETON-->CTRL: listStationName
+
+                        deactivate REPOS_SINGLETON
+
+
+
+            CTRL -> CTRL: getStationByName(stationName)
+            CTRL --> CTRL : id
+            activate REPOS_SINGLETON
+                CTRL -> REPOS_SINGLETON : getDetails(listStation[id])
+
+                    REPOS_SINGLETON -> REPOS_SINGLETON : getUpgrades()
+                    REPOS_SINGLETON -> REPOS_SINGLETON : getCargoes()
+
+
+                REPOS_SINGLETON --> CTRL : stationDetails
+                deactivate REPOS_SINGLETON
+
+            CTRL --> UI : displays(stationDetails(name, buildings, cargoes))
         deactivate CTRL
 
         UI --> PLAYER : shows station details\n(buildings and cargoes)
