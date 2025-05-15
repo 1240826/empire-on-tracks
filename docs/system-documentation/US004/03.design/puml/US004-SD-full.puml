@@ -13,17 +13,19 @@ participant "Repositories" as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
 participant ":Scenario" as Scenario
-participant ":CargoType" as CargoType
-participant ":LocomotionType" as LocomotionType
+participant ":Cargo" as Cargo
+participant ":Locomotive" as Locomotive
 participant ":MapRepository" as MapRepo
 participant ":Period" as Period
+participant "cargoRepository\n:CargoRepository" as CargoRepo
+participant "locomotiveRepository\n:LocomotiveRepository" as LocoRepo
 
 activate Editor
 
 Editor -> UI : asks to create a scenario for selected map
 activate UI
 
-UI -> Controller : startCreateScenario()
+UI -> Controller : startCreateScenario(start, end)
 activate Controller
 
 Controller -> REPOS : getInstance()
@@ -36,64 +38,44 @@ activate REPOS_SINGLETON
 REPOS_SINGLETON --> Controller : scenarioRepository
 deactivate REPOS_SINGLETON
 
-Controller -> SCENARIO_REPO : getCurrentScenario()
-activate SCENARIO_REPO
-SCENARIO_REPO --> Controller : currentScenario
-deactivate SCENARIO_REPO
-
-Controller --> UI : request scenario period
-deactivate Controller
-UI --> Editor : requests scenario period (start and end date)
-deactivate UI
-
-Editor -> UI : provides start and end date
-activate UI
-
-UI -> Controller : submitScenarioPeriod(start, end)
-activate Controller
-
 Controller -> Period : newPeriod(start, end)
 activate Period
+Period --> Controller : period
 deactivate Period
-
 Controller -> Scenario : setPeriod(period)
-deactivate Controller
+
+deactivate scenario
+deactivate Period
+deactivate REPOS_SINGLETON
 
 UI --> Editor : requests available locomotion types (diesel, electric, steam)
 Editor -> UI : indicates locomotion types to include in the scenario
 UI -> Controller : submitLocomotionTypes(types)
 activate Controller
 
-Controller -> LocomotionType : setTypes(types)
-activate LocomotionType
-deactivate LocomotionType
+opt add locomotives
+    Controller -> REPOS : getInstance()
+    activate REPOS
+    REPOS --> Controller : repositories
+    deactivate REPOS
 
-loop for each locomotion type
-    UI --> Editor : requests availability date or indicate "always available" or "never available" for locomotion type
-    Editor -> UI : provides availability date or indicates "always available" or "never available"
-    alt "always available"
-        UI -> Controller : setLocomotionAvailability(type, "always")
-        activate Controller
-        deactivate Controller
-    else "never available"
-        UI -> Controller : setLocomotionAvailability(type, "never")
-        activate Controller
-        deactivate Controller
-    else "period"
-        UI -> Controller : setLocomotionAvailability(type, "period")
-        activate Controller
-        Controller --> UI : request period
-        UI -> Controller : provide period(start, end)
-        Controller -> Period : newPeriod(start, end)
-        activate Period
-        deactivate Period
-        activate Controller
-        Controller -> LocomotionType : setAvailability(type, period)
-        activate LocomotionType
-        deactivate Controller
-        deactivate LocomotionType
+    Controller -> LocoRepo : getAllLocomotives()
+    activate LocoRepo
+    LocoRepo --> Controller : allLocomotives
+    deactivate LocoRepo
+
+    loop for each selected locomotive
+        Controller -> LocoRepo : addAvailableLocomotive(locomotive)
     end
 end
+
+opt remove locomotives
+    loop for each locomotive to remove
+        Controller -> LocoRepo : removeAvailableLocomotive(locomotive)
+    end
+end
+
+deactivate Controller
 
 alt locomotion type becomes obsolete during scenario period
     UI --> Editor : requests obsolescence date for locomotion type
@@ -101,10 +83,12 @@ alt locomotion type becomes obsolete during scenario period
     alt "never obsolete"
         UI -> Controller : setLocomotionObsolescence(type, "never")
         activate Controller
+        Controller -> LocoRepo : addAvailableLocomotionType(type)
         deactivate Controller
     else "immediately obsolete"
         UI -> Controller : setLocomotionObsolescence(type, "immediately")
         activate Controller
+        Controller -> LocoRepo : removeAvailableLocomotionType(type)
         deactivate Controller
     else "period"
         UI -> Controller : setLocomotionObsolescence(type, "period")
@@ -113,11 +97,13 @@ alt locomotion type becomes obsolete during scenario period
         UI -> Controller : provide period(start, end)
         Controller -> Period : new(start, end)
         activate Period
+        Period --> Controller : period
         deactivate Period
-        Controller -> LocomotionType : setObsolescence(type, period)
-        activate LocomotionType
+        Controller -> Locomotive : setObsolescence(type, period)
+        activate Locomotive
+        Controller -> LocoRepo : updateAvailability(type, period)
+        deactivate Locomotive
         deactivate Controller
-        deactivate LocomotionType
     end
 end
 
@@ -126,19 +112,22 @@ Editor -> UI : defines cargo types to be part of the scenario (Iron, Coal, Silve
 UI -> Controller : submitCargoTypes(types)
 activate Controller
 
-Controller -> CargoType : setTypes(types)
-activate CargoType
-deactivate CargoType
+Controller -> Cargo : setTypes(types)
+activate Cargo
 
-UI --> Editor : requests cargo behavior (import, export, transform)
-loop for each cargo type in scenario
-    Editor -> UI : defines behavior for cargo (import, export, transform)
-    loop for each behavior
-        UI -> Controller : setCargoBehavior(type, behavior)
+loop for each selected cargo
+    UI --> Editor : requests cargo behavior (import/export/transform)
+    Editor -> UI : defines behavior(s) for cargo
+    loop for each selected behavior
+        UI -> Controller : setCargoBehavior(cargo, behavior)
         activate Controller
         deactivate Controller
     end
 end
+
+deactivate Cargo
+
+deactivate Controller
 
 UI --> Editor : requests production frequency for generating industries
 Editor -> UI : defines production frequency for generating industries (as a percentage)
@@ -154,21 +143,21 @@ activate Controller
 Controller -> REPOS : getInstance()
 activate REPOS
 REPOS --> Controller : repositories
-deactivate REPOS
 
 Controller -> MapRepo : getMapRepository()
 activate MapRepo
 MapRepo --> Controller : mapRepository
-deactivate MapRepo
 
 Controller -> MapRepo : getCurrentMap()
 activate MapRepo
 MapRepo --> Controller : currentMap
+
 deactivate MapRepo
 
 Controller -> MapRepo : addScenario(scenario)
 activate MapRepo
 MapRepo -> MapRepo : integrate scenario internally
+
 deactivate MapRepo
 
 Controller -> SCENARIO_REPO : saveScenario(scenario)
@@ -176,10 +165,11 @@ activate SCENARIO_REPO
 SCENARIO_REPO -> SCENARIO_REPO : storeScenario(scenario)
 deactivate SCENARIO_REPO
 
+deactivate REPOS
+
 Controller -> UI : displays operation success
 deactivate Controller
 deactivate UI
 deactivate Editor
 
 @enduml
-
