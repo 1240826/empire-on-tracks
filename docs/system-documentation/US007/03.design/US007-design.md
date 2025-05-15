@@ -4,33 +4,35 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...  | Answer                         | Justification (with patterns)                                        |
-|:---------------|:---------------------------------------------|:-------------------------------|:---------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?              | ListStationsUI                 | Pure Fabrication: Dedicated UI class for station listing operations. |
-|                | ... coordinating the US?                     | ListStationsController         | Controller.                                                          |
-|                | ... knowing the current player?              | PlayerSession                  | IE: Maintains authenticated player context.                          |
-|                |                                              |                                |                                                                      |
-|                |                                              |                                |                                                                      |
-| Step 2         | ... knowing all existing stations to show?   | StationRepository              | IE: is responsible for storing all station data.                     |
-|                |                                              |                                |                                                                      |
-| Step 3         | ... displaying the station list?             | StationListUI                  | IE: Handles all station display logic                                |
-| Step 4         | ... handling station selection?              | StationController              | Controller: Mediates between UI and domain logic.                    |
-| Step 5         | ... fetching details of selected station?    | StationRepository              | IE: is responsible for storing all station data.                     |
-| Step 6         | ... showing station details?                 | StationListUI                  | IE: is responsible for displaying information to player              |              
+| Interaction ID                                                                | Question: Which class is responsible for...    | Answer            | Justification (with patterns)                                                    |
+|:------------------------------------------------------------------------------|:-----------------------------------------------|:------------------|:---------------------------------------------------------------------------------|
+| Step 1                                                                        | ... interacting with the actor?                | StationListUI     | Pure Fabrication: Dedicated UI class for station listing operations.             |
+|                                                                               | ... coordinating the US?                       | StationController | Controller.                                                                      | 
+| Step 2                                                                        | ... retrieving raw station data?               | Map               | IE: Acts as root repository for all stations                                     |
+|                                                                               | ... extracting station names?                  | Map               | IE: Station instances know their own names (High Coupling(HC) + Low Coupling(LC) |
+| Step 3                                                                        | ... displaying the station list?               | StationListUI     | IE: Handles all station display logic                                            |
+| Step 4                                                                        | ... fetching detailed station data?            | Map               | IE: Knows its own buildings/cargoes                                              |
+|                                                                               | ... retrieving building upgrades?              | Building          | IE: Owns upgrade data                                                            |
+|                                                                               | ... retrieving cargo information?              | Cargo             | IE: Manages cargo quantities/types                                               |
+| Step 5                                                                        | ... assembling station details?                | StationController | Controller: Coordinates data from Map/Station/Building/Cargo                     |
+| Step 6                                                                        | ... displaying full station details?           | StationListUI     | IE: is responsible for displaying information to player                          |              
 
 ### Systematization ##
 
 According to the taken rationale, the conceptual classes promoted to software classes are: 
 
-* Station
-* Cargo
 * Player
+* Station
+* Building
+* Cargo
+
+
 
 Other software classes (i.e. Pure Fabrication) identified: 
 
 * StationListUI
 * StationController
-* StationRepository
+* Map
 * PlayerSession
 
 
@@ -40,7 +42,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![Sequence Diagram - Full](svg/US007-SD-full.svg)
 
 ### Split Diagrams
 
@@ -68,4 +70,4 @@ It uses Interaction Occurrence (a.k.a. Interaction Use).
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![Class Diagram](svg/US007-CD.svg)
