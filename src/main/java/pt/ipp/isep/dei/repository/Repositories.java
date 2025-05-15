@@ -1,4 +1,7 @@
 package pt.ipp.isep.dei.repository;
+
+import pt.ipp.isep.dei.domain.LocomotiveCatalog;
+
 /**
  * Inspired by Singleton pattern to manage all repositories in the application.
  *
@@ -9,6 +12,8 @@ public class Repositories {
     private static Repositories instance;
     private final RepositoryMap repositoryMap;
     private final IndustryRepository industryRepository;
+    private LocomotiveCatalog locomotiveCatalog = new LocomotiveCatalog();
+
     /**
      * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
      */
@@ -39,7 +44,18 @@ public class Repositories {
     public RepositoryMap getMapRepository() {
         return repositoryMap;
     }
+
     public IndustryRepository getIndustryRepository(){
         return industryRepository;
     }
+
+    /**
+     * Retrieves the locomotive catalog containing all locomotives.
+     *
+     * @return the locomotive catalog
+     */
+    public LocomotiveCatalog getLocomotiveCatalog() {
+        return locomotiveCatalog;
+    }
+
 }
