@@ -3,124 +3,66 @@
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
-'skinparam linetype orto
-
 skinparam classAttributeIconSize 0
 
 'left to right direction
 
-class ApplicationSession
-{
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession()
+class Player {
+    - budget : double
+    + canAfford(cost: double) : boolean
+    + buildRailLine(start: Station, end: Station,\n  isElectrified: boolean, isDouble: boolean) : RailLine
 }
 
-class UserSession
-{
-    + getUserEmail()
-}
-
-class Employee {
+class Station {
     - name : String
-    - email : String
-    - position : String
-    - phone : String
+    + getName() : String
 }
 
-class Task {
-    - reference :String
-    - description : String
-    - informalDescription : String
-    - technicalDescription : String
-    - duration : int
+class RailLine {
+    - start : Station
+    - end : Station
+    - isElectrified : boolean
+    - isDouble : boolean
     - cost : double
-
-    + Task(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, createdBy)
+    + RailLine(start, end, isElectrified, isDouble)
+    + getCost() : double
 }
 
-class TaskCategory {
-    - description : String
+class Map {
+    - stations : List<Station>
+    - railLines : List<RailLine>
+    + getAllStations() : List<Station>
+    + addRailLine(railLine: RailLine) : void
 }
 
-class Organization {
-    - name : String
-    - vatNumber : String
-    - website : String
-    - phone : String
-    - email : String
-
-    + Organization(name, vatNumber, webSite, phone, email, postalAddress, manager)
-    + anyEmployeeHasEmail(email)
-    + getEmployeeByEmail(email)
-    + createTask(reference, description, informalDesccription, technicalDescription, \nduration, cost, taskCategory, employee)
-    - addTask(task)
-    - validateTask(task)
+class BuildLineController {
+    + BuildLineController(player: Player, map: Map)
+    + startRailLineCreation() : List<Station>
+    + createRailLine(start: Station, end: Station,\n  isElectrified: boolean, isDouble: boolean) : RailLine
 }
 
-class TaskCategoryRepository {
-    + getTaskCategories()
-    + getTaskCategoryByDescription(taskCategoryDescription)
+class BuildLineUI {
+    + askToBuildRailLine() : void
+    + showStationList(stations: List<Station>) : void
+    + requestLineDetails() : void
+    + confirmLineData() : boolean
+    + showResult(success: boolean) : void
 }
 
-class OrganizationRepository {
-    + getOrganizationByEmployeeEmail(email)
-}
+BuildLineUI .> BuildLineController
 
-class Repositories {
-    - Repositories()
-    + {static} getInstance()
-    + getTaskCategoryRepository()
-    + getOrganizationRepository()
-}
+BuildLineController --> Map : map
+BuildLineController --> Player : player
+BuildLineController ..> RailLine
+BuildLineController ..> Station
 
-class CreateTaskController {
-    + CreateTaskController()
-    + getTaskCategories()
-    + createTask(reference, description, informalDescription, \n   technicalDescription, duration, cost, taskCategoryDescription)
-    - getTaskCategoryByDescription(taskCategoryDescription)
-    - getEmployeeFromSession()
-}
+Player --> "*" RailLine : builds >
+Player --> "*" Station : hasAccessTo >
 
-note right of CreateTaskController
-    categoryDescription is retrieved
-    from selected data
-end note
+Map --> "*" Station : contains >
+Map --> "*" RailLine : contains >
 
-note bottom of TaskCategoryRepository
-    - used for displaying
-    the task category list
-end note
-
-class CreateTaskUI {
-}
-
-CreateTaskUI .> CreateTaskController
-
-CreateTaskController ..> ApplicationSession
-CreateTaskController ..> UserSession
-CreateTaskController ..> TaskCategory
-CreateTaskController ..> TaskCategoryRepository
-CreateTaskController ..> Organization
-CreateTaskController ..> OrganizationRepository
-CreateTaskController .> Repositories
-
-Repositories -> "1" Repositories : instance
-Repositories --> "1" OrganizationRepository : organizationRepository
-Repositories -> "1" TaskCategoryRepository : taskCategoryRepository
-
-ApplicationSession -> "1" ApplicationSession : instance
-ApplicationSession ..> UserSession
-
-TaskCategoryRepository --> "*" TaskCategory : taskCategories
-
-OrganizationRepository --> "*" Organization : organizations
-
-Organization --> "*" Task : tasks
-Organization --> "*" Employee : employees
-
-Task --> "1" TaskCategory : taskCategory
-Task --> "1" Employee : createdBy
-
+RailLine --> "1" Station : start
+RailLine --> "1" Station : end
 
 @enduml
