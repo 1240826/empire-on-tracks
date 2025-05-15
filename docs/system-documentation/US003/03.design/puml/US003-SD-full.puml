@@ -41,7 +41,7 @@ activate UI
 
         Controller --> UI : requests city details\n(name, positionX, positionY, number of house blocks)
     deactivate Controller
-UI --> Editor : shows fields for city details
+UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
 deactivate UI
 Editor -> UI : types city details
 activate UI
@@ -53,15 +53,20 @@ activate UI
         activate City
             City -> City : validateName()
             City -> City : validateHouseBlocks()
+             City --> Controller : city
         deactivate City
+        deactivate Controller
 
         Controller -> Map : isCityNameDuplicate(name)
+        activate Controller
         activate Map
             Map --> Controller : true / false
         deactivate Map
+        deactivate Controller
 
         alt name duplicated
             Controller --> UI : warn("City name is already in use")
+            activate Controller
         end
             Controller --> UI : requests assignment method\n(manual or automatic)
     deactivate Controller
@@ -69,7 +74,7 @@ activate UI
 
 UI --> Editor : requests to select house block assignment method (manual or automatic)
 deactivate UI
-Editor -> UI : selects "automatic" or "manual"
+Editor -> UI : selects assignment method "automatic" or "manual"
 activate UI
 
     alt method = "automatic"
@@ -92,15 +97,19 @@ activate UI
                     HouseBlock --> Controller : houseBlock
                 deactivate HouseBlock
 
-                activate City
                 Controller -> City : addHouseBlock(houseBlock)
+                activate City
+                City --> Controller : houseBlocks
+                deactivate City
             end
             deactivate City
         deactivate Controller
 
     else method = "manual"
         UI --> Editor : request positions of house blocks
+        deactivate UI
         Editor -> UI : submits positionX, positionY
+        activate UI
         UI -> Controller : selectedAssignmentMethod("manual", positions)
         activate Controller
 
@@ -111,6 +120,9 @@ activate UI
 
             alt positions valid
                 Controller -> City : assignHouseBlocksManually(positions)
+                activate City
+                City --> Controller : houseBlocks
+                deactivate City
             else
                 Controller --> UI : warn("Coordinates out of bounds")
             end
@@ -146,8 +158,8 @@ activate UI
         activate Map
             Map -> Map : integrate city internally
 Map --> Controller: city
+deactivate Map
 Controller --> UI: city
-       deactivate Map
     deactivate Controller
     UI -->  Editor: display operation success
 deactivate UI

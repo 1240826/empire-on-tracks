@@ -5,89 +5,101 @@ skinparam shadowing false
 
 autonumber
 
-'hide footbox
-actor "Organization Employee" as ORG_EMPLOYEE
+actor "Editor" as Editor
+participant ":CreateCityUI" as UI
+participant ":CreateCityController" as Controller
 
-participant ":CreateTaskUI" as UI
-participant ":CreateTaskController" as CTRL
-participant "organization\n:Organization" as ORG
+activate Editor
 
-activate ORG_EMPLOYEE
+Editor -> UI : asks to add a city
+activate UI
 
-    ORG_EMPLOYEE -> UI : asks to create a new task
+    UI -> Controller : startCreateCity()
+    activate Controller
 
-    activate UI
-
-        UI --> CTRL** : create()
-        UI -> CTRL : getTaskCategories()
-        ref over CTRL
-            Get Task Category List
-
+        ref over Controller
+            Get repositories and currentMap
         end ref
 
-        activate CTRL
+        Controller --> UI : requests city details\n(name, positionX, positionY, number of house blocks)
+    deactivate Controller
 
-            CTRL --> UI : taskCategoryList
-        deactivate CTRL
+UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
+deactivate UI
 
-        UI --> ORG_EMPLOYEE : shows task category list and asks to select one
-    deactivate UI
+Editor -> UI : types city details
+activate UI
 
-    ORG_EMPLOYEE -> UI : selects a task category
-    activate UI
+    UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
+    activate Controller
 
-        UI --> ORG_EMPLOYEE : requests data (reference, description,\ninformal description, technical description,\nduration, cost)
-    deactivate UI
+        ref over Controller, City
+            Create city and validate name/house blocks
+        end ref
 
-    ORG_EMPLOYEE -> UI : types requested data
-    activate UI
+        ref over Controller, Map
+            isCityNameDuplicate(name)
+        end ref
 
-        UI --> ORG_EMPLOYEE : shows all data and requests confirmation
-    deactivate UI
+        alt name duplicated
+            Controller --> UI : warn("City name is already in use")
+        end
 
-    ORG_EMPLOYEE -> UI : confirms data
-    activate UI
+        Controller --> UI : requests assignment method\n(manual or automatic)
+    deactivate Controller
 
-        UI -> CTRL : createTask(reference, description, informalDescription,\ntechnicalDescription, duration, cost, taskCategoryDescription)
-        activate CTRL
+UI --> Editor : requests to select house block assignment method (manual or automatic)
+deactivate UI
 
-            CTRL -> CTRL : getTaskCategoryByDescription(taskCategoryDescription)
-            activate CTRL
+Editor -> UI : selects assignment method "automatic" or "manual"
+activate UI
 
-                ref over CTRL
-                    Get Task Category Object
+    alt method = "automatic"
+        UI -> Controller : selectedAssignmentMethod("automatic")
+        activate Controller
 
-                end ref
+            ref over Controller
+                Automatic house block assignment
+            end ref
+        deactivate Controller
 
-                CTRL --> CTRL : taskCategory
-            deactivate CTRL
+    else method = "manual"
+        UI --> Editor : request positions of house blocks
+        deactivate UI
+        Editor -> UI : submits positionX, positionY
+        activate UI
+        UI -> Controller : selectedAssignmentMethod("manual", positions)
+        activate Controller
 
-            CTRL -> CTRL : getEmployeeFromSession()
-            activate CTRL
+            ref over Controller
+                Validate coordinates and assignHouseBlocksManually
+            end ref
+        deactivate Controller
+    end
 
-                ref over CTRL
-                    Get Employee
+    Controller --> UI : city details
+deactivate UI
 
-                end ref
-                CTRL --> CTRL : employee
-            deactivate CTRL
+UI --> Editor : shows all data (city details) and requests confirmation
+Editor -> UI : confirms data
+activate UI
 
-            CTRL -> ORG: createTask(reference, description, informalDescription,\ntechnicalDescription, duration, cost, taskCategory, employee)
-            activate ORG
+    UI -> Controller : confirmCityCreation()
+    activate Controller
 
-                ref over ORG
-                    Create Task
+        ref over Controller
+            Get repositories and currentMap
+        end ref
 
-                end
+        ref over Controller, Map
+            addCity(city)
+        end ref
 
-                ORG --> CTRL : task
-            deactivate ORG
+        Controller --> UI : city
+    deactivate Controller
 
-            CTRL --> UI: task
-            deactivate CTRL
-            UI --> ORG_EMPLOYEE: displays operation success
-    deactivate UI
+    UI --> Editor : display operation success
+deactivate UI
 
-deactivate ORG_EMPLOYEE
-
+deactivate Editor
 @enduml

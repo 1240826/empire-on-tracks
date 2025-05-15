@@ -8,9 +8,9 @@ participant ":City" as City
 participant ":Location" as Location
 participant ":HouseBlock" as HouseBlock
 
-autonumber 22
+autonumber 23
 -> Controller : selectedAssignmentMethod("automatic")
-autonumber 22.1
+autonumber 23.1
 
 
     group Assign automatic
@@ -32,12 +32,14 @@ autonumber 22.1
                    HouseBlock --> Controller : houseBlock
                deactivate HouseBlock
 
-               activate City
                Controller -> City : addHouseBlock(houseBlock)
+               activate City
+                               City --> Controller : houseBlocks
+                               deactivate City
            end
            deactivate City
            end
-    autonumber 23
+    autonumber 24
     <-- Controller: city details
 
 deactivate Controller

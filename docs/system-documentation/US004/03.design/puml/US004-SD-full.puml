@@ -24,10 +24,10 @@ activate Editor
 
 Editor -> UI : asks to create a scenario for selected map
 activate UI
-UI --> Editor : asks to indicate a period (start and end date)
+UI --> Editor : requests scenario period (start and end date)
 deactivate UI
 
-Editor -> UI: introduces start and end date
+Editor -> UI: provides start and end date
 activate UI
 UI -> Controller : startCreateScenario(start, end)
 activate Controller
@@ -131,7 +131,7 @@ loop for each selected cargo
     deactivate Controller
 end
 
-UI --> Editor : requests production frequency for industries
+UI --> Editor : requests production frequency for generating industries
 deactivate UI
 Editor -> UI : defines production frequency (percentage)
 activate UI
@@ -166,10 +166,11 @@ deactivate MapRepo
 Controller -> SCENARIO_REPO : saveScenario(scenario)
 activate SCENARIO_REPO
 SCENARIO_REPO -> SCENARIO_REPO : storeScenario(scenario)
+SCENARIO_REPO --> Controller : scenario
 deactivate SCENARIO_REPO
 
-Controller --> UI : scenario creation result (success)
-UI --> Editor : shows operation success confirmation
+Controller --> UI : scenario
+UI --> Editor : displays operation success
 
 deactivate SCENARIO_REPO
 deactivate MapRepo

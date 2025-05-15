@@ -22,9 +22,8 @@ activate Editor
      System --> Editor : requests to select house block assignment method (manual or automatic)
         deactivate System
 
-        Editor -> System : selects assignment method
+        Editor -> System : selects assignment method "automatic" or "manual"
         activate System
-
         System --> Editor : shows all data (city details) and requests confirmation
             deactivate System
 

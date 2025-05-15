@@ -34,16 +34,17 @@ class "SessionManager" {
 }
 
 class "City" {
-    - name: String
-    - positionX: int
-    - positionY: int
-    - houseBlocks: int
-    + createCity(name: String, positionX: int, positionY: int, houseBlocks: int)
-    + validateName(): Boolean
-    + validateHouseBlocks(): Boolean
-    + assignHouseBlocksManually(positions: List[Location])
-    + getCityCenter(): Location
-    + addHouseBlock(houseBlock: HouseBlock)
+        - name: String
+        - positionX: int
+        - positionY: int
+        - houseBlocks: int
+        - houseBlocksList: List<HouseBlock>
+        + createCity(name: String, positionX: int, positionY: int, houseBlocks: int): City
+        + validateName(): boolean
+        + validateHouseBlocks(): boolean
+        + assignHouseBlocksManually(positions: List<Location>)
+        + getCityCenter(): Location
+        + addHouseBlock(houseBlock: HouseBlock): void
 }
 
 class "Location" {
@@ -53,7 +54,6 @@ class "Location" {
 }
 
 class "HouseBlock" {
-    - position: Location
     + createAt(position: Location): HouseBlock
 }
 
@@ -61,7 +61,7 @@ class "Map" {
     + getCity(name: String): City
     + addCity(city: City)
     + isCityNameDuplicate(name: String): Boolean
-    + validateCoordinates(positions: List[Location]): Boolean
+    + validateCoordinates(positions: List<Location>): Boolean
 }
 
 class "Repositories" {
@@ -77,15 +77,15 @@ class "MapRepository" {
 class "AddCityController" {
     + startAddCity()
     + submitCityDetails(name: String, positionX: int, positionY: int, houseBlocks: int)
-    + selectedAssignmentMethod(method: String, positions: List[Location])
+    + selectedAssignmentMethod(method: String, positions: List<Location>)
     + confirmCityCreation()
 }
 
 class "AddCityUI" {
-    + showFieldsForCityDetails()
-    + requestCityDetails()
-    + showWarning(message: String)
-    + showSuccess(message: String)
+    + showFieldsForCityDetails() : void
+    + requestCityDetails() : void
+    + showWarning(message: String) : void
+    + showSuccess(message: String) : void
 }
 
 
@@ -108,18 +108,18 @@ AddCityController ..> Location : computes
 AddCityController ..> HouseBlock : creates
 AddCityController ..> Map : validates
 
-Repositories --> "1" MapRepository : mapRepository
-Repositories --> "1" Repositories : instance
+Repositories -->  MapRepository : mapRepository
+Repositories -->  Repositories : instance
 
-MapRepository --> "1" Map : currentMap
+MapRepository --> Map : currentMap
 
-Map --> "*" City : cities
-Map --> "*" Location : locations
-Map --> "*" HouseBlock : houseBlocks
+Map -->  City : cities
+Map -->  Location : locations
+Map -->  HouseBlock : houseBlocks
 
-City --> "*" HouseBlock : houseBlocks
-City --> "1" Location : position
+City -->  HouseBlock : houseBlocks
+City -->  Location : position
 
-HouseBlock --> "1" Location : position
+HouseBlock --> Location : position
 
 @enduml
