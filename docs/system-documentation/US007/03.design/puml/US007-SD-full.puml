@@ -10,6 +10,8 @@ participant ":StationListUI" as UI
 participant ":StationController" as CTRL
 participant ":Map" as REPOS
 participant "Map \n :Station" as REPOS_SINGLETON
+participant "Cargo" as CARGO
+participant "Building" as BUILDING
 
 
 
@@ -69,8 +71,8 @@ activate PLAYER
             activate REPOS_SINGLETON
                 CTRL -> REPOS_SINGLETON : getDetails(listStation[id])
 
-                    REPOS_SINGLETON -> REPOS_SINGLETON : getUpgrades()
-                    REPOS_SINGLETON -> REPOS_SINGLETON : getCargoes()
+                    REPOS_SINGLETON -> BUILDING : getUpgrades()
+                    REPOS_SINGLETON -> CARGO : getCargoes()
 
 
                 REPOS_SINGLETON --> CTRL : stationDetails
