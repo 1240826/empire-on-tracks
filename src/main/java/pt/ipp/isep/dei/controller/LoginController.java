@@ -1,33 +1,42 @@
 package pt.ipp.isep.dei.controller;
 
-import pt.ipp.isep.dei.user.PasswordValidator;
-import pt.ipp.isep.dei.user.SessionManager;
+import java.util.Objects;
+import pt.ipp.isep.dei.repository.AuthenticationRepository;
 import pt.ipp.isep.dei.user.User;
 
 /**
- * Manages user login operations, including authentication and session creation.
+ * Controller for user registration and login flows.
  */
 public class LoginController {
-    private PasswordValidator passwordValidator = new PasswordValidator();
+
+    private final AuthenticationRepository repo = new AuthenticationRepository();
 
     /**
-     * Authenticates a user by username and password.
-     * On successful authentication, creates a user session.
+     * Regista um novo utilizador com username e password.
      *
-     * @param username the username provided
-     * @param password the password provided
-     * @return true if authentication succeeds, false otherwise
+     * @param username o username escolhido; não pode ser nulo ou vazio
+     * @param password a password escolhida; deve satisfazer a política
+     * @return o User criado
+     * @throws NullPointerException     se username ou password forem nulos
+     * @throws IllegalArgumentException se username for vazio ou password inválida
      */
-    public boolean authenticateUser(String username, String password) {
-        if (username == null || password == null) return false;
-        if (!passwordValidator.validate(password)) return false;
+    public User register(String username, String password) {
+        Objects.requireNonNull(username, "Username must not be null");
+        Objects.requireNonNull(password, "Password must not be null");
+        return repo.registerUser(username, password);
+    }
 
-        // In a real scenario, verify user credentials against a data store.
-        SessionManager sessionManager = new SessionManager();
-        User user = new User(username, password);
-        sessionManager.startSession(user);
-
-        return true;
+    /**
+     * Tenta autenticar um utilizador existente.
+     *
+     * @param id       o ID retornado no registo
+     * @param password a password fornecida
+     * @return o User autenticado, ou null se credenciais inválidas
+     */
+    public User login(String id, String password) {
+        if (id == null || password == null) {
+            return null;
+        }
+        return repo.authenticate(id, password);
     }
 }
-

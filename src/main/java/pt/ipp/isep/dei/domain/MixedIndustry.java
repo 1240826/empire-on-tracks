@@ -18,6 +18,19 @@ public class MixedIndustry implements Industry {
         this.outputCargo = outputCargo;
     }
 
+    public MixedIndustry(String getindustryname, int industryCost, double production, double demand, Location location) {
+        this.industryName = getindustryname;
+        this.industryCost = industryCost;
+        this.production = production;
+        this.demand = demand;
+        this.location = location;
+        this.inputCargo = CargoType.OIL;
+        this.outputCargo = CargoType.COAL;
+        if (demand > 0) {
+            this.inputCargo = CargoType.OIL;
+        }
+    }
+
     @Override
     public String getindustryname() {
         return new String(this.industryName);

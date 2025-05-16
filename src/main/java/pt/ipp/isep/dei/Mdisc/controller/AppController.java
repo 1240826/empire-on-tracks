@@ -20,10 +20,11 @@ public class AppController {
     private final MatrixRepository matrixRepo = new MatrixRepository();
     private boolean onlyElectrified;
 
-    public AppController(String stationsFile, String linesFile) {
-        this.stationRepo    = new StationRepository(stationsFile);
-        this.linesFile      = linesFile;
-        this.onlyElectrified = false;
+    // RECEBE O FLAG INITIAL AQUI
+    public AppController(String stationsFile, String linesFile, boolean onlyElectrified) {
+        this.stationRepo     = new StationRepository(stationsFile);
+        this.linesFile       = linesFile;
+        this.onlyElectrified = onlyElectrified;
     }
 
     public void start() {
@@ -32,24 +33,27 @@ public class AppController {
         do {
             MenuUI menu = new MenuUI(onlyElectrified);
             choice = menu.showMenu();
-            // cria um repositório de linhas com o flag atualizado
             LineRepository lineRepo = new LineRepository(linesFile, onlyElectrified);
 
             switch (choice) {
-                case 1 :onlyElectrified = !onlyElectrified;
-                break;
-                case 2 : exportMatrix(lineRepo);
-                break;
-                case 3 : checkReachabilityAndSave(sc, lineRepo);
-                break;
-                case 4 : showFullGraph(lineRepo);
-                break;
-                case 5 : checkMaintenanceRoute(lineRepo);
-                break;
-                case 0 : System.out.println("Saindo...");
-                break;
-                default : System.out.println("Opção inválida");
-                break;
+                case 1:
+                    exportMatrix(lineRepo);
+                    break;
+                case 2:
+                    checkReachabilityAndSave(sc, lineRepo);
+                    break;
+                case 3:
+                    showFullGraph(lineRepo);
+                    break;
+                case 4:
+                    checkMaintenanceRoute(lineRepo);
+                    break;
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida");
+                    break;
             }
         } while (choice != 0);
         sc.close();

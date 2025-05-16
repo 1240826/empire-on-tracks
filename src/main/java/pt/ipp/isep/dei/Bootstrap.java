@@ -1,57 +1,33 @@
 package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.controller.AuthenticationController;
-import pt.ipp.isep.dei.example_US6.Employee;
+import pt.ipp.isep.dei.user.User;
 import pt.ipp.isep.dei.example_US6.Organization;
-import pt.ipp.isep.dei.example_US6.TaskCategory;
-import pt.ipp.isep.dei.repository.AuthenticationRepository;
 import pt.ipp.isep.dei.example_US6.OrganizationRepository;
-import pt.ipp.isep.dei.repository.Repositories;
+import pt.ipp.isep.dei.example_US6.TaskCategory;
 import pt.ipp.isep.dei.example_US6.TaskCategoryRepository;
+import pt.ipp.isep.dei.repository.Repositories;
 
+/**
+ * Bootstraps application data: task categories, organization, and initial game player.
+ */
 public class Bootstrap implements Runnable {
 
-    //Add some task categories to the repository as bootstrap
+    private final AuthenticationController authCtrl = new AuthenticationController();
+
+    @Override
     public void run() {
-        addTaskCategories();
-        addOrganization();
-        addUsers();
+
+        addPlayerUser();
     }
 
-    private void addOrganization() {
-        //TODO: add organizations bootstrap here
-        //get organization repository
-        OrganizationRepository organizationRepository = Repositories.getInstance().getOrganizationRepository();
 
-        Organization organization = new Organization("This Company");
-        organization.addEmployee(new Employee("admin@this.app"));
-        organization.addEmployee(new Employee("employee@this.app"));
-        organizationRepository.add(organization);
-    }
 
-    private void addTaskCategories() {
-        //TODO: add bootstrap Task Categories here
-        //get task category repository
-        TaskCategoryRepository taskCategoryRepository = Repositories.getInstance().getTaskCategoryRepository();
-
-        taskCategoryRepository.add(new TaskCategory("Analysis"));
-        taskCategoryRepository.add(new TaskCategory("Design"));
-        taskCategoryRepository.add(new TaskCategory("Implementation"));
-        taskCategoryRepository.add(new TaskCategory("Development"));
-        taskCategoryRepository.add(new TaskCategory("Testing"));
-        taskCategoryRepository.add(new TaskCategory("Deployment"));
-        taskCategoryRepository.add(new TaskCategory("Maintenance"));
-    }
-
-    private void addUsers() {
-        //TODO: add Authentication users here: should be created for each user in the organization
-        //get authentication repository
-        AuthenticationRepository authenticationRepository = Repositories.getInstance().getAuthenticationRepository();
-
-        authenticationRepository.addUserRole(AuthenticationController.ROLE_ADMIN, AuthenticationController.ROLE_ADMIN);
-        authenticationRepository.addUserRole(AuthenticationController.ROLE_EMPLOYEE, AuthenticationController.ROLE_EMPLOYEE);
-
-        authenticationRepository.addUserWithRole("Main Administrator", "admin@this.app", "admin", AuthenticationController.ROLE_ADMIN);
-        authenticationRepository.addUserWithRole("Employee", "employee@this.app", "pwd", AuthenticationController.ROLE_EMPLOYEE);
+    private void addPlayerUser() {
+        // Register a single game player with valid password
+        String username = "player1";
+        String password = "ABC12XY"; // 7 chars: 3 uppercase, 2 digits
+        User player = authCtrl.register(username, password);
+        System.out.printf("Bootstrapped player → Username=%s%n", player.getUsername());
     }
 }

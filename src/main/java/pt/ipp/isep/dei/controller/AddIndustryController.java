@@ -61,24 +61,24 @@ public class AddIndustryController {
             newIndustry = new ProducingIndustry(industryTemplate.getindustryname(),
                     industryTemplate.getIndustryCost(),
                     industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
+                    industryTemplate.getDemand(),
+                    location);
         } else if (industryTemplate instanceof TransformingIndustry) {
             newIndustry = new TransformingIndustry(industryTemplate.getindustryname(),
                     industryTemplate.getIndustryCost(),
                     industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
+                    industryTemplate.getDemand(),
+                    location);
         } else if (industryTemplate instanceof MixedIndustry) {
             newIndustry = new MixedIndustry(industryTemplate.getindustryname(),
                     industryTemplate.getIndustryCost(),
                     industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
+                    industryTemplate.getDemand(),
+                    location);
         }
 
-        // Define a localização da nova indústria
+        // Adiciona a indústria ao mapa
         if (newIndustry != null) {
-            newIndustry.setLocation(location);
-
-            // Adiciona a indústria ao mapa
             map.getMap()[location.getX()][location.getY()] = newIndustry;
             System.out.println("Indústria adicionada com sucesso!");
         } else {

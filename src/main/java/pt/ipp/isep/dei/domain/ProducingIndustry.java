@@ -17,6 +17,15 @@ public class ProducingIndustry implements Industry {
         this.cargoType = cargoType;
 
     }
+
+    public ProducingIndustry(String getindustryname, int industryCost, double production, double demand, Location location) {
+        this.industryname = getindustryname;
+        IndustryCost = industryCost;
+        this.production = production;
+        this.demand = demand;
+        this.location = location;
+    }
+
     @Override
     public String getindustryname() {
         return new String(this.industryname);

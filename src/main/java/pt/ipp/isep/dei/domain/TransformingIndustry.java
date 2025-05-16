@@ -19,6 +19,14 @@ public class TransformingIndustry implements Industry {
 
     }
 
+    public TransformingIndustry(String getindustryname, int industryCost, double production, double demand, Location location) {
+        this.industryName = getindustryname;
+        this.industryCost = industryCost;
+        this.production = production;
+        this.demand = demand;
+        this.location = location;
+    }
+
 
     @Override
     public String getindustryname() {
