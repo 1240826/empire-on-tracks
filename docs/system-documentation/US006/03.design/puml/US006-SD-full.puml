@@ -1,157 +1,131 @@
 @startuml
-'skinparam monochrome true
+skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
 autonumber
 
-'hide footbox
-actor "Organization Employee" as ORG_EMPLOYEE
-participant ":CreateTaskUI" as UI
-participant ":CreateTaskController" as CTRL
+actor "Player" as Player
+participant ":UpgradeStationUI" as UI
+participant ":UpgradeStationController" as Controller
 participant "Repositories" as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
-participant "taskCategoryRepository\n:TaskCategoryRepository" as TASK_CAT_REPO
-participant "ApplicationSession" as APP_SESSION
-participant "appSession\n:ApplicationSession" as APP_SESSION_SINGLETON
-participant "currentSession\n:UserSession" as CURRENT_SESSION
-participant "organizationRepository\n:OrganizationRepository" as ORG_REPO
-participant "organization\n:Organization" as ORG
-participant "task\n:Task" as TASK
+participant "mapRepository\n:MapRepository" as MAP_REPO
+participant ":Map" as Map
+participant ":Station" as Station
+participant ":Building" as Building
+participant ":BuildingType" as BuildingType
+participant ":Player" as PlayerObj
+participant ":GameState" as GameState
+participant ":Simulation" as Simulation
 
-activate ORG_EMPLOYEE
+activate Player
 
-        ORG_EMPLOYEE -> UI : asks to create a new task
-        activate UI
-            UI --> CTRL** : create()
+Player -> UI : wants to upgrade a station
+activate UI
 
-            UI -> CTRL : getTaskCategories()
-            activate CTRL
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
+    UI -> Controller : startUpgrade()
+    activate Controller
 
-                CTRL -> REPOS_SINGLETON : getTaskCategoryRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON --> CTRL: taskCategoryRepository
-                deactivate REPOS_SINGLETON
+        Controller -> REPOS : getInstance()
+        activate REPOS
+            REPOS --> Controller : repositories
+        deactivate REPOS
 
-                CTRL -> TASK_CAT_REPO : getTaskCategories()
-                activate TASK_CAT_REPO
-                    TASK_CAT_REPO --> CTRL : taskCategoryList
-                deactivate TASK_CAT_REPO
+        Controller -> REPOS_SINGLETON : getMapRepository()
+        activate REPOS_SINGLETON
+            REPOS_SINGLETON --> Controller : mapRepository
+        deactivate REPOS_SINGLETON
 
-                CTRL --> UI : taskCategoryList
-            deactivate CTRL
+        Controller -> MAP_REPO : getCurrentMap()
+        activate MAP_REPO
+            MAP_REPO --> Controller : currentMap
+        deactivate MAP_REPO
 
-            UI --> ORG_EMPLOYEE : shows task category list and asks to select one
-        deactivate UI
+        Controller -> UI : request station name and upgrade type
+    deactivate Controller
+deactivate UI
 
-    ORG_EMPLOYEE -> UI : selects a task category
-    activate UI
-        UI --> ORG_EMPLOYEE : requests data (reference, description, \ninformal description, technical description,\nduration, cost)
-    deactivate UI
+UI --> Player : prompt for station name and building type
+Player -> UI : submits station name and building type
+activate UI
 
-    ORG_EMPLOYEE -> UI : types requested data
-    activate UI
-        UI --> ORG_EMPLOYEE : shows all data and requests confirmation
-    deactivate UI
+    UI -> Controller : submitUpgrade(stationName, buildingType)
+    activate Controller
 
-    ORG_EMPLOYEE -> UI : confirms data
-    activate UI
-        UI -> CTRL : createTask(reference,\ndescription,\ninformalDescription,\ntechnicalDescription,\nduration, cost,\ntaskCategoryDescription)
-        activate CTRL
-            CTRL -> CTRL : getTaskCategoryByDescription(taskCategoryDescription)
-            activate CTRL
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
+        Controller -> Map : getStationByName(stationName)
+        activate Map
+            Map --> Controller : station
+        deactivate Map
 
-                CTRL -> REPOS_SINGLETON : getTaskCategoryRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON -> CTRL : taskCategoryRepository
-                deactivate REPOS_SINGLETON
+        Controller -> Simulation : getCurrentDate()
+        activate Simulation
+            Simulation --> Controller : currentDate
+        deactivate Simulation
 
-                CTRL -> TASK_CAT_REPO : getTaskCategoryByDescription(taskCategoryDescription)
-                activate TASK_CAT_REPO
-                    TASK_CAT_REPO --> CTRL : taskCategory
-                deactivate TASK_CAT_REPO
-                    CTRL --> CTRL : taskCategory
-            deactivate CTRL
+        Controller -> BuildingType : retrieve(buildingType)
+        activate BuildingType
+            BuildingType --> Controller : type
+        deactivate BuildingType
 
-            |||
-            CTRL -> CTRL : getEmployeeFromSession()
-            activate CTRL
-                CTRL -> APP_SESSION: getInstance()
-                activate APP_SESSION
-                    APP_SESSION -> CTRL: appSession
-                deactivate APP_SESSION
+        alt type not available yet
+            Controller -> UI : showError("Building not yet available")
+        else
+            Controller -> Station : isCompatible(type)
+            activate Station
+                Station --> Controller : true / false
+            deactivate Station
 
-                CTRL -> APP_SESSION_SINGLETON: getCurrentSession()
-                activate APP_SESSION_SINGLETON
-                    APP_SESSION_SINGLETON --> CTRL: currentSession
-                deactivate APP_SESSION_SINGLETON
+            alt not compatible
+                Controller -> UI : showError("Incompatible building type")
+            else
+                Controller -> Station : hasBuildingType(type)
+                activate Station
+                    Station --> Controller : true / false
+                deactivate Station
 
-                CTRL -> CURRENT_SESSION: getUserEmail()
-                activate CURRENT_SESSION
-                    CURRENT_SESSION --> CTRL: email
-                deactivate CURRENT_SESSION
+                alt already has that building
+                    Controller -> UI : warn("Station already has this building")
+                else
+                    Controller -> PlayerObj : hasSufficientBudget(type.cost)
+                    activate PlayerObj
+                        PlayerObj --> Controller : true / false
+                    deactivate PlayerObj
 
-                CTRL -> REPOS : getInstance()
-                activate REPOS
-                    REPOS --> CTRL: repositories
-                deactivate REPOS
+                    alt insufficient budget
+                        Controller -> UI : showError("Not enough budget")
+                    else
+                        alt building is Telephone and station has Telegraph
+                            Controller -> Station : removeBuilding("Telegraph")
+                            Controller -> UI : showInfo("Telegraph") removed; Telephone installed")
+                        end
 
-                CTRL -> REPOS_SINGLETON: getOrganizationRepository()
-                activate REPOS_SINGLETON
-                    REPOS_SINGLETON --> CTRL: organizationRepository
-                deactivate REPOS_SINGLETON
+                        Controller -> Building : create(type)
+                        activate Building
+                            Building --> Controller : building
+                        deactivate Building
 
-                CTRL -> ORG_REPO: getOrganizationByEmployeeEmail(email)
-                activate ORG_REPO
+                        Controller -> Station : addBuilding(building)
+                        Controller -> PlayerObj : registerBuildingUpgrade(station, building)
+                        Controller -> PlayerObj : deductBudget(type.cost)
 
-                    loop [for each organization
-                        ORG_REPO -> ORG : anyEmployeeHasEmail(email)
-                        activate ORG
-                             ORG --> ORG_REPO : true/false
-                        deactivate ORG
+                        UI -> Map : animateBuildingUpgrade(station, type)
+
+                        Controller -> GameState : save()
+
+                        Controller -> UI : showSuccessMessage()
                     end
-                    ORG_REPO --> CTRL : organization
-                deactivate ORG_REPO
+                end
+            end
+        end
 
-                CTRL -> ORG: getEmployeeByEmail(email)
-                activate ORG
-                    ORG --> CTRL : employee
-                deactivate ORG
+        alt unexpected error
+            Controller -> UI : showError("An unexpected error occurred. Please try again.")
+        end
 
-                CTRL --> CTRL : employee
-            deactivate CTRL
+    deactivate Controller
+deactivate UI
 
-            |||
-            CTRL -> ORG: createTask(reference, description,\ninformalDescription, technicalDescription,\nduration, cost, taskCategory, employee)
-            activate ORG
-                ORG --> TASK**: create(reference, description, informalDescription, \ntechnicalDescription, duration, cost, taskCategory, employee)
-
-                ORG -> ORG: addTask (task)
-                activate ORG
-                    ORG -> ORG: validateTask(task)
-                    activate ORG
-                        ORG --> ORG : true
-                    deactivate ORG
-
-                    ORG --> ORG : true
-                deactivate ORG
-
-                ORG --> CTRL : task
-            deactivate ORG
-
-            CTRL --> UI: task
-            deactivate CTRL
-            UI --> ORG_EMPLOYEE: displays operation success
-    deactivate UI
-
-deactivate ORG_EMPLOYEE
-
+deactivate Player
 @enduml
+

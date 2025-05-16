@@ -8,7 +8,29 @@ public class Map {
     private String name;
     private Object[][] map;
     private List<RailLine> railLines = new ArrayList<>();
+    private List<Station> stations = new ArrayList<>();
 
+    public void addStation(Station station) {
+        stations.add(station);
+    }
+
+    public List<String> getAllNamesStation() {
+        List<String> names = new ArrayList<>();
+        for (Station s : stations) {
+            names.add(s.getStationName());
+        }
+        return names;
+    }
+
+    // returns details of station
+    public Station getDetails(String stationName) {
+        for (Station s : stations) {
+            if (s.getStationName().equals(stationName)) {
+                return s;
+            }
+        }
+        return null;
+    }
     public void addRailLine(RailLine line) {
         railLines.add(line);
     }
