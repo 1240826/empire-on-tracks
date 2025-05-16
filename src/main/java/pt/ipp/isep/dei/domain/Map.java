@@ -156,14 +156,6 @@ public class Map {
                 .anyMatch(name -> name.equalsIgnoreCase(cityName));
     }
 
-    public boolean isCityNameDuplicate(String name) {
-        return false;
-    }
-
-    public boolean validateCoordinates(List<Location> positions) {
-        return false;
-    }
-
     public boolean validatePosition(int newX, int newY) {
         return false;
     }
