@@ -47,6 +47,6 @@ CreateMapController ..> MapRepository
 CreateMapController .> Repositories
 CreateMapController ..> Map
 
-Repositories --> "1" MapRepository    : provides
-MapRepository --> "*" Map             : stores
+Repositories -->  MapRepository    : provides
+MapRepository --* Map             : stores
 @enduml
