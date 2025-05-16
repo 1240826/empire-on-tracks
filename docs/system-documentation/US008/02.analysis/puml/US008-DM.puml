@@ -25,12 +25,10 @@ class RailLine {
     cost
     type
 }
-class List {
-    detail
-}
+
 
 Player "1" --- "*" RailLine : builds >
 RailLine "1" --- "2" Station : connects >
-Player "1" --- "1" List : selects from >
-List "1" --- "*" Station : contains >
+
+
 @enduml

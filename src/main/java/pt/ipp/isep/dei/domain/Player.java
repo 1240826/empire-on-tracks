@@ -1,5 +1,7 @@
 package pt.ipp.isep.dei.domain;
 
+import pt.ipp.isep.dei.user.User;
+
 import java.util.ArrayList;
 import java.util.List;
 

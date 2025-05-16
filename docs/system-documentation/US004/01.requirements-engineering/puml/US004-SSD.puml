@@ -19,35 +19,32 @@ deactivate System
 
 Editor -> System : provides start and end date
 activate System
-System --> Editor : requests available locomotion types (diesel, electric, steam)
+System --> Editor : shows all available locomotion types
 deactivate System
-Editor -> System : indicates locomotion types to include in the scenario
+Editor -> System : selects locomotion types to include in the scenario
 activate System
 
-loop for each locomotion type 
-    System --> Editor : requests availability date or indicate "always available" or "never available" for locomotion type
-    deactivate System
-    Editor -> System : provides availability date or indicates "always available" or "never available"
-    activate System
+loop for each selected locomotion type
 
-    alt locomotion type becomes obsolete during scenario period
-        System --> Editor : requests obsolescence date for locomotion type
+
+    alt define availability period
+        System --> Editor :requests availability period for type
         deactivate System
-        Editor -> System : provides obsolescence date
+        Editor -> System : provides availability option
         activate System
     end
 end loop
-        System --> Editor : requests cargo types to be part of the scenario
+        System --> Editor : shows all available cargo types
         deactivate System
 
 
-Editor -> System : defines cargo types to be part of the scenario (Iron, Coal, Silver, etc.)
+Editor -> System : selects cargo types to be part of the scenario (e.g., Iron, Coal, Silver, etc.)
 activate System
 System --> Editor : requests cargo behavior (import, export, transform)
 deactivate System
 
 loop for each cargo type in scenario
-    Editor -> System : defines behavior for cargo (import, export, transform)
+    Editor -> System : selects behavior(s)
     activate System
 end loop
     System --> Editor : requests production frequency for generating industries
@@ -55,7 +52,7 @@ end loop
 
 
 
-Editor -> System : defines production frequency for generating industries (as a percentage)
+Editor -> System : defines production frequency (percentage)
 activate System
 System --> Editor : shows all data and asks for confirmation
 deactivate System

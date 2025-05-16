@@ -3,26 +3,58 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-participant ":CreateCityController"    as Controller
+participant ":AddCityController"    as Controller
 participant ":City"                 as City
 participant ":Map"                  as Map
 
-autonumber 13
+autonumber 12
 -> Controller: submitCityDetails(name, positionX, positionY, houseBlocks)
 
-autonumber 13.1
+autonumber 12.1
 activate Controller
     group Create City
 
-       activate City
+
        Controller -> City : createCity(name, positionX, positionY, houseBlocks)
-                   City -> City : validateName()
-                   City -> City : validateHouseBlocks()
-               deactivate City
-               Controller -> Map : isCityNameDuplicate(name)
-                       activate Map
-                           Map --> Controller : true / false
-                       deactivate Map
+             activate City
+             City -> City : validateName()
+             City -> City : validateHouseBlocks()
+             City --> Controller : city
+             deactivate City
+             deactivate Controller
+
+             Controller -> Map : isCityNameDuplicate(name)
+             activate Map
+             activate Controller
+             Map --> Controller : true / false
+             deactivate Map
+             deactivate Controller
+             -> Controller : confirmCityCreation()
+                 activate Controller
+
+                     Controller -> REPOS : getInstance()
+                     activate REPOS
+                         REPOS --> Controller : repositories
+                     deactivate REPOS
+
+                     Controller -> REPOS_SINGLETON : getMapRepository()
+                     activate REPOS_SINGLETON
+                         REPOS_SINGLETON --> Controller : mapRepository
+                     deactivate REPOS_SINGLETON
+
+                     Controller -> MAP_REPO : getCurrentMap()
+                     activate MAP_REPO
+                         MAP_REPO --> Controller : currentMap
+                     deactivate MAP_REPO
+
+                     Controller -> Map : addCity(city)
+                     activate Map
+                         Map -> Map : integrate city internally
+             Map --> Controller: city
+             deactivate Map
     end
+    autonumber 13
+    <-- Controller: city
+
 
 @enduml
