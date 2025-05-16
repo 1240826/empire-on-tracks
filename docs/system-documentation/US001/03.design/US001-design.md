@@ -58,7 +58,9 @@ It uses Interaction Occurrence (a.k.a. Interaction Use).
 
 ![US001-SD-partial-get-map-list.svg](svg/US001-SD-partial-get-map-list.svg)
 
+**Validate Values**
 
+![US001-SD-validate-Values.svg](svg/US001-SD-validate-Values.svg)
 ## 3.3. Class Diagram (CD)
 
 ![US001-CD.svg](svg/US001-CD.svg)

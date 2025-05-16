@@ -1,0 +1,36 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":AddIndustryController"   as CTRL
+participant "Repositories"            as REPOS
+participant "Repository\nIndustryRepo" as FACADE
+participant "IndustryRepository"      as REPO
+participant ":Map"                    as MAP
+actor      Editor
+
+autonumber 15
+
+
+activate CTRL
+  CTRL -> REPOS      : getInstance()
+  activate REPOS
+  REPOS --> CTRL     : instance
+  deactivate REPOS
+
+  CTRL -> FACADE     : getIndustryRepository()
+  activate FACADE
+  FACADE --> CTRL    : IndustryRepository
+  deactivate FACADE
+
+  CTRL -> REPO       : getListOfIndustry()
+  activate REPO
+  REPO --> CTRL      : ListOfIndustry
+  deactivate REPO
+
+  <--CTRL      : display(listofIndustries)
+
+  deactivate CTRL
+
+@enduml

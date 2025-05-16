@@ -4,24 +4,16 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question                                                                               | Answer                  | Justification (with patterns)                                                                                           |
+|:---------------|:---------------------------------------------------------------------------------------|:------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| Step 1         | … interacting with the actor ?                                                         | **AddIndustryUI**       | **Pure Fabrication**: boundary class isolates UI logic from domain/controller (HC, LC).                                 |
+|                | … coordinating the use‐case start ?                                                    | **AddIndustryController** | **Controller**: orchestrates between UI and domain layers without containing business logic.                             |
+| Step 2         | … asking for the XY position ?                                                         | **AddIndustryUI**       | **Pure Fabrication**: handles user‐interaction step, keeping domain/controller clean.                                    |
+| Step 3         | … submitting the coordinates (“submitCoordinates(X,Y)”) to start processing?           | **AddIndustryController** | **Information Expert**: holds submitted data and knows how to delegate validation.                                      |
+| Step 4         | … obtaining repository instance ?                                                      | **Repositories**        | **Pure Fabrication**: singleton façade isolates access to concrete repository implementations.                           |
+|                | … providing an IndustryRepository ?                                                    | **Repositories**        | **Creator**: factory/facade responsible for instantiating or supplying the correct repository instance.                  |
+| Step 5         | … retrieving available industry types ?                                                | **IndustryRepository**  | **Information Expert**: owns the list of industry types and returns it.                                                  |
+| Step 6         | … displaying the industry options  to the actor?            | **AddIndustryUI**       | **Pure Fabrication**: manages presentation of choices to the user.                                                       |
 
 ### Systematization ##
 

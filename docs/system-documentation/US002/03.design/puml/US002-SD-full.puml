@@ -11,7 +11,8 @@ participant ":AddIndustryController" as Controller
 participant ":ValueValidator" as Validator
 participant ":Map" as Map
 participant ":Industry" as Industry
-participant ":Repository" as Rep
+participant "Repository" as Rep
+participant "Repository\n Repository" as Repo
 participant "IndustryRepository \n: IndustryRepository" as Repository
 
 activate Editor
@@ -30,7 +31,7 @@ activate UI
 UI -> Controller : submitCoordinates(X, Y)
 
 activate Controller
-Controller->Validator:ValidateCoordinates()
+Controller->Validator:ValidateCoordinates(x,y)
 activate Validator
 Validator->Validator:isPositiveInteger(X)
 Validator->Validator:isPositiveInteger(Y)
@@ -51,6 +52,10 @@ Controller->Rep:getinstance()
 activate Rep
 Rep-->Controller:instance
 deactivate Rep
+Controller ->Repo:getindustryRepository()
+activate Repo
+Repo-->Controller:industryRepository
+deactivate Repo
 Controller->Repository:getListOfIndustry
 activate Repository
 Repository-->Controller:ListOfIndustry

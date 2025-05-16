@@ -39,12 +39,9 @@ activate Employee
         activate Controller
 
             Controller -> Validator : validateWidthLength(width, height)
-            activate Validator
-
-            Validator -> Validator : isPositiveInteger(width)
-            Validator -> Validator : isPositiveInteger(height)
-            Validator -> Controller : validationResult(valid or error)
-            deactivate Validator
+          ref over Controller
+          Validate Values
+          end ref
 
             alt If width/length are invalid
                 Controller --> UI : displayError("Invalid width or heigth")

@@ -1,0 +1,19 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":AddIndustryController" as CTRL
+participant ":ValueValidator"        as VAL
+
+
+autonumber 6
+
+CTRL -> VAL : validateCoordinates(x,y)
+activate VAL
+VAL -> VAL : isPositiveInteger(x)
+VAL -> VAL : isPositiveInteger(y)
+VAL --> CTRL: valid/invalid
+deactivate VAL
+
+@enduml
