@@ -4,41 +4,21 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
-class LoginController {
-    + authenticateUser(username: String, password: String): Boolean
-    - validatePassword(password: String): Boolean
-}
 
-class User {
-    - username: String
-    - password: String
-}
-
-class PasswordValidator {
-    + validate(password: String): Boolean
-}
-
-class ApplicationSession {
+class ApplicationSession
+{
     - ApplicationSession()
-    + getInstance()
-    + getCurrentSession(): UserSession
+    + {static} getInstance()
+    + getCurrentSession()
 }
 
 class UserSession {
     + getUsername(): String
+    + validate(password: String): Boolean
 }
 
-class SessionManager {
-    + startSession(user: User)
-    + endSession()
-}
-
-LoginController ..> User
-LoginController ..> PasswordValidator
-LoginController ..> ApplicationSession
 ApplicationSession ..> UserSession
-UserSession ..> User
-SessionManager ..> ApplicationSession
+ApplicationSession -> "1" ApplicationSession : instance
 
 
 class CreateScenarioUI {
@@ -116,7 +96,8 @@ class LocomotiveRepository {
 class MapRepository {
     + getCurrentMap(): Map
 }
-
+CreateScenarioController ..> ApplicationSession
+CreateScenarioController ..> UserSession
 CreateScenarioController ..> Repositories
 CreateScenarioController ..> ScenarioRepository
 CreateScenarioController ..> CargoRepository
@@ -137,5 +118,7 @@ Scenario o-- "*" Cargo : cargos
 Scenario o-- "1" Period : period
 
 Locomotive --> "1" Period : available
+
+
 
 @enduml

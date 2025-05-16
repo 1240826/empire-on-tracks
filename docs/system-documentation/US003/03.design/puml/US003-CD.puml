@@ -4,34 +4,21 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
-class "LoginController" {
-    + authenticateUser(username: String, password: String): Boolean
-    - validatePassword(password: String): Boolean
+class ApplicationSession
+{
+    - ApplicationSession()
+    + {static} getInstance()
+    + getCurrentSession()
 }
 
-class "User" {
-    - username: String
-    - password: String
-}
-
-class "PasswordValidator" {
+class UserSession {
+    + getUsername(): String
     + validate(password: String): Boolean
 }
 
-class "ApplicationSession" {
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession(): UserSession
-}
+ApplicationSession ..> UserSession
+ApplicationSession -> "1" ApplicationSession : instance
 
-class "UserSession" {
-    + getUsername(): String
-}
-
-class "SessionManager" {
-    + startSession(user: User)
-    + endSession()
-}
 
 class "City" {
     - name: String
@@ -85,15 +72,6 @@ class "AddCityUI" {
 
 }
 
-LoginController ..> User : authenticates
-LoginController ..> PasswordValidator : validates password
-LoginController ..> ApplicationSession : manages session
-
-ApplicationSession ..> UserSession : retrieves session
-UserSession ..> User : has user
-
-SessionManager ..> ApplicationSession : manages session lifecycle
-
 AddCityUI .> AddCityController
 AddCityController ..> Repositories : uses
 AddCityController ..> MapRepository : uses
@@ -101,6 +79,8 @@ AddCityController ..> City : creates
 AddCityController ..> Location : computes
 AddCityController ..> HouseBlock : creates
 AddCityController ..> Map : validates
+AddCityController ..> ApplicationSession
+AddCityController ..> UserSession
 
 Repositories --> MapRepository : mapRepository
 
