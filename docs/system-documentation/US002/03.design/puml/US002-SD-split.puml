@@ -1,0 +1,77 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Editor
+participant ":AddIndustryUI" as UI
+participant ":AddIndustryController" as Controller
+participant ":Map" as Map
+participant ":Industry" as Industry
+
+activate Editor
+
+Editor -> UI : Ask to add an industry
+activate UI
+UI --> Controller**: startAddIndustryController()
+activate Controller
+
+
+UI --> Editor : Ask for the XY position
+deactivate UI
+
+Editor -> UI : Gives X,Y
+activate UI
+UI -> Controller : submitCoordinates(X, Y)
+
+activate Controller
+ref over Controller
+Validate Values
+end ref
+
+alt Invalid
+Controller-->UI: displayError(invalid coordinates)
+else valid
+Controller->Map:validatePosition(X,Y)
+activate Map
+Map->Map:isEmpty(X,Y)
+Map-->Controller:true/false
+deactivate Map
+alt false
+Controller-->UI: displayError(occupied place)
+else true
+ref over Controller
+Lis of Avaiable Industries
+end ref
+Controller-->UI: display(ListOfIndustry)
+deactivate Controller
+UI-->Editor:Show the different types \nof industry and ask one option.
+deactivate UI
+Editor->UI:Select one option.
+activate UI
+UI->Controller: addIndustry(option)
+activate Controller
+Controller->Map: addIndustry(option,x,y)
+activate Map
+Map->Location:createLocation(x,y)
+activate Location
+Location-->Map:Location
+deactivate Location
+Map-->Industry**:createIndustry(option,Location)
+deactivate Map
+
+Controller-->UI: display(success)
+deactivate Controller
+deactivate Controller
+UI-->Editor:Confirm the creation of this industry.
+deactivate UI
+
+
+end
+end
+
+
+deactivate Editor
+@enduml

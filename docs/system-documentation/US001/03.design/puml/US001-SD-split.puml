@@ -8,9 +8,7 @@ autonumber
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
-participant ":ValueValidator" as Validator
-participant "Repositories" as Rep
-participant "Repositories\n Repository" as Repos
+
 participant "MapRepository \n: MapRepository" as Repository
 
 participant ":Map" as Map
@@ -38,7 +36,7 @@ activate Employee
         UI --> Controller  : createMap(name, width, height)
         activate Controller
 
-            Controller -> Validator : validateWidthLength(width, height)
+
           ref over Controller
           Validate Values
           end ref

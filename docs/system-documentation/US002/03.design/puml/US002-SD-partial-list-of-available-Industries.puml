@@ -7,8 +7,7 @@ participant ":AddIndustryController"   as CTRL
 participant "Repositories"            as REPOS
 participant "Repository\nIndustryRepo" as FACADE
 participant "IndustryRepository"      as REPO
-participant ":Map"                    as MAP
-actor      Editor
+
 
 autonumber 15
 
