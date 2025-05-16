@@ -49,24 +49,15 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
-
+![US002-SD-split.png](svg/US002-SD-split.png)
 **Validate Values**
 
 ![US002-SD-partial-validate-Values.svg](svg/US002-SD-partial-validate-Values.svg)
 
 **List of Avaiable Industries**
 
-![US002-SD-partial-list-of-available-Industries.svg](svg/US002-SD-partial-list-of-available-Industries.svg)
-
-**Get Employee**
-
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
-
-**Create Task**
-
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
+![US002-SD-partial-list-of-available-Industries .svg](svg/US002-SD-partial-list-of-available-Industries%20.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![US002-CD.svg](svg/US002-CD.svg)
