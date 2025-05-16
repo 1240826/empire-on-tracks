@@ -10,6 +10,7 @@ participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
 participant ":ValueValidator" as Validator
 participant "Repositories" as Rep
+participant "Repositories\n Repository" as Repos
 participant "MapRepository \n: MapRepository" as Repository
 
 participant ":Map" as Map
@@ -53,12 +54,17 @@ activate Employee
 
             Controller->Rep: getInstance()
             activate Rep
+
             Rep-->Controller:repositories
             deactivate Rep
+            Controller->Repos:getMapRepository
+            activate Repos
+            Repos--> Controller:MapRepository
+            deactivate Repos
 
             Controller->Repository:getMapsNames()
             activate Repository
-            Repository-->Controller:listOfNames()
+            Repository-->Controller:listOfNames
             deactivate Repository
 
 

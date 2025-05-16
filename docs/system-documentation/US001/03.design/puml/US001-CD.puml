@@ -1,70 +1,52 @@
 @startuml
-'skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
-'skinparam linetype orto
-
 skinparam classAttributeIconSize 0
 
-'left to right direction
+class CreateMapUI {
+  +askMapInfo():MapDTO
+  +confirmCreation():boolean
+  +showMessage(msg:String):void
+}
 
 class CreateMapController {
-    + starController()
-    + createMap(name, width, height)
-    + saveMap()
-    +display()
+  +startController():void
+  +createMap(name:String,width:int,height:int):void
+  +saveMap(map:Map):void
+  +display(msg:String):void
 }
 
+class MapValidator {
+  +isPositiveInteger(value:int):boolean
+  +validateWidthHeight(width:int,height:int):boolean
+}
 
 class Repositories {
-    - Repositories()
-    + {static} getInstance()
-
-
+  -instance:Repositories
+  -Repositories()
+  +getInstance():Repositories
+  +getMapRepository():MapRepository
 }
+
 class MapRepository {
-    + getMapNames()
+  +getMapNames():List<String>
+  +saveMap(map:Map):void
 }
 
 class Map {
-    - name : String
-    - widht : int
-    - height : int
+  -name:String
+  -width:int
+  -height:int
+  +Map(name:String,width:int,height:int)
 }
 
-class CreateMapUI {
-}
-
-class MapValidator{
-+isPositiveInteger()
-
-}
-
-CreateMapUI .> CreateMapController
-
-
-
-
-
-CreateMapController ..> Map
+CreateMapUI .> CreateMapController     : uses
+CreateMapController ..> MapValidator
 CreateMapController ..> MapRepository
 CreateMapController .> Repositories
-CreateMapController ..>MapValidator
+CreateMapController ..> Map
 
-Repositories -> "1" Repositories : instance
-Repositories --> "1" MapRepository : MapRepository
-
-
-
-
-
-
-MapRepository --> "*" Map : Maps
-
-
-
-
-
-
+Repositories --> "1" MapRepository    : provides
+MapRepository --> "*" Map             : stores
 @enduml
