@@ -5,15 +5,15 @@ skinparam shadowing false
 
 autonumber
 
-'hide footbox
 actor Player
 participant ":AssignTrainToRouteUI" as UI
 participant ":AssignTrainToRouteController" as Controller
 participant ":TrainRepository" as TrainRepo
 participant ":StationRepository" as StationRepo
+participant ":RouteValidator" as RouteValidator
+participant ":RailLine" as RailLine
 participant ":Route" as Route
 participant ":Train" as Train
-participant ":RouteValidator" as Validator
 
 activate Player
 Player -> UI : request to assign a train to a route
@@ -45,34 +45,49 @@ Player -> UI : selects stations and cargo
 
 UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
 activate Controller
-Controller -> Validator : validate route connectivity
-activate Validator
-Validator --> Controller : route valid/invalid
-deactivate Validator
+Controller -> RouteValidator : validateRoute(stationCargoList)
+activate RouteValidator
 
-Controller -> Route : createRoute(stationCargoList)
-activate Route
-Route --> Controller : route
-deactivate Route
+loop for each (stationA, stationB) in stationCargoList
+    RouteValidator -> RailLine : isConnected(stationA, stationB)
+    note right of RailLine
+        Checks if a direct line exists between each pair of stations.
+    end note
+    RailLine --> RouteValidator : true/false
+end
+' ===================================================
 
-Controller -> TrainRepo : findTrainById()
-activate TrainRepo
-TrainRepo --> Controller : Train
-deactivate TrainRepo
+RouteValidator --> Controller : route valid/invalid
+deactivate RouteValidator
 
-Controller -> Train : assignRoute(route)
-activate Train
-Train --> Controller : success
-deactivate Train
+alt if route is valid
+    Controller -> Route : createRoute(stationCargoList)
+    activate Route
+    Route --> Controller : route
+    deactivate Route
 
-Controller -> TrainRepo : save(train)
-activate TrainRepo
-TrainRepo --> Controller : saved
-deactivate TrainRepo
+    Controller -> TrainRepo : findTrainById()
+    activate TrainRepo
+    TrainRepo --> Controller : Train
+    deactivate TrainRepo
 
-Controller --> UI : success message
+    Controller -> Train : assignRoute(route)
+    activate Train
+    Train --> Controller : success
+    deactivate Train
+
+    Controller -> TrainRepo : save(train)
+    activate TrainRepo
+    TrainRepo --> Controller : saved
+    deactivate TrainRepo
+
+    Controller --> UI : success message
+else
+    Controller --> UI : failure message
+end
+
 deactivate Controller
-UI -> Player : show success
+UI -> Player : show result
 
 deactivate UI
 deactivate Player

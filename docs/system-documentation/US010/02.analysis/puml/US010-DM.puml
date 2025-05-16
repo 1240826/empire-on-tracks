@@ -14,14 +14,17 @@ class Player {
 }
 
 class Train {
-    plateNumber
     name
 }
 
 class Locomotive {
-    powerSource
-    acceleration
-    cost
+     plateNumber
+     powerSource
+     acceleration
+     buyCost
+     startYear
+     fuelCost
+     maintenanceCost
 }
 
 class Carriage {
@@ -36,19 +39,15 @@ class Route {
 
 class Station {
     name
-    range
-    type
-    cost
 }
 
 class Cargo {
     type
     quantity
-    limit
 }
 
 Player "1" -- "*" Train : owns >
-Train "1" -- "1" Route : is assigned to >
+Train "1" -- "1" Route : follows >
 Train "1" -- "1" Locomotive : is composed of >
 Train "1" -- "*" Carriage : is composed of >
 Route "1" -- "2*" Station : connects >

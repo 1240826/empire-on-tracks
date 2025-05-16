@@ -10,9 +10,10 @@ participant ":AssignTrainToRouteUI" as UI
 participant ":AssignTrainToRouteController" as Controller
 participant ":TrainRepository" as TrainRepo
 participant ":StationRepository" as StationRepo
+participant ":RouteValidator" as RouteValidator
+participant ":RailLine" as RailLine
 participant ":Route" as Route
 participant ":Train" as Train
-participant ":RouteValidator" as Validator
 
 activate Player
 Player -> UI : request to assign a train to a route
@@ -47,6 +48,19 @@ Player -> UI : selects stations and cargo
 UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
 activate Controller
 
+Controller -> RouteValidator : validateRoute(stationCargoList)
+activate RouteValidator
+
+loop for each (stationA, stationB) in stationCargoList
+    RouteValidator -> RailLine : isConnected(stationA, stationB)
+    RailLine --> RouteValidator : true/false
+end
+
+RouteValidator --> Controller : route valid/invalid
+deactivate RouteValidator
+'==== End validation logic ====
+
+'==== Now, the actual creation of the route is a high-level ref block ====
 ref over Controller
     CreateRoute
 end ref
