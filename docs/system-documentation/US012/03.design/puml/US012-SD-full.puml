@@ -10,22 +10,24 @@ participant ":SimulatorUI" as UI
 participant ":SimulatorController" as Controller
 participant ":Map" as Map
 
-participant "MapStations" as Rep_Stations
-participant "MapStations \n :Station" as Stations
 
-participant "MapIndustries" as Rep_Industries
-participant "MapIndustries\n Industry" as Industries
+participant "Map \n :Station" as Stations
 
-participant "MapIndustries\n PrimaryIndustry" as PrimaryIndustry
-participant "MapIndustries\n TransformingIndustry" as TransformingIndustry
-participant "MapIndustries\n MixedIndustry" as MixedIndustry
 
-participant "MapTrains" as Rep_Trains
-participant "MapTrains \n Train" as Trains
+participant "Map\n Industry" as Industries
+participant "Industries\n Cargo" as Cargo
+
+participant "Industries\n PrimaryIndustry" as PrimaryIndustry
+participant "Industries\n TransformingIndustry" as TransformingIndustry
+participant "Industries\n MixedIndustry" as MixedIndustry
+
+participant "Map \n :Trains" as Rep_Trains
+participant "Map \n :AvaiableTrains" as Trains
 
 participant ":SimulationTime" as Time
 participant "RepositorieScenario" as Rep_Scenario
 participant "RepositorieScenario\n Scenario" as Scenario
+
 
 activate Owner
 
@@ -62,53 +64,74 @@ loop Simulation
 
             opt Scenario changes industry production
                 Scenario -> Industries : changeProductionRate()
+                activate Industries
+                Industries-->Industries:changeProduction()
+                deactivate Industries
                 end
-                opt Industry is Mixed
+                opt Mixed to Production
                     Scenario -> MixedIndustry : changeToPrimary()
                     MixedIndustry --> MixedIndustry : demand(False)
                 end
-                opt Industry is Transforming
+                opt Mixed to Transforming
                     Scenario -> MixedIndustry : changeToTransforming()
                     MixedIndustry --> MixedIndustry : demand(true)
                 end
 
 
-            opt Scenario changes industry class (Mixed)
-                Scenario -> Industries : changeClassMixed()
-            end
+
 
             opt Scenario disables trains
-                Scenario -> Trains : disable()
-            end
+                Scenario -> Trains : disableTrain(train)
+                activate Trains
+                Trains->Trains:RemoveFromList(Train)
+
+                deactivate Trains
+
+           end
+
+                       opt Scenario enables trains
+                           Scenario -> Trains : enableTrain(train)
+                           activate Trains
+                           Trains->Trains:AddToList(Train)
+                           deactivate Trains
+                      end
             deactivate Scenario
 
             activate Map
             ' Atualização das indústrias (geração de carga)
-            Controller -> Rep_Industries : updateIndustries()
-            activate Rep_Industries
-            Rep_Industries -> Industries : generateCargoAllStations()
+            Controller -> Map : updateIndustries()
+            activate Map
+            Map -> Industries : generateCargoAllStations()
             activate Industries
-            Industries --> Industries : generateCargo()
+            Industries -> Cargo : generateCargo()
+            activate Cargo
+            Cargo->Cargo:generateCargo(production,demand)
+            deactivate Cargo
             deactivate Industries
-            deactivate Rep_Industries
+            deactivate Map
 
             ' Atualização das estações (coleta até 24 cargas)
-            Controller -> Rep_Stations : updateStations()
-            activate Rep_Stations
-            Rep_Stations -> Stations : findNearbyIndustries()
+            Controller -> Map : updateStations()
+            activate Map
+            Map -> Stations : findNearbyIndustries()
             activate Stations
-            Stations -> Rep_Industries : getIndustriesInRange()
-            activate Rep_Industries
-            Rep_Industries --> Stations : listOfNearbyIndustries
+            Stations -> Map : getIndustriesInRange()
+            activate Map
+            Map --> Stations : listOfNearbyIndustries
 
             loop Station.cargo < 24
                 Stations -> Industries : collectCargo()
+                activate Industries
+                Industries->Cargo:removecargo()
+                activate Cargo
+                Cargo->Cargo:removecargo()
+                deactivate Cargo
                 Industries --> Stations : Cargo
             end
 
-            deactivate Rep_Industries
+            deactivate Map
             deactivate Stations
-            deactivate Rep_Stations
+            deactivate Map
 
             ' Atualização dos trens (cada um com limite próprio)
             Controller -> Rep_Trains : updateTrains()
@@ -119,6 +142,7 @@ loop Simulation
 
             opt station nearby
                 Trains -> Stations : collectCargo()
+
                 Stations --> Trains : Cargo
             end
 
