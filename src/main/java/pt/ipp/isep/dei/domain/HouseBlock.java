@@ -4,23 +4,31 @@ package pt.ipp.isep.dei.domain;
  * Represents a house block in the city.
  */
 public class HouseBlock {
+    private Location position;
 
-    private Location location;
+    public HouseBlock(Location position) {
+        this.position = position;
+    }
 
     /**
-     * Creates a new house block at a given location.
+     * Creates a HouseBlock at the specified position.
      *
-     * @param location the location of the house block
-     * @return a new HouseBlock at the specified location
+     * @param position the location of the house block
+     * @return a new HouseBlock instance
      */
-    public static HouseBlock createAt(Location location) {
-        HouseBlock houseBlock = new HouseBlock();
-        houseBlock.location = location;
-        return houseBlock;
+    public static HouseBlock createAt(Location position) {
+        HouseBlock hb = new HouseBlock(position);
+        hb.position = position;
+        return hb;
     }
 
-    // Getter
-    public Location getLocation() {
-        return location;
+    /**
+     * Returns the location of the house block.
+     *
+     * @return the Location of this house block
+     */
+    public Location getPosition() {
+        return position;
     }
 }
+

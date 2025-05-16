@@ -34,17 +34,17 @@ class "SessionManager" {
 }
 
 class "City" {
-        - name: String
-        - positionX: int
-        - positionY: int
-        - houseBlocks: int
-        - houseBlocksList: List<HouseBlock>
-        + createCity(name: String, positionX: int, positionY: int, houseBlocks: int): City
-        + validateName(): boolean
-        + validateHouseBlocks(): boolean
-        + assignHouseBlocksManually(positions: List<Location>)
-        + getCityCenter(): Location
-        + addHouseBlock(houseBlock: HouseBlock): void
+    - name: String
+    - positionX: int
+    - positionY: int
+    - houseBlocks: int
+    - houseBlocksList: List<HouseBlock>
+    + createCity(name: String, positionX: int, positionY: int, houseBlocks: int): City
+    + validateName(): boolean
+    + validateHouseBlocks(): boolean
+    + assignHouseBlocksManually(positions: List<Location>)
+    + getCityCenter(): Location
+    + addHouseBlock(houseBlock: HouseBlock): void
 }
 
 class "Location" {
@@ -82,13 +82,8 @@ class "AddCityController" {
 }
 
 class "AddCityUI" {
-    + showFieldsForCityDetails() : void
-    + requestCityDetails() : void
-    + showWarning(message: String) : void
-    + showSuccess(message: String) : void
+
 }
-
-
 
 LoginController ..> User : authenticates
 LoginController ..> PasswordValidator : validates password
@@ -99,8 +94,7 @@ UserSession ..> User : has user
 
 SessionManager ..> ApplicationSession : manages session lifecycle
 
-AddCityUI .> AddCityController : submits data
-
+AddCityUI .> AddCityController
 AddCityController ..> Repositories : uses
 AddCityController ..> MapRepository : uses
 AddCityController ..> City : creates
@@ -108,18 +102,17 @@ AddCityController ..> Location : computes
 AddCityController ..> HouseBlock : creates
 AddCityController ..> Map : validates
 
-Repositories -->  MapRepository : mapRepository
-Repositories -->  Repositories : instance
+Repositories --> MapRepository : mapRepository
+
+Repositories --> Repositories : instance
+
+
+Map "1" o-- "*" City : contains
+City "1" *-- "*" HouseBlock : has
+City "1" --> "1" Location : centerPosition
+
+HouseBlock "1" --> "1" Location : position
 
 MapRepository --> Map : currentMap
-
-Map -->  City : cities
-Map -->  Location : locations
-Map -->  HouseBlock : houseBlocks
-
-City -->  HouseBlock : houseBlocks
-City -->  Location : position
-
-HouseBlock --> Location : position
 
 @enduml

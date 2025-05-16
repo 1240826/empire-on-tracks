@@ -61,24 +61,19 @@ loop for each selected locomotive
     activate Controller
     Controller -> LocoRepo : addAvailableLocomotionType(type)
 
-    alt define availability period
+
         UI --> Editor : requests availability period for type
         deactivate UI
         Editor -> UI : provides availability option
         activate UI
 
-        alt always available
-            UI -> Controller : setLocomotiveAvailability(type, always)
-
-        else never available
-            UI -> Controller : skipAddingLocomotive(type)
-
+        alt define availability period
         else from date
             UI -> Controller : setLocomotiveAvailability(type, fromDate)
-            Controller -> Period : new(start, null)
-            activate Period
-            Period --> Controller : period
-            deactivate Period
+            Controller -> Scenario : addLocomotive(year,type)
+            activate Scenario
+            Scenario --> SCENARIO_REPO: scenario
+            deactivate
             Controller -> Locomotive : setAvailability(type, period)
             Controller -> LocoRepo : updateAvailability(type, period)
             deactivate Period
@@ -92,17 +87,6 @@ loop for each selected locomotive
             Controller -> Locomotive : setAvailability(type, period)
             Controller -> LocoRepo : updateAvailability(type, period)
             deactivate Period
-
-        else between dates
-            UI -> Controller : setLocomotiveAvailability(type, period)
-            Controller -> Period : new(start, end)
-            activate Period
-            Period --> Controller : period
-            deactivate Period
-            Controller -> Locomotive : setAvailability(type, period)
-            Controller -> LocoRepo : updateAvailability(type, period)
-            deactivate Period
-        end
     end
     deactivate Controller
 end
@@ -143,29 +127,10 @@ Editor -> UI : confirms data
 activate UI
 UI -> Controller : confirmScenarioCreation()
 
-Controller -> REPOS : getInstance()
-activate REPOS
-REPOS --> Controller : repositories
-deactivate REPOS
-
-
-Controller -> MapRepo : getMapRepository()
-activate MapRepo
-MapRepo --> Controller : mapRepository
-deactivate MapRepo
-
-Controller -> MapRepo : getCurrentMap()
-activate MapRepo
-MapRepo --> Controller : currentMap
-deactivate MapRepo
-Controller -> MapRepo : addScenario(scenario)
-activate MapRepo
-MapRepo -> MapRepo : integrate scenario internally
-deactivate MapRepo
 
 Controller -> SCENARIO_REPO : saveScenario(scenario)
 activate SCENARIO_REPO
-SCENARIO_REPO -> SCENARIO_REPO : storeScenario(scenario)
+SCENARIO_REPO -> SCENARIO_REPO : storeRepScenario(scenario)
 SCENARIO_REPO --> Controller : scenario
 deactivate SCENARIO_REPO
 

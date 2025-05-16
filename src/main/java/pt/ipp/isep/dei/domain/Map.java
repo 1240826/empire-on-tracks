@@ -65,9 +65,11 @@ public class Map {
     public String getName() {
         return new String(name);
     }
+
     public void setName(String name) {
         this.name = new String(name);
     }
+
     public Object[][] getMap() {
         Object[][] copy = new Object[map.length][map[0].length];
         for (int i = 0; i < map.length; i++) {
@@ -77,24 +79,37 @@ public class Map {
         }
         return copy;
     }
+
     public void setMap(Object[][] p) {
-       Object[][] copy = new Object[p.length][p[0].length];
-       for (int i = 0; i < p.length; i++) {
+        Object[][] copy = new Object[p.length][p[0].length];
+        for (int i = 0; i < p.length; i++) {
             for (int j = 0; j < p[0].length; j++) {
                 copy[i][j] = p[i][j];
             }
-       }
-       this.map = copy;
+        }
+        this.map = copy;
     }
+
     public int getHeight() {
         return map.length;
     }
+
     public int getWidth() {
         return map[0].length;
     }
 
     public List<String> getCities() {
-        return null;
+        List<String> cityNames = new ArrayList<>();
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                Object obj = map[y][x];
+                if (obj instanceof City) {
+                    City city = (City) obj;
+                    cityNames.add(city.getName());
+                }
+            }
+        }
+        return cityNames;
     }
 
     public boolean isEmpty(int x, int y) {
@@ -115,4 +130,31 @@ public class Map {
         }
         return false;
     }
+
+
+    /**
+     * Adds a city to the map.
+     * Automatically assigns house blocks around the city position.
+     * Places the city object on the map grid at its position.
+     *
+     * @param city the City to add
+     * @return true if city was added successfully, false if position is occupied or invalid
+     */
+    public boolean addCity(City city) {
+        int x = city.getPositionX();
+        int y = city.getPositionY();
+
+        // Check if the city can be placed at position (x,y)
+        if (!isEmpty(x, y)) {
+            return false; // Position already occupied
+        }
+
+        // Assign house blocks automatically to the city
+        city.assignHouseBlocksAutomatic();
+
+        // Place the city on the map grid
+        map[y][x] = city;
+        return true;
+    }
+
 }
