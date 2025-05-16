@@ -1,12 +1,34 @@
 package pt.ipp.isep.dei.domain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Map {
     private String name;
     private Object[][] map;
+    private List<RailLine> railLines = new ArrayList<>();
 
+    public void addRailLine(RailLine line) {
+        railLines.add(line);
+    }
+
+    public List<RailLine> getRailLines() {
+        return new ArrayList<>(railLines);
+    }
+
+    // returns list of all stations
+    public List<Station> getStations() {
+        List<Station> stations = new ArrayList<>();
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[0].length; x++) {
+                if (map[y][x] instanceof Station) {
+                    stations.add((Station) map[y][x]);
+                }
+            }
+        }
+        return stations;
+    }
     public Map() {
         this.name = "name";
         map = new Object[10][10];
