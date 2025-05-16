@@ -3,7 +3,7 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-participant ":CreateCityController" as Controller
+participant ":AddCityController" as Controller
 participant ":Map" as Map
 participant ":City" as City
 

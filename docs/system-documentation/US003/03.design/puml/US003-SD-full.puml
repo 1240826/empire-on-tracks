@@ -6,8 +6,8 @@ skinparam shadowing false
 autonumber
 
 actor "Editor" as Editor
-participant ":CreateCityUI"            as UI
-participant ":CreateCityController"    as Controller
+participant ":AddCityUI"            as UI
+participant ":AddCityController"    as Controller
 participant "Repositories"          as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant "mapRepository\n:MapRepository" as MAP_REPO
