@@ -32,7 +32,6 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 * BuildLineUI 
 * BuildLineController
-* RailLineValidator
 
 ## 3.2. Sequence Diagram (SD)
 
