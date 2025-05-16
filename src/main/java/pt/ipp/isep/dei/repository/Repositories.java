@@ -10,7 +10,7 @@ import pt.ipp.isep.dei.domain.LocomotiveCatalog;
  */
 public class Repositories {
     private static Repositories instance;
-    private final RepositoryMap repositoryMap;
+    private final MapRepository repositoryMap;
     private final IndustryRepository industryRepository;
     private LocomotiveCatalog locomotiveCatalog = new LocomotiveCatalog();
 
@@ -18,7 +18,7 @@ public class Repositories {
      * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
      */
     private Repositories() {
-        repositoryMap = new RepositoryMap();  // Initialize the MapRepository
+        repositoryMap = new MapRepository();  // Initialize the MapRepository
         industryRepository = IndustryRepository.getInstance();
     }
 
@@ -41,7 +41,7 @@ public class Repositories {
      *
      * @return the MapRepository instance
      */
-    public RepositoryMap getMapRepository() {
+    public MapRepository getMapRepository() {
         return repositoryMap;
     }
 

@@ -31,6 +31,7 @@ public class Map {
         }
         return null;
     }
+
     public void addRailLine(RailLine line) {
         railLines.add(line);
     }
@@ -51,6 +52,7 @@ public class Map {
         }
         return stations;
     }
+
     public Map() {
         this.name = "name";
         map = new Object[10][10];
@@ -119,11 +121,21 @@ public class Map {
         return map[y][x] == null;
     }
 
+    public boolean validateCoordinates(List<Location> positions) {
+        for (Location pos : positions) {
+            int x = pos.getX();
+            int y = pos.getY();
+            if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean addIndustry(Industry industry) {
         Location location = industry.getLocation();
         int x = location.getX();
         int y = location.getY();
-
         if (isEmpty(x, y)) {
             map[y][x] = industry;
             return true;
@@ -131,30 +143,20 @@ public class Map {
         return false;
     }
 
-
-    /**
-     * Adds a city to the map.
-     * Automatically assigns house blocks around the city position.
-     * Places the city object on the map grid at its position.
-     *
-     * @param city the City to add
-     * @return true if city was added successfully, false if position is occupied or invalid
-     */
     public boolean addCity(City city) {
-        int x = city.getPositionX();
-        int y = city.getPositionY();
-
-        // Check if the city can be placed at position (x,y)
-        if (!isEmpty(x, y)) {
-            return false; // Position already occupied
-        }
-
-        // Assign house blocks automatically to the city
+        int x = city.getPositionX(), y = city.getPositionY();
+        if (!isEmpty(x, y)) return false;
         city.assignHouseBlocksAutomatic();
-
-        // Place the city on the map grid
         map[y][x] = city;
         return true;
     }
+    /** Verifica se já existe cidade com este nome no mapa */
+    public boolean isCityNameDuplicate(String cityName) {
+        return getCities().stream()
+                .anyMatch(name -> name.equalsIgnoreCase(cityName));
+    }
 
 }
+
+
+

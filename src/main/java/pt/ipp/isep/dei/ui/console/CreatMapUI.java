@@ -1,13 +1,13 @@
 package pt.ipp.isep.dei.ui.console;
 import pt.ipp.isep.dei.controller.CreateMapController;
 import pt.ipp.isep.dei.domain.Map;
-import pt.ipp.isep.dei.repository.RepositoryMap;
+import pt.ipp.isep.dei.repository.MapRepository;
 
 import java.util.Scanner;
 
 public class CreatMapUI {
     private CreateMapController createMapController;
-    private RepositoryMap repositoryMap;
+    private MapRepository repositoryMap;
 
     // Setter para injetar o controller
     public void setCreateMapController(CreateMapController createMapController) {

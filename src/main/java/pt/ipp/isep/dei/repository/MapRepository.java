@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Repository responsible for managing maps and cities.
  */
-public class RepositoryMap {
+public class MapRepository {
 
     private List<Map> maps;
     private Map currentMap;
@@ -16,7 +16,7 @@ public class RepositoryMap {
     /**
      * Initializes the repository with a default or empty map.
      */
-    public RepositoryMap() {
+    public MapRepository() {
         this.maps = new ArrayList<>();
         this.currentMap = new Map();  // Initial empty or default map
         this.maps.add(currentMap);
@@ -55,21 +55,10 @@ public class RepositoryMap {
         setCurrentMap(map);
     }
 
-    /**
-     * Checks if a city name already exists in the current map.
-     *
-     * @param cityName the name of the city to be checked
-     * @return true if the city name already exists in the current map, otherwise false
-     */
-    public boolean isCityNameDuplicate(String cityName) {
-        return currentMap.getCities().stream().anyMatch(city -> city.getName().equals(cityName));
-    }
-
-
     public List<String> getMapsNames() {
         List<String> names = new ArrayList<>();
-        for (Map map : maps) {
-            names.add(map.getName());
+        for (Map m : maps) {
+            names.add(m.getName());
         }
         return names;
     }

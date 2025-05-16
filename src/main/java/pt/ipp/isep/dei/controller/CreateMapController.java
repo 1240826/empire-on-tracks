@@ -2,7 +2,7 @@ package pt.ipp.isep.dei.controller;
 
 import pt.ipp.isep.dei.domain.Map;
 import pt.ipp.isep.dei.domain.ValueValidator;
-import pt.ipp.isep.dei.repository.RepositoryMap;
+import pt.ipp.isep.dei.repository.MapRepository;
 import pt.ipp.isep.dei.repository.Repositories;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CreateMapController {
     private final ValueValidator validator = new ValueValidator();
-    private final RepositoryMap repository;
+    private final MapRepository repository;
 
     public CreateMapController() {
         this.repository = Repositories.getInstance().getMapRepository();
