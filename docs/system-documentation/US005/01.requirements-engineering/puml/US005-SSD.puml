@@ -10,28 +10,56 @@ participant ":System" as System
 
 activate Employee
 
-    Employee -> System : asks to build a station
-    activate System
+Employee -> System : asks to build a station
+activate System
+    System --> Employee : shows list of stations (Depot, Terminal, Station) and asks to select one
+deactivate System
 
-        System --> Employee : asks for what type of station
-    deactivate System
+Employee -> System : selects station type (Depot, Terminal, Station)
+activate System
 
-    Employee -> System : selects station
-    activate System
+    System --> Employee : asks to pick coordinates X Y
+deactivate System
 
-        System --> Employee : asks to pick the coordinates
-        System --> Employee : asks to pick the center of the station
-    deactivate System
+Employee -> System : Types requested coordinates
+activate System
 
-    Employee -> System : types requested data
-    activate System
+    alt Selected type is Station
+        System --> Employee : asks to select center position (NE, SE, NW, SW)
+        deactivate System
+        Employee -> System : selects center position
+    else Selected type is Depot or Terminal
+        activate System
+        System --> Employee : center will be automatically set as geometric center
+        deactivate System
+    end
+activate System
+    System --> Employee : proposes a station name based on closest city and station type
+    System --> Employee : asks if player wants to accept suggested name or input custom name
+deactivate System
 
-        System --> Employee : shows the location of the station
-    deactivate System
+Employee -> System : confirms or rejects name
+activate System
 
-    Employee -> System : confirms data
-    activate System
+    alt Player accepts suggested name
+        System --> Employee : shows station preview with name and location
+        deactivate System
+        Employee -> System : confirms final data
+    else Player wants custom name
+        activate System
+        System --> Employee : asks player to input custom name (validating restrictions)
+        deactivate System
+        Employee -> System : types custom name
+        activate System
+        System --> Employee : shows station preview with name and location
+        deactivate System
+        Employee -> System : confirms final data
+    end
+activate System
+    System --> Employee : adds the station and confirms operation success
+deactivate System
 
-        System --> Employee : adds the city and confirms operation success
-    deactivate System
+deactivate Employee
 @enduml
+
+

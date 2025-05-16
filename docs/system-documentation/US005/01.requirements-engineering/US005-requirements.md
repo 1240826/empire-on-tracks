@@ -51,6 +51,7 @@ As a Player, I want to build a station.
 ### 1.3. Acceptance Criteria
 
 * **AC1:** Overbuilding is not possible
+* **AC2:** If the user doesn't want the sugested station name he can choose one himself
 
 ### 1.4. Found out Dependencies
 
