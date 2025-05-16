@@ -3,14 +3,14 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-participant ":CreateCityController" as Controller
+participant ":AddCityController" as Controller
 participant ":Map" as Map
 participant ":City" as City
 
-autonumber 32
+autonumber 34
 -> Controller : selectedAssignmentMethod("manual", positions)
 
-autonumber 32.1
+autonumber 34.1
 
 activate Controller
 
@@ -22,11 +22,14 @@ activate Controller
 
            alt positions valid
            Controller -> City : assignHouseBlocksManually(positions)
+           activate City
+                           City --> Controller : houseBlocks
+                           deactivate City
            else
            <-- Controller : warn("Coordinates out of bounds")
            end
     end
-    autonumber 33
+    autonumber 35
     <-- Controller : city details
 
 deactivate Controller

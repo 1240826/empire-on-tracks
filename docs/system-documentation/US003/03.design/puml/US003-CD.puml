@@ -4,46 +4,34 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
-class "LoginController" {
-    + authenticateUser(username: String, password: String): Boolean
-    - validatePassword(password: String): Boolean
+class ApplicationSession
+{
+    - ApplicationSession()
+    + {static} getInstance()
+    + getCurrentSession()
 }
 
-class "User" {
-    - username: String
-    - password: String
-}
-
-class "PasswordValidator" {
+class UserSession {
+    + getUsername(): String
     + validate(password: String): Boolean
 }
 
-class "ApplicationSession" {
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession(): UserSession
-}
+ApplicationSession ..> UserSession
+ApplicationSession -> "1" ApplicationSession : instance
 
-class "UserSession" {
-    + getUsername(): String
-}
-
-class "SessionManager" {
-    + startSession(user: User)
-    + endSession()
-}
 
 class "City" {
     - name: String
     - positionX: int
     - positionY: int
     - houseBlocks: int
-    + createCity(name: String, positionX: int, positionY: int, houseBlocks: int)
-    + validateName(): Boolean
-    + validateHouseBlocks(): Boolean
-    + assignHouseBlocksManually(positions: List[Location])
+    - houseBlocksList: List<HouseBlock>
+    + createCity(name: String, positionX: int, positionY: int, houseBlocks: int): City
+    + validateName(): boolean
+    + validateHouseBlocks(): boolean
+    + assignHouseBlocksManually(positions: List<Location>)
     + getCityCenter(): Location
-    + addHouseBlock(houseBlock: HouseBlock)
+    + addHouseBlock(houseBlock: HouseBlock): void
 }
 
 class "Location" {
@@ -53,7 +41,6 @@ class "Location" {
 }
 
 class "HouseBlock" {
-    - position: Location
     + createAt(position: Location): HouseBlock
 }
 
@@ -61,7 +48,7 @@ class "Map" {
     + getCity(name: String): City
     + addCity(city: City)
     + isCityNameDuplicate(name: String): Boolean
-    + validateCoordinates(positions: List[Location]): Boolean
+    + validateCoordinates(positions: List<Location>): Boolean
 }
 
 class "Repositories" {
@@ -77,49 +64,35 @@ class "MapRepository" {
 class "AddCityController" {
     + startAddCity()
     + submitCityDetails(name: String, positionX: int, positionY: int, houseBlocks: int)
-    + selectedAssignmentMethod(method: String, positions: List[Location])
+    + selectedAssignmentMethod(method: String, positions: List<Location>)
     + confirmCityCreation()
 }
 
 class "AddCityUI" {
-    + showFieldsForCityDetails()
-    + requestCityDetails()
-    + showWarning(message: String)
-    + showSuccess(message: String)
+
 }
 
-
-
-LoginController ..> User : authenticates
-LoginController ..> PasswordValidator : validates password
-LoginController ..> ApplicationSession : manages session
-
-ApplicationSession ..> UserSession : retrieves session
-UserSession ..> User : has user
-
-SessionManager ..> ApplicationSession : manages session lifecycle
-
-AddCityUI .> AddCityController : submits data
-
+AddCityUI .> AddCityController
 AddCityController ..> Repositories : uses
 AddCityController ..> MapRepository : uses
 AddCityController ..> City : creates
 AddCityController ..> Location : computes
 AddCityController ..> HouseBlock : creates
 AddCityController ..> Map : validates
+AddCityController ..> ApplicationSession
+AddCityController ..> UserSession
 
-Repositories --> "1" MapRepository : mapRepository
-Repositories --> "1" Repositories : instance
+Repositories --> MapRepository : mapRepository
 
-MapRepository --> "1" Map : currentMap
+Repositories --> Repositories : instance
 
-Map --> "*" City : cities
-Map --> "*" Location : locations
-Map --> "*" HouseBlock : houseBlocks
 
-City --> "*" HouseBlock : houseBlocks
-City --> "1" Location : position
+Map "1" o-- "*" City : contains
+City "1" *-- "*" HouseBlock : has
+City "1" --> "1" Location : centerPosition
 
-HouseBlock --> "1" Location : position
+HouseBlock "1" --> "1" Location : position
+
+MapRepository --> Map : currentMap
 
 @enduml

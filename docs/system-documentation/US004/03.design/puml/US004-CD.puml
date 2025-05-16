@@ -4,128 +4,121 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
-' AUTENTICAÇÃO
-class "LoginController" {
-    + authenticateUser(username: String, password: String): Boolean
-    - validatePassword(password: String): Boolean
+
+class ApplicationSession
+{
+    - ApplicationSession()
+    + {static} getInstance()
+    + getCurrentSession()
 }
 
-class "User" {
-    - username: String
-    - password: String
-}
-
-class "PasswordValidator" {
+class UserSession {
+    + getUsername(): String
     + validate(password: String): Boolean
 }
 
-class "ApplicationSession" {
-    - ApplicationSession()
-    + {static} getInstance()
-    + getCurrentSession(): UserSession
-}
-
-class "UserSession" {
-    + getUsername(): String
-}
-
-class "SessionManager" {
-    + startSession(user: User)
-    + endSession()
-}
-
-LoginController ..> User
-LoginController ..> PasswordValidator
-LoginController ..> ApplicationSession
 ApplicationSession ..> UserSession
-UserSession ..> User
-SessionManager ..> ApplicationSession
+ApplicationSession -> "1" ApplicationSession : instance
 
-' CENÁRIO
-class "Scenario" {
-    - period: Period
-    - locomotionTypes: List<LocomotionType>
-    - cargoTypes: List<CargoType>
-    - productionFrequency: float
-    + setPeriod(p: Period)
-    + setLocomotionTypes(types: List<LocomotionType>)
-    + setCargoTypes(types: List<CargoType>)
-    + setProductionFrequency(frequency: float)
+
+class CreateScenarioUI {
+
 }
 
-class "LocomotionType" {
-    - name: String
-    - availabilityPeriod: Period
-    - obsolescencePeriod: Period
-    + setAvailability(period: Period)
-    + setObsolescence(period: Period)
-}
-
-class "CargoType" {
-    - name: String
-    - behaviors: List<CargoBehavior>
-    + setBehaviors(behaviors: List<CargoBehavior>)
-}
-
-class "CargoBehavior" {
-    - type: String «import | export | transform»
-}
-
-class "Period" {
-    - startDate: String
-    - endDate: String
-    + Period(start: String, end: String)
-}
-
-class "ScenarioController" {
-    + startCreateScenario()
-    + submitScenarioPeriod(start: String, end: String)
-    + submitLocomotionTypes(types: List<String>)
-    + setLocomotionAvailability(type: String, period: Period)
-    + setLocomotionObsolescence(type: String, period: Period)
-    + submitCargoTypes(types: List<String>)
-    + setCargoBehavior(type: String, behavior: String)
-    + setIndustryProductionFrequency(percent: float)
+class CreateScenarioController {
+    + startCreateScenario(start: Date, end: Date)
+    + addLocomotiveType(type: String)
+    + setLocomotiveAvailability(type: String, period: Period)
+    + addCargoType(cargo: String)
+    + setCargoBehavior(cargo: String, behavior: String)
+    + setIndustryProductionFrequency(percent: int)
     + confirmScenarioCreation(): boolean
 }
 
-class "ScenarioUI" {
-    + showScenarioFields()
-    + requestScenarioDetails()
-    + showWarning(message: String)
-    + showSuccess(message: String)
+CreateScenarioUI .> CreateScenarioController
+
+
+class Scenario {
+    - locomotives: List<Locomotive>
+    - cargos: List<Cargo>
+    - period: Period
+    + setPeriod(period: Period)
+    + addLocomotive(year: int, type: String)
+    + addCargo(cargo: Cargo)
 }
 
-class "ScenarioRepository" {
-    + getCurrentScenario(): Scenario
-    + saveScenario(s: Scenario)
+class Period {
+    - startDate: Date
+    - endDate: Date
+    + new(start: Date, end: Date)
 }
 
-class "MapRepository" {
+class Cargo {
+    - type: String
+    - quantity: int
+    - behaviors: List<String>
+    + setBehavior(behavior: String)
+}
+
+class Locomotive {
+     - plateNumber: String
+     - powerSource: String
+     - acceleration: double
+     - buyCost: double
+     - startYear: int
+     - fuelCost: double
+     - maintenanceCost: double
+     + setAvailability(period: Period)
+}
+
+class Repositories {
+    - instance: Repositories
+    + getInstance(): Repositories
+    + getScenarioRepository(): ScenarioRepository
+    + getCargoRepository(): CargoRepository
+    + getLocomotiveRepository(): LocomotiveRepository
+    + getMapRepository(): MapRepository
+}
+
+class ScenarioRepository {
+    + saveScenario(scenario: Scenario)
+}
+
+class CargoRepository {
+    + addAvailableCargo(cargo: Cargo)
+}
+
+class LocomotiveRepository {
+    + addAvailableLocomotionType(type: String)
+    + updateAvailability(type: String, period: Period)
+}
+
+class MapRepository {
     + getCurrentMap(): Map
-    + addScenario(scenario: Scenario)
 }
+CreateScenarioController ..> ApplicationSession
+CreateScenarioController ..> UserSession
+CreateScenarioController ..> Repositories
+CreateScenarioController ..> ScenarioRepository
+CreateScenarioController ..> CargoRepository
+CreateScenarioController ..> LocomotiveRepository
+CreateScenarioController ..> Period
+CreateScenarioController ..> Scenario
+CreateScenarioController ..> Cargo
+CreateScenarioController ..> Locomotive
 
-class "Map" {
-    - name: String
-    - scenarios: List<Scenario>
-}
 
-' Relações
-ScenarioController ..> Scenario
-ScenarioController ..> Period
-ScenarioController ..> LocomotionType
-ScenarioController ..> CargoType
-ScenarioController ..> ScenarioRepository
-ScenarioController ..> MapRepository
-ScenarioController .down.> ScenarioUI : uses
+Repositories --> "1" ScenarioRepository : scenarioRepository
+Repositories --> "1" CargoRepository : cargoRepository
+Repositories --> "1" LocomotiveRepository : locomotiveRepository
+Repositories --> "1" MapRepository : mapRepository
 
-Scenario ..* LocomotionType
-Scenario ..* CargoType
-CargoType ..* CargoBehavior
-MapRepository --> Map
-Map o-- "*" Scenario
+Scenario o-- "*" Locomotive : locomotives
+Scenario o-- "*" Cargo : cargos
+Scenario o-- "1" Period : period
 
-ScenarioUI .> ScenarioController
+Locomotive --> "1" Period : available
+
+
 
 @enduml
