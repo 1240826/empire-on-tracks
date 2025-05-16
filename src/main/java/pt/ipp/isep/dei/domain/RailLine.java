@@ -19,9 +19,9 @@ public class RailLine {
     //Calculates the cost of the RailLine
     private double calculateCost() {
         // Temos de ver o que colocar aqui
-        double base = 100.0;
-        if (isElectrified) base += 50;
-        if (isDouble) base += 30;
+        double base = 6;
+        if (isElectrified) base += 5;
+        if (isDouble) base += 3;
         return base;
     }
     //Defines starting station
