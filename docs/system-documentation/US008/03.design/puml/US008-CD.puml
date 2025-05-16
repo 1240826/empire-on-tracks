@@ -59,8 +59,8 @@ BuildLineController ..> Station
 Player --> "*" RailLine : builds >
 Player --> "*" Station : hasAccessTo >
 
-Map --> "*" Station : contains >
-Map --> "*" RailLine : contains >
+Map *-- "*" Station : contains >
+Map *-- "*" RailLine : contains >
 
 RailLine --> "1" Station : start
 RailLine --> "1" Station : end
