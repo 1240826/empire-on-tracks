@@ -2,6 +2,8 @@ package pt.ipp.isep.dei.domain;
 
 import pt.ipp.isep.dei.repository.IndustryRepository;
 import pt.ipp.isep.dei.repository.LocomotiveRepository;
+import pt.ipp.isep.dei.repository.ScenarioRepository;
+
 
 import java.util.List;
 import java.util.Objects;

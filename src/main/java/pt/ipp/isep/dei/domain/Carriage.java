@@ -12,5 +12,11 @@ public class Carriage {
         this.capacity = capacity;
     }
 
-    // Additional getters/setters as needed
+    public String getType() {
+        return type;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
 }

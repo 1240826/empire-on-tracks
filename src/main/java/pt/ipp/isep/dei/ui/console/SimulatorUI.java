@@ -76,16 +76,23 @@ public class SimulatorUI {
         LocalDateTime now = controller.getCurrentDate();
         System.out.println("\n== STATUS DA SIMULAÇÃO ==");
         System.out.println("Data atual: " + now);
+
         System.out.println("\n-- Indústrias no Mapa --");
         List<Industry> inds = controller.getIndustries();
         for (int i = 0; i < inds.size(); i++) {
             Industry ind = inds.get(i);
-            System.out.printf("[%d] %s | Prod: %.2f | Dem: %.2f | Local: %s%n",
+            Cargo stock = ind.getCargo();
+            String stockInfo = String.format("%s: %.2f",
+                    stock.getType(), stock.getQuantity());
+            System.out.printf(
+                    "[%d] %s | Estoque: %s | Prod: %.2f | Dem: %.2f | Local: %s%n",
                     i,
-                    ind.getindustryname(),
+                    ind.getIndustryName(),
+                    stockInfo,
                     ind.getProduction(),
                     ind.getDemand(),
-                    ind.getLocation());
+                    ind.getLocation()
+            );
         }
 
         System.out.println("\n-- Estações e Estoques --");
@@ -96,9 +103,14 @@ public class SimulatorUI {
                     s.getCargoes());
         }
 
-        System.out.println("\n-- Templates de Locomotivas --");
-        for (Locomotive l : controller.getLocomotiveTemplates()) {
+        System.out.println("\n-- Locomotivas no Mapa --");
+        for (Locomotive l : controller.getMapLocomotives()) {
             System.out.println(l);
+        }
+
+        System.out.println("\n-- Templates de Locomotivas --");
+        for (Locomotive tpl : controller.getLocomotiveTemplates()) {
+            System.out.println(tpl);
         }
         System.out.println();
     }
@@ -107,30 +119,46 @@ public class SimulatorUI {
      * Ponto de entrada do aplicativo de console.
      */
     public static void main(String[] args) {
-        // Inicialização de repositórios
-        IndustryRepository   indRepo  = IndustryRepository.getInstance();
+        // 1) Inicialização de repositórios
+        IndustryRepository indRepo  = IndustryRepository.getInstance();
         LocomotiveRepository locoRepo = LocomotiveRepository.getInstance();
-        ScenarioRepository   scRepo   = new ScenarioRepository();
+        ScenarioRepository scRepo   = new ScenarioRepository();
 
-        // Define data e cenário inicial
+        // 2) Define data e cenário inicial
         LocalDateTime startDate = LocalDateTime.of(2025, 1, 1, 0, 0);
         Scenario initial = new Scenario(startDate);
         scRepo.addInitialScenario(startDate, initial);
 
-        // Monta o mapa e o clock
+        // 3) Monta o mapa e o clock (20 segundos por mês)
         Map map = new Map("Demo", 10, 10);
-        Date clock = new Date(scRepo);
+        Date clock = new Date(startDate, 20L);
 
-        // Constrói o controller e a UI
+        // 4) Constrói o controller
         SimulatorController controller =
                 new SimulatorController(map, clock, scRepo, indRepo, locoRepo);
+
+        // 5) Pré-popula o mapa com estações e indústrias
+        map.addStation(new Station("ST1", "Central", new Location(2, 2), 4));
+        map.addStation(new Station("ST2", "Porto",   new Location(7, 1), 3));
+        map.addStation(new Station("ST3", "Indústria", new Location(5, 5), 2));
+
+        map.addIndustry(indRepo.getIndustryTemplate(4), new Location(3, 2));
+        map.addIndustry(indRepo.getIndustryTemplate(1), new Location(6, 1));
+        map.addIndustry(indRepo.getIndustryTemplate(2), new Location(4, 5));
+        map.addIndustry(indRepo.getIndustryTemplate(3), new Location(5, 6));
+
+        // 6) Adiciona uma locomotiva em rota
+        Locomotive loco = locoRepo.getTemplate(0);
+        loco.getRoute().add(map.getStations().get(0));
+        loco.getRoute().add(map.getStations().get(1));
+        loco.getRoute().add(map.getStations().get(2));
+        map.addLocomotive(loco);
+
+        // 7) Executa o loop de console
         SimulatorUI ui = new SimulatorUI(controller);
-
-        // Setup inicial (opcional): adicionar estação e indústria exemplo
-        map.addStation(new Station("ST1", "Central", new Location(2,2), 4));
-        map.addIndustry(indRepo.getIndustryTemplate(0),new Location(2,2));
-
-        // Executa o loop de console
         ui.run();
+
+        // 8) Ao sair, garante desligar o clock
+        clock.shutdown();
     }
 }

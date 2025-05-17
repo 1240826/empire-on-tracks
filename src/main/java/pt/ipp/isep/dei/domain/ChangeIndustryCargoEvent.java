@@ -29,14 +29,18 @@ public class ChangeIndustryCargoEvent implements ScenarioEvent {
 
         if (ind instanceof TransformingIndustry) {
             TransformingIndustry ti = (TransformingIndustry) ind;
-            if (newInput  != null) ti.setInputCargoType(newInput);
-            if (newOutput != null) ti.setOutputCargoType(newOutput);
-        } else if (ind instanceof MixedIndustry) {
-            MixedIndustry mi = (MixedIndustry) ind;
-            if (newInput  != null) mi.setInputCargoType(newInput);
-            if (newOutput != null) mi.setOutputCargoType(newOutput);
-        } else if (ind instanceof ProducingIndustry && newOutput != null) {
-            ((ProducingIndustry) ind).setCargoType(newOutput);
+            if (newInput  != null) ti.setInputCargo(newInput);
+            if (newOutput != null) ti.setOutputCargo(newOutput);
         }
+        else if (ind instanceof MixedIndustry) {
+            MixedIndustry mi = (MixedIndustry) ind;
+            if (newInput  != null) mi.setInputCargo(newInput);
+            if (newOutput != null) mi.setOutputCargo(newOutput);
+        }
+        else if (ind instanceof ProducingIndustry) {
+            ProducingIndustry pi = (ProducingIndustry) ind;
+            if (newOutput != null) pi.setCargoType(newOutput);
+        }
+        // outras instâncias de Industry não sofrem alteração de carga
     }
 }

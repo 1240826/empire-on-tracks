@@ -1,58 +1,59 @@
 // SimulationClock.java
 package pt.ipp.isep.dei.domain;
 
-import pt.ipp.isep.dei.repository.ScenarioRepository;
-
 import java.time.LocalDateTime;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
- * Mantém a data da simulação, iniciando-a com o valor
- * definido em ScenarioRepository e avançando 1 mês a cada 20 segundos.
+ * Relógio da simulação com auto-tick configurável e tick manual.
  */
 public class Date {
-
     private LocalDateTime currentDate;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> futureTick;
+    private final long tickIntervalSeconds;
 
-    /**
-     * Constroi o clock buscando a data inicial no repositório de cenários.
-     * @param scenarioRepo repositório de cenários contendo a data inicial
-     */
-    public Date(ScenarioRepository scenarioRepo) {
-        // Assumimos que o cenário inicial está mapeado para uma chave de data "start"
-        // ou que o repositório tem um método específico para data inicial.
-        LocalDateTime initial = scenarioRepo.getInitialDate();
-        this.currentDate = (initial != null) ? initial : LocalDateTime.now();
+    /** @param startDate Data inicial da simulação */
+    /** @param tickIntervalSeconds Intervalo em segundos para cada mês automático */
+    public Date(LocalDateTime startDate, long tickIntervalSeconds) {
+        this.currentDate          = startDate;
+        this.tickIntervalSeconds  = tickIntervalSeconds;
     }
 
-    /**
-     * Inicia o agendamento: a cada 20 segundos acrescenta 1 mês.
-     */
-    public void start() {
-        // delay inicial de 20s, e então periodicamente a cada 20s
-        scheduler.scheduleAtFixedRate(() -> {
-            currentDate = currentDate.plusMonths(1);
-        }, 20, 20, TimeUnit.SECONDS);
-    }
 
-    /**
-     * Para o agendamento (desliga o scheduler).
-     */
-    public void stop() {
-        scheduler.shutdownNow();
-    }
 
-    /**
-     * Retorna a data corrente da simulação.
-     */
+    /** Data atual do simulador. */
     public LocalDateTime getDate() {
         return currentDate;
     }
 
+    /** Inicia auto-tick (mês a cada tickIntervalSeconds). */
+    public void start() {
+        if (futureTick == null || futureTick.isDone() || futureTick.isCancelled()) {
+            futureTick = scheduler.scheduleAtFixedRate(
+                    () -> currentDate = currentDate.plusMonths(1),
+                    tickIntervalSeconds,
+                    tickIntervalSeconds,
+                    TimeUnit.SECONDS
+            );
+        }
+    }
+
+    /** Pausa auto-tick. */
+    public void stop() {
+        if (futureTick != null) {
+            futureTick.cancel(false);
+            futureTick = null;
+        }
+    }
+
+    /** Avança manualmente um mês. */
     public void advanceManually() {
         currentDate = currentDate.plusMonths(1);
+    }
+
+    /** Desliga o executor (ao encerrar a app). */
+    public void shutdown() {
+        scheduler.shutdownNow();
     }
 }
