@@ -31,6 +31,21 @@ public class Locomotive {
     private final double capacity;              // max cargo volume the loco can carry
     private final List<Cargo> currentLoad = new ArrayList<>();
 
+    /**
+     * Constructs a new Locomotive instance.
+     *
+     * @param id                     unique identifier for the locomotive
+     * @param type                   type of locomotive ("Steam", "Diesel", or "Electric")
+     * @param price                  purchase price of the locomotive
+     * @param requiresElectrification whether the locomotive requires electrified tracks
+     * @param power                  power output (kW or HP)
+     * @param acceleration           acceleration (m/s²)
+     * @param topSpeed               maximum speed (km/h)
+     * @param startYear              year when available in the simulation
+     * @param fuelCostPerYear        yearly fuel cost (e.g., €/year)
+     * @param maintenancePerYear     yearly maintenance cost (e.g., €/year)
+     */
+
     public Locomotive(String id,
                       String type,
                       double price,
@@ -140,6 +155,11 @@ public class Locomotive {
         return capacity - used;
     }
 
+    /**
+     * Returns a string representation of the locomotive and its attributes.
+     *
+     * @return a string describing the locomotive
+     */
     @Override
     public String toString() {
         return String.format(
