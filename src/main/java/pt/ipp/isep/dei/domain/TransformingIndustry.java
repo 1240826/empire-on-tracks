@@ -6,26 +6,30 @@ public class TransformingIndustry implements Industry {
     private double production;
     private double demand;
     private Location location;
-    private CargoType inputCargo;
-    private CargoType outputCargo;
+    private Cargo inputCargo;
+    private Cargo outputCargo;
 
-    public TransformingIndustry(String name, int cost, double production, double demand,CargoType inputCargo,CargoType outputCargo ) {
+
+    public TransformingIndustry(String name, int cost, double production, double demand,CargoType inputCargo,CargoType outputCargo, Location location) {
         this.industryName = name;
         this.industryCost = cost;
         this.production = production;
         this.demand = demand;
-        this.inputCargo = inputCargo;
-        this.outputCargo = outputCargo;
+        this.inputCargo = new Cargo(inputCargo, 0.0);
+        this.outputCargo = new Cargo(outputCargo, 0.0);
+        this.location = location;
 
     }
 
-    public TransformingIndustry(String getindustryname, int industryCost, double production, double demand, Location location) {
+    public TransformingIndustry(String getindustryname, int industryCost, double production, double demand, CargoType input, CargoType output) {
         this.industryName = getindustryname;
         this.industryCost = industryCost;
         this.production = production;
         this.demand = demand;
-        this.location = location;
+        this.inputCargo = new Cargo(input, 0.0);
+        this.outputCargo=new Cargo(output,0.0);
     }
+
 
 
     @Override
@@ -57,27 +61,32 @@ public class TransformingIndustry implements Industry {
         return location;
     }
 
-    @Override
-    public Cargo produceCargo() {
-        return new Cargo(outputCargo, production);
+    public void consumeCargo(double quantity) {
+        double resto = inputCargo.getQuantity()-quantity;
+        inputCargo.setQuantity(resto);
     }
-    public Cargo consumeCargo() {
-        return new Cargo(inputCargo, demand);
+    public Cargo produceCargo() {
+        if( inputCargo.getQuantity() >= demand ){
+            outputCargo.addQuantity(production);
+            inputCargo.removeQuantity(demand);
+        }
+        return null;
     }
 
 
     public void setInputCargoType(CargoType cargoType) {
-        this.inputCargo = cargoType;
+        this.inputCargo.setCargoType(cargoType);
     }
     public void setOutputCargoType(CargoType cargoType) {
-        this.outputCargo = cargoType;
+        this.outputCargo.setCargoType(cargoType);
     }
 
     public CargoType getInputCargoType () {
-        return inputCargo;
+        return inputCargo.getType();
     }
     public CargoType getOutputCargoType () {
-        return outputCargo;
+        return outputCargo.getType();
     }
+
 }
 

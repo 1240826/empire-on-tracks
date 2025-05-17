@@ -1,12 +1,11 @@
 package pt.ipp.isep.dei.domain;
 
 public class Cargo {
-    private final CargoType type;
-    private  double quantity;
+    private  CargoType type;
+    private  double quantity=0;
 
     public Cargo(CargoType type, double quantity) {
         this.type = type;
-        this.quantity = quantity;
     }
 
     public CargoType getType() {
@@ -26,6 +25,7 @@ public class Cargo {
         if (value > 0) {
             this.quantity += value;
         }
+
     }
 
     public boolean removeQuantity(double value) {
@@ -34,5 +34,11 @@ public class Cargo {
             return true;
         }
         return false;
+    }
+    public void setQuantity(double value) {
+        this.quantity = value;
+    }
+    public void setCargoType(CargoType type) {
+        this.type = type;
     }
 }

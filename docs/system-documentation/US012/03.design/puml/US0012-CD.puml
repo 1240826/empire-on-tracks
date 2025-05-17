@@ -11,70 +11,97 @@ skinparam classAttributeIconSize 0
 class SimulatorUI {
 }
 
-class "SimulatorController"{
-    +start()
-    +pause()
-    +loadSimulator(map: Map, scenarioRepo: ScenarioRepository)
-    +display()
+class SimulatorController {
+    +start(): void
+    +pause(): void
+    +loadSimulator(map: Map, scenarioRepo: ScenarioRepository): void
+    +display(map: Map): void
 }
 
 class Map {
-    +update()
+    +update(): void
 }
 
 class SimulationTime {
-    +getDate()
-    +advance()
-}
-
-class MapIndustry {
-    +updateIndustries()
-}
-
-class MapStation {
-    +updateStations()
-}
-
-class MapTrain {
-    +updateTrains()
+    +getDate(): LocalDateTime
+    +advance(paused: boolean): void
 }
 
 class ScenarioRepository {
-    +changeScenario(date: LocalDateTime)
+    +changeScenario(date: LocalDateTime): void
 }
 
 class Scenario {
-    +changeProduction()
-    +changeClassMixed()
-    +transformIndustry()
+    +changeProduction(): void
+    +changeClassMixed(): void
+    +transformIndustry(): void
+    +disableTrain(train: Train): void
+    +enableTrain(train: Train): void
 }
 
 '====================
-' CLASSES DE INDÚSTRIA
+' CLASSES DE MAPA
+'====================
+
+class MapIndustry {
+    +updateIndustries(): void
+}
+
+class MapStation {
+    +updateStations(): void
+}
+
+class Train {
+    +updateTrains(): void
+}
+
+'====================
+' ENTIDADES DO DOMÍNIO
 '====================
 
 interface Industry {
-    +generateCargo()
+    +generateCargo(): Cargo
 }
 
 class PrimarySectorIndustry {
-    -type
-    +generateCargo()
+    -type: String
+    +generateCargo(): Cargo
 }
 
 class TransformingIndustry {
-    -type
-    -demand
-    +generateCargo()
-    +consumeCargo()
+    -type: String
+    -demand: int
+    +generateCargo(): Cargo
+    +consumeCargo(c: Cargo): void
 }
 
 class MixedIndustry {
-    -type
-    +generateCargo()
-    +consumeCargo()
-    +changeToPrimary()
-    +changeToTransforming()
+    -type: String
+    +generateCargo(): Cargo
+    +consumeCargo(c: Cargo): void
+    +changeToPrimary(): void
+    +changeToTransforming(): void
+}
+
+class Station {
+    -id: String
+    -capacity: int = 24
+    -storedCargo: List<Cargo>
+    +collectCargo(): Cargo
+}
+
+class Train {
+    -id: String
+    -capacity: int
+    -currentLoad: List<Cargo>
+    +move(): void
+    +hasStationNearby(): boolean
+    +collectCargo(c: Cargo): void
+}
+
+class Cargo {
+    -quantity: double
+    -type: String
 }
 
 '====================
@@ -89,23 +116,33 @@ SimulatorController ..> ScenarioRepository : uses
 
 Map *-- MapIndustry
 Map *-- MapStation
-Map *-- MapTrain
+Map *-- Train
 
 ScenarioRepository *-- Scenario
 
 Scenario --> SimulationTime : consults
 Scenario --> MapIndustry : modifies
-Scenario --> MixedIndustry : transforms
 
-' Herança das indústrias
+Scenario --> Train : mayDisable/enable
+
+' Herança e composições
 Industry <|-- PrimarySectorIndustry
 Industry <|-- TransformingIndustry
 Industry <|-- MixedIndustry
 
-' Transformação entre indústrias
-MapIndustry --> Industry: contains
+MapIndustry --> Industry : contains
+MapStation --> Station : contains
+Train --> Train : contains
 
-MixedIndustry ...|> PrimarySectorIndustry : changeToPrimary
-MixedIndustry ..|> TransformingIndustry : changeToTransforming
+' Estações coletam de Indústrias
+Station --> Industry : collects
+
+' Trens interagem com Estações
+Train --> Station : collects
+Train --> Cargo : holds
+
+' Transformação entre indústrias
+MixedIndustry --|> PrimarySectorIndustry : changeToPrimary
+MixedIndustry --|> TransformingIndustry : changeToTransforming
 
 @enduml

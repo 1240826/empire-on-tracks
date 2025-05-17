@@ -54,7 +54,7 @@ public class AddIndustryController {
         IndustryRepository industryRepo = repositories.getIndustryRepository();
         Industry industryTemplate = industryRepo.getIndustryTemplate(industryIndex);
 
-        // Cria uma nova indústria baseada no template
+
         Industry newIndustry = null;
 
         if (industryTemplate instanceof ProducingIndustry) {
@@ -68,13 +68,18 @@ public class AddIndustryController {
                     industryTemplate.getIndustryCost(),
                     industryTemplate.getProduction(),
                     industryTemplate.getDemand(),
+                    ((TransformingIndustry) industryTemplate).getInputCargoType(),
+                    ((TransformingIndustry) industryTemplate).getOutputCargoType(),
+
                     location);
         } else if (industryTemplate instanceof MixedIndustry) {
-            newIndustry = new MixedIndustry(industryTemplate.getindustryname(),
-                    industryTemplate.getIndustryCost(),
+            newIndustry = new MixedIndustry(industryTemplate.getindustryname(), industryTemplate.getIndustryCost(),
                     industryTemplate.getProduction(),
                     industryTemplate.getDemand(),
-                    location);
+                    location,
+                    ((MixedIndustry) industryTemplate).getInputCargoType(),
+                    ((MixedIndustry) industryTemplate).getOutputCargoType())
+            ;
         }
 
         // Adiciona a indústria ao mapa

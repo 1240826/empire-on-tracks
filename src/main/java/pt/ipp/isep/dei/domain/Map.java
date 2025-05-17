@@ -9,6 +9,8 @@ public class Map {
     private Object[][] map;
     private List<RailLine> railLines = new ArrayList<>();
     private List<Station> stations = new ArrayList<>();
+    private List<Industry> industries=new ArrayList<>();
+    private List<Locomotive> locomotives=new ArrayList<>();
 
     public void addStation(Station station) {
         stations.add(station);
@@ -159,6 +161,42 @@ public class Map {
     public boolean validatePosition(int newX, int newY) {
         return false;
     }
+    public void updateStations() {
+        // Percorre todas as estações cadastradas
+        for (Station station : stations) {
+            // Coleta de todas as indústrias do mapa
+            station.collectNearbyIndustries(getAllIndustries());
+        }
+    }
+    public List<Industry> getAllIndustries() {
+        List<Industry> result = new ArrayList<>();
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[0].length; x++) {
+                if (map[y][x] instanceof Industry) {
+                    result.add((Industry) map[y][x]);
+                }
+            }
+        }
+        return result;
+    }
+    public void update() {
+        // 1) geram-se cargas nas indústrias
+        for (Industry ind : industries) {
+            ind.produceCargo();
+        }
+        // 2) estações coletam indústrias próximas
+        for (Station st : stations) {
+            st.collectNearbyIndustries(industries);
+        }
+        // 3) trens movem-se e coletam carga de estações
+        for (Locomotive tr : locomotives) {
+            tr.move();
+            if (tr.hasStationNearby()) {
+                // implementar coleta de estação
+            }
+        }
+    }
+
 }
 
 

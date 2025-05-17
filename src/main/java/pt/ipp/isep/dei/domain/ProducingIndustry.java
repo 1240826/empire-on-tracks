@@ -6,7 +6,7 @@ public class ProducingIndustry implements Industry {
     private double production;
     private double  demand;
     private Location location;
-    private CargoType cargoType;
+    private Cargo cargoType;
 
 
     public ProducingIndustry(String industryname, int IndustryCost, double production,double demand,CargoType cargoType) {
@@ -14,7 +14,7 @@ public class ProducingIndustry implements Industry {
         this.IndustryCost = IndustryCost;
         this.production = production;
         this.demand = demand;
-        this.cargoType = cargoType;
+        this.cargoType = new Cargo(cargoType, 0.0);
 
     }
 
@@ -53,17 +53,25 @@ public class ProducingIndustry implements Industry {
         return location;
     }
 
-    @Override
+    public void consumeCargo(double quantity) {
+        double resto = cargoType.getQuantity()-quantity;
+        cargoType.setQuantity(resto);
+    }
+
+
     public Cargo produceCargo() {
-        return new Cargo(cargoType, production);
+        this.cargoType.addQuantity(production);
+
+
+        return null;
     }
 
 
     public void setCargoType(CargoType cargoType) {
-        this.cargoType = cargoType;
+        this.cargoType.setCargoType(cargoType);
     }
 
     public CargoType getCargoType() {
-        return cargoType;
+        return cargoType.getType();
     }
 }

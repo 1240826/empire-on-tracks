@@ -13,5 +13,9 @@ public interface Industry {
     default Cargo consumeCargo() {
         return null;
     }
+    void consumeCargo(double quantity);
+
+
+
 
 }
