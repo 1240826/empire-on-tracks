@@ -19,4 +19,5 @@ public interface ScenarioEvent {
      * @param locomotiveRepo  repositório de locomotivas
      */
 
+
 }

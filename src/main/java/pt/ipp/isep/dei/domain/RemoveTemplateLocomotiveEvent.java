@@ -1,27 +1,21 @@
 package pt.ipp.isep.dei.domain;
 
-import pt.ipp.isep.dei.repository.IndustryRepository;
-import pt.ipp.isep.dei.repository.LocomotiveRepository;
-
 import java.util.List;
 
 /**
- * Evento que remove um template de Locomotive do repositório geral pelo índice.
+ * Evento que remove uma locomotiva existente no mapa pelo índice.
  */
 public class RemoveTemplateLocomotiveEvent implements ScenarioEvent {
-    private final int templateIndex;
+    private final int locomotiveIndex;
 
-    /**
-     * @param templateIndex índice do template em LocomotiveRepository.getAllTemplates()
-     */
-    public RemoveTemplateLocomotiveEvent(int templateIndex) {
-        this.templateIndex = templateIndex;
+    public RemoveTemplateLocomotiveEvent(int locomotiveIndex) {
+        this.locomotiveIndex = locomotiveIndex;
     }
-
-
 
     @Override
     public void apply(Map map, List<Locomotive> locomotives) {
-
+        if (locomotiveIndex >= 0 && locomotiveIndex < locomotives.size()) {
+            locomotives.remove(locomotiveIndex);
+        }
     }
 }

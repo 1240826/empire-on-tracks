@@ -1,7 +1,6 @@
 package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Map {
@@ -134,8 +133,8 @@ public class Map {
         return true;
     }
 
-    public boolean addIndustry(Industry industry) {
-        Location location = industry.getLocation();
+    public boolean addIndustry(Industry industry, Location location) {
+
         int x = location.getX();
         int y = location.getY();
         if (isEmpty(x, y)) {
@@ -199,6 +198,9 @@ public class Map {
 
     public List<Industry> getIndustries() {
         return industries;
+    }
+    public List<Locomotive> getLocomotives() {
+        return locomotives;
     }
 }
 

@@ -51,4 +51,8 @@ public class Date {
     public LocalDateTime getDate() {
         return currentDate;
     }
+
+    public void advanceManually() {
+        currentDate = currentDate.plusMonths(1);
+    }
 }

@@ -1,35 +1,45 @@
-// ScenarioRepository.java
 package pt.ipp.isep.dei.repository;
 
+import pt.ipp.isep.dei.domain.Date;
 import pt.ipp.isep.dei.domain.Scenario;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Gerencia todos os cenários agendados.
+ */
 public class ScenarioRepository {
-    private final Map<LocalDateTime, Scenario> scenarios = new HashMap<>();
     private LocalDateTime initialDate;
 
-    /**
-     * Define o cenário que será considerado inicial e sua data.
-     */
-    public void addInitialScenario(LocalDateTime date, Scenario scenario) {
-        this.initialDate = date;
-        scenarios.put(date, scenario);
+
+    private final List<Scenario> scenarios = new ArrayList<>();
+
+    public void addScenario(Scenario scenario) {
+        scenarios.add(scenario);
     }
 
     /**
-     * Recupera a data inicial definida.
+     * Retorna todos os cenários cuja data de disparo seja exatamente `date`.
      */
+    public List<Scenario> getScenariosForDate(LocalDateTime date) {
+        List<Scenario> result = new ArrayList<>();
+        for (Scenario sc : scenarios) {
+            if (sc.getTriggerDate().equals(date)) {
+                result.add(sc);
+            }
+        }
+        return result;
+    }
+    public void setInitialDate(LocalDateTime date) {
+        this.initialDate = date;
+    }
+
     public LocalDateTime getInitialDate() {
         return initialDate;
     }
 
-    /**
-     * Retorna o cenário associado a uma data específica.
-     */
-    public Scenario changeScenario(LocalDateTime date) {
-        return scenarios.get(date);
+    public void addInitialScenario(LocalDateTime startDate, Scenario initial) {
     }
 }

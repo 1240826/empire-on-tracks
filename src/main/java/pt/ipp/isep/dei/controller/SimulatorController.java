@@ -3,9 +3,11 @@ package pt.ipp.isep.dei.controller;// SimulatorController.java
 
 import pt.ipp.isep.dei.domain.*;
 import pt.ipp.isep.dei.repository.*;
+import pt.ipp.isep.dei.repository.ScenarioRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 public class SimulatorController {
     private final Map map;
@@ -35,14 +37,12 @@ public class SimulatorController {
     }
 
     public void step() {
-        // 1) Avança um tick da simulação
+        clock.advanceManually();
         map.update();
-
-        // 2) Dispara quaisquer cenários para a data atual
         LocalDateTime now = clock.getDate();
         List<Scenario> todays = scenarioRepo.getScenariosForDate(now);
         for (Scenario sc : todays) {
-            sc.applyAll(industryRepo, locomotiveRepo);
+            sc.applyAll(map, map.getLocomotives());
         }
     }
 
