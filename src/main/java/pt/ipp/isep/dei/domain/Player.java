@@ -1,25 +1,33 @@
 package pt.ipp.isep.dei.domain;
 
 import pt.ipp.isep.dei.user.User;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 /**
- * Represents a player in the system, with a username, password, and budget.
+ * Represents a player in the system.
+ * A player has a username, password, budget, a list of owned locomotives, and a list of owned trains.
+ * <p>
+ * Supports core actions for buying locomotives (US9), creating and managing trains (US10, US11).
  */
 public class Player extends User {
 
+    /** The current budget available to the player. */
     private double budget;
-    private List<Locomotive> ownedLocomotives = new ArrayList<>();
 
+    /** The list of locomotives purchased and owned by the player. */
+    private final List<Locomotive> ownedLocomotives = new ArrayList<>();
+
+    /** The list of trains owned by the player. */
+    private final List<Train> ownedTrains = new ArrayList<>();
 
     /**
-     * Constructor to create a new Player.
+     * Constructs a new Player.
      *
      * @param username the username of the player
      * @param password the password of the player
-     * @param budget the initial budget of the player
+     * @param budget   the initial budget of the player
      */
     public Player(String username, String password, double budget) {
         super(username, password);
@@ -27,16 +35,16 @@ public class Player extends User {
     }
 
     /**
-     * Gets the player's budget.
+     * Returns the player's current budget.
      *
-     * @return the current budget of the player
+     * @return the player's budget
      */
     public double getBudget() {
         return budget;
     }
 
     /**
-     * Sets a new budget for the player.
+     * Sets the player's budget.
      *
      * @param budget the new budget value
      */
@@ -45,9 +53,9 @@ public class Player extends User {
     }
 
     /**
-     * Validates the player's budget to ensure it is non-negative.
+     * Validates that the player's budget is non-negative.
      *
-     * @return true if the budget is valid, false otherwise
+     * @return true if the budget is non-negative, false otherwise
      */
     public boolean validateBudget() {
         return budget >= 0;
@@ -56,21 +64,20 @@ public class Player extends User {
     /**
      * Checks if the player has enough budget to afford a given price.
      *
-     * @param price the price to check against the player's current budget
-     * @return true if the player's budget is equal to or greater than the price; false otherwise
+     * @param price the price to check
+     * @return true if the player's budget is equal to or greater than the price, false otherwise
      */
     public boolean hasSufficientBudget(double price) {
         return budget >= price;
     }
 
     /**
-     * Attempts to buy the given locomotive by deducting its price from the budget
-     * and adding it to the list of owned locomotives.
+     * Attempts to buy the given locomotive by deducting its price from the player's budget
+     * and adding it to the player's owned locomotives.
      *
-     * @param loco the locomotive to be purchased
-     * @return the locomotive if purchase was successful; null if the player had insufficient budget
+     * @param loco the locomotive to purchase
+     * @return the locomotive if the purchase was successful, or null if insufficient budget
      */
-
     public Locomotive buyLocomotive(Locomotive loco) {
         if (hasSufficientBudget(loco.getPrice())) {
             budget -= loco.getPrice();
@@ -81,11 +88,47 @@ public class Player extends User {
     }
 
     /**
-     * Retrieves the list of locomotives currently owned by the player.
+     * Returns an unmodifiable list of locomotives owned by the player.
      *
-     * @return a list of owned locomotives
+     * @return an unmodifiable list of owned locomotives
      */
     public List<Locomotive> getOwnedLocomotives() {
-        return ownedLocomotives;
+        return Collections.unmodifiableList(ownedLocomotives);
+    }
+
+    // --- US11 Support: Trains ---
+
+    /**
+     * Adds a train to the player's owned trains.
+     * Used when a player buys a locomotive and creates a train (US9/US10).
+     *
+     * @param train the train to add
+     */
+    public void addTrain(Train train) {
+        ownedTrains.add(train);
+    }
+
+    /**
+     * Returns an unmodifiable list of all trains owned by the player.
+     * Used for listing trains (US11).
+     *
+     * @return an unmodifiable list of owned trains
+     */
+    public List<Train> getOwnedTrains() {
+        return Collections.unmodifiableList(ownedTrains);
+    }
+
+    /**
+     * Deducts a specified amount from the player's budget, if possible.
+     *
+     * @param amount the amount to spend
+     * @return true if the amount was successfully deducted, false otherwise
+     */
+    public boolean spend(double amount) {
+        if (hasSufficientBudget(amount)) {
+            budget -= amount;
+            return true;
+        }
+        return false;
     }
 }

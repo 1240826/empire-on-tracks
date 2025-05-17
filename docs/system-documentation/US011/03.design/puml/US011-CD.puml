@@ -6,13 +6,37 @@ skinparam linetype polyline
 
 ' Domain classes
 class Player {
+    - id : String
+    - name : String
+    - budget : double
+    - trains : List<Train>
     + getOwnedTrains() : List<Train>
 }
 
 class Train {
+    - name : String
+    - locomotive : Locomotive
+    - carriages : List<Carriage>
+    - currentCargoes : List<String>
     + getName() : String
     + getLocomotiveType() : String
     + getCurrentCargoes() : List<String>
+}
+
+class Locomotive {
+    - type : String           ' "Steam", "Diesel", "Electric"
+    - power : int             ' e.g. in kW or HP
+    - acceleration : double
+    - topSpeed : double
+    - startYear : int
+    - fuelCostPerYear : double
+    - maintenancePerYear : double
+    - price : double
+}
+
+class Carriage {
+    - type : String           ' Cargo/passenger
+    - capacity : int
 }
 
 ' Application layer
@@ -32,5 +56,7 @@ ListTrainsUI .> ListTrainsController
 ListTrainsController ..> Player
 ListTrainsController ..> Train
 Player --> "*" Train
+Train --> "1" Locomotive
+Train --> "*" Carriage
 
 @enduml

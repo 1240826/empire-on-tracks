@@ -1,52 +1,79 @@
 @startuml
+left to right direction
 skinparam packageStyle rectangle
 skinparam shadowing false
-skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
 class AssignTrainToRouteUI {
+    - controller: AssignTrainToRouteController
     + run()
 }
 
 class AssignTrainToRouteController {
-    + getOwnedTrains()
-    + getStationsAndCargo()
-    + assignRoute(trainId, stationCargoList)
-    - validateRoute(stationCargoList)
-    - createRoute(stationCargoList)
-}
+    + getOwnedTrains() : List<Train>
+    + getAvailableStations() : List<Station>
+    + getAvailableCargoTypes() : List<CargoType>
+    + parseRouteFromInput(input) : Route
+    + assignRouteToTrain(trainIndex, route) : boolean
+
+    ' Inner helper class
+    class StationCargo {
+        - station: Station
+        - cargoType: CargoType
+        + getStation()
+        + getCargoType()
+    }
+
 
 class TrainRepository {
-    + getOwnedTrains()
-    + findTrainById(id)
+    - trains: List<Train>
+    + getOwnedTrains() : List<Train>
+    + findTrainById(id) : Train
     + save(train)
-}
+    }
 
 class StationRepository {
-    + getAllStationsAndCargo()
+    - stations: List<Station>
+    + getAllStations() : List<Station>
 }
 
 class RouteValidator {
-    + validateRoute(stationCargoList)
+    + validateRoute(stationCargoList) : boolean
 }
 
-class Route {
-    + Route(stationCargoList)
+class RailLine {
+    - stationA: Station
+    - stationB: Station
+    - isElectrified: boolean
+    - isDoubleTrack: boolean
+    + isConnected(stationA, stationB) : boolean
 }
 
 class Train {
+    - plateNumber: String
+    - name: String
+    - assignedRoute: Route
     + assignRoute(route)
 }
 
-AssignTrainToRouteUI .> AssignTrainToRouteController
-AssignTrainToRouteController .> TrainRepository
-AssignTrainToRouteController .> StationRepository
-AssignTrainToRouteController .> RouteValidator
-AssignTrainToRouteController .> Route
-AssignTrainToRouteController .> Train
+class Route {
+    - stationCargoList: List<AssignTrainToRouteController.StationCargo>
+    + Route(stationCargoList)
+}
 
-TrainRepository --> "*" Train
-RouteValidator --> Route
-Train  -->  Route
+' Associations
+AssignTrainToRouteUI           .> AssignTrainToRouteController
+AssignTrainToRouteController   .> TrainRepository
+AssignTrainToRouteController   .> StationRepository
+AssignTrainToRouteController   .> RouteValidator
+RouteValidator                 .> RailLine
+TrainRepository                --> "*" Train
+Train                          *--  Route
+
+note right of Route
+  stationCargoList uses the StationCargo
+  inner helper class from AssignTrainToRouteController,
+  not a domain class.
+end note
 
 @enduml
