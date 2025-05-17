@@ -41,5 +41,6 @@ public class ScenarioRepository {
     }
 
     public void addInitialScenario(LocalDateTime startDate, Scenario initial) {
+
     }
 }

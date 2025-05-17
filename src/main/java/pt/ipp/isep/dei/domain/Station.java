@@ -58,6 +58,7 @@ public class Station {
 
 
 
+
     /**
      * Percorre a lista de indústrias e tenta coletar carga de cada uma
      * que esteja dentro de um quadrado de alcance definido por 'range':
@@ -72,7 +73,7 @@ public class Station {
             int dy = Math.abs(location.getY() - indLoc.getY());
             if (dx <= range && dy <= range) {
                 // 1) gera a carga disponível
-                Cargo produced = industry.produceCargo();
+                Cargo produced = industry.getCargo();
                 if (produced == null || produced.getQuantity() <= 0) {
                     continue;
                 }

@@ -1,46 +1,44 @@
 package pt.ipp.isep.dei.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Represents a route as an ordered list of station-cargo pairs.
- * <p>
- * This class is a general-purpose container for associating a route with a sequence of stops,
- * each specifying a cargo type.
- * </p>
- * <p>
- * The {@code stationCargoList} must not be {@code null}; passing {@code null} will result
- * in an {@link IllegalArgumentException}.
- * </p>
+ * Represents a route as an ordered list of station–cargo assignments.
+ * Now implemented as a generic container so it can hold any type of elements (e.g., String or StationCargo).
+ *
+ * @param <T> the type of elements in the route list
  */
+public class Route<T> {
 
-public class Route {
-
-    /**
-     * The ordered list of station-cargo assignments for this route.
-     */
-    private final List<?> stationCargoList;
+    private final List<T> stationCargoList;
 
     /**
-     * Constructs a new {@code Route} with the provided station-cargo assignment list.
+     * Constructs a new Route.
      *
-     * @param stationCargoList the ordered list representing the route; must not be {@code null}
-     * @throws IllegalArgumentException if {@code stationCargoList} is {@code null}
+     * @param stationCargoList list of elements; must not be null
+     * @throws IllegalArgumentException if stationCargoList is null
      */
-
-    public Route(List<?> stationCargoList) {
+    public Route(List<T> stationCargoList) {
         if (stationCargoList == null) {
             throw new IllegalArgumentException("stationCargoList cannot be null");
         }
-        this.stationCargoList = stationCargoList;
+        this.stationCargoList = new ArrayList<>(stationCargoList);
     }
 
     /**
-     * Returns the list of station-cargo assignments for this route.
+     * Returns an unmodifiable view of the route elements.
      *
-     * @return the (non-null) ordered list of assignments
+     * @return list of elements (non-null)
      */
-    public List<?> getStationCargoList() {
-        return stationCargoList;
+    public List<T> getStationCargoList() {
+        return Collections.unmodifiableList(stationCargoList);
+    }
+
+    @Override
+    public String toString() {
+        return stationCargoList.toString();
     }
 }

@@ -19,4 +19,8 @@ public class Location {
         int dy = (int) Math.round(rand.nextGaussian() * STD_DEV);
         return new Location(center.x + dx, center.y + dy);
     }
+    public String toString() {
+        // Exibe como (x, y)
+        return String.format("(%d, %d)", x, y);
+    }
 }
