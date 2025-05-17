@@ -41,6 +41,12 @@ public class ProducingIndustry implements Industry {
     public double getProduction() {
         return production;
     }
+    public void setProduction(double production) {
+        this.production = production;
+    }
+    public void setDemand(double demand) {
+        this.demand = demand;
+    }
     @Override
     public double getDemand() {
         return demand;

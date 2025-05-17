@@ -197,6 +197,9 @@ public class Map {
         }
     }
 
+    public List<Industry> getIndustries() {
+        return industries;
+    }
 }
 
 

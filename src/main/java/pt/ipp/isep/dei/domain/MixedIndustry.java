@@ -92,6 +92,9 @@ public class MixedIndustry implements Industry {
         }
     }
 
+    public void setProduction(double newRate) {
+        this.production = newRate;
+    }
 }
 
 

@@ -87,6 +87,9 @@ public class TransformingIndustry implements Industry {
     public CargoType getOutputCargoType () {
         return outputCargo.getType();
     }
+    public void setProduction(double production){
+        this.production=production;
+    }
 
 }
 
