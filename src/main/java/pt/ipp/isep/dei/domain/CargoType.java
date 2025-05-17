@@ -8,5 +8,7 @@ public enum CargoType {
     TECHNOLOGY,
     OIL,
     GAS,
-    PLASTIC
+    PLASTIC,
+    PASSENGERS,
+    MAIL
 }

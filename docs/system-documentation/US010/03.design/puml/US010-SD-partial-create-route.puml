@@ -3,30 +3,30 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-'hide footbox
-
 participant ":AssignTrainToRouteController" as Controller
-participant ":RouteValidator" as Validator
-participant ":Route" as Route
+participant ":RouteValidator"                   as Validator
+participant ":RailLine"                         as RailLine
+participant ":Route"                            as Route
 
-autonumber 10
- -> Controller : assignRouteToTrain(trainId, stationCargoList)
 autonumber 10.1
-activate Controller
-    group Create Route
 
-        Controller -> Validator : validate route connectivity
-        activate Validator
-            Validator --> Controller : route valid/invalid
-        deactivate Validator
+group CreateRoute
+    Controller -> Validator : validateRoute(stationCargoList)
+    activate Validator
 
-        Controller -> Route : createRoute(stationCargoList)
-        activate Route
-            Route --> Controller : route
-        deactivate Route
-
+    loop for each (stationA, stationB) in stationCargoList
+        Validator -> RailLine : isConnected(stationA, stationB)
+        RailLine --> Validator   : true/false
     end
 
+    Validator --> Controller : route valid/invalid
+    deactivate Validator
 
-
+    alt if route valid
+        Controller -> Route : createRoute(stationCargoList)
+        activate Route
+        Route --> Controller : route
+        deactivate Route
+    end
+end
 @enduml

@@ -22,7 +22,7 @@ activate UI
 UI -> Controller : getOwnedTrains()
 activate Controller
 
-ref over Controller
+ref over Controller, TrainRepo
     GetOwnedTrains
 end ref
 
@@ -35,7 +35,7 @@ Player -> UI : selects a train
 UI -> Controller : getAllStationsAndCargo()
 activate Controller
 
-ref over Controller
+ref over Controller, StationRepo
     GetStationsAndCargo
 end ref
 
@@ -48,20 +48,8 @@ Player -> UI : selects stations and cargo
 UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
 activate Controller
 
-Controller -> RouteValidator : validateRoute(stationCargoList)
-activate RouteValidator
 
-loop for each (stationA, stationB) in stationCargoList
-    RouteValidator -> RailLine : isConnected(stationA, stationB)
-    RailLine --> RouteValidator : true/false
-end
-
-RouteValidator --> Controller : route valid/invalid
-deactivate RouteValidator
-'==== End validation logic ====
-
-'==== Now, the actual creation of the route is a high-level ref block ====
-ref over Controller
+ref over Controller, Route
     CreateRoute
 end ref
 

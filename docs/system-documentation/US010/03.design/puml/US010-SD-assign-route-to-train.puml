@@ -3,39 +3,26 @@ skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
 
-'hide footbox
-
 participant ":AssignTrainToRouteController" as Controller
-participant "repositories\n:Repositories" as ReposSingleton
-participant "trainRepository:\nTrainRepository" as TrainRepo
-participant ":Train" as Train
+participant ":TrainRepository"            as TrainRepo
+participant ":Train"                      as Train
 
-autonumber 10.5
-    group Assign Route To Train
+autonumber 10.7
 
-        Controller -> ReposSingleton : getTrainRepository()
-        activate ReposSingleton
-            ReposSingleton --> Controller : trainRepository
-        deactivate ReposSingleton
+group AssignRouteToTrain
+    Controller -> TrainRepo : findTrainById(trainId)
+    activate TrainRepo
+    TrainRepo --> Controller : Train
+    deactivate TrainRepo
 
-        Controller -> TrainRepo : findTrainById()
-        activate TrainRepo
-            TrainRepo --> Controller : Train
-        deactivate TrainRepo
+    Controller -> Train : assignRoute(route)
+    activate Train
+    Train --> Controller : success
+    deactivate Train
 
-        Controller -> Train : assignRoute(route)
-        activate Train
-            Train --> Controller : success
-        deactivate Train
-
-        Controller -> TrainRepo : save(train)
-        activate TrainRepo
-            TrainRepo --> Controller : saved
-        deactivate TrainRepo
-
-    end
-    autonumber 11
-    <-- Controller : success message
-deactivate Controller
-
+    Controller -> TrainRepo : save(train)
+    activate TrainRepo
+    TrainRepo --> Controller : saved
+    deactivate TrainRepo
+end
 @enduml
