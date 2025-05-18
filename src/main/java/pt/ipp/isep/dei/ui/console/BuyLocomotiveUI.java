@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import pt.ipp.isep.dei.controller.BuyLocomotiveController;
 import pt.ipp.isep.dei.domain.Locomotive;
+import pt.ipp.isep.dei.domain.Player;
 
 /**
  * Console-based UI for purchasing a locomotive and assigning it to a new train.

@@ -1,6 +1,8 @@
 package pt.ipp.isep.dei.ui.console.menu;
 
 import org.apache.commons.lang3.StringUtils;
+import pt.ipp.isep.dei.ui.console.ListTrainsUI;
+
 import java.util.Objects;
 
 /**
@@ -30,6 +32,7 @@ public class MenuItem {
         this.description = description;
         this.ui = ui;
     }
+
 
     /**
      * Executes the associated UI action.

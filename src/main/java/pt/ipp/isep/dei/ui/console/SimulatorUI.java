@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class SimulatorUI implements Runnable {
     private SimulatorController controller;
-    private final AssignTrainToRouteController assignCtrl;
+    private AssignTrainToRouteController assignCtrl;
     private final Scanner scanner = new Scanner(System.in);
 
     public SimulatorUI(SimulatorController controller,
@@ -24,6 +24,9 @@ public class SimulatorUI implements Runnable {
         this.controller = Objects.requireNonNull(controller);
         this.assignCtrl = Objects.requireNonNull(assignCtrl);
     }
+
+    public SimulatorUI() {    }
+
 
     public void start() {
         System.out.println("=== Railway Simulator ===");

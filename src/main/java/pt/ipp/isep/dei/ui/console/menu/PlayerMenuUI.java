@@ -10,10 +10,10 @@ public class PlayerMenuUI implements Runnable {
     @Override
     public void run() {
         List<MenuItem> options = new ArrayList<>();
-        options.add(new MenuItem("UC5: Build a Station",
-                new BuildStationUI()));
-        options.add(new MenuItem("UC6: Upgrade a Station",
-                new UpgradeStationUI()));
+        // options.add(new MenuItem("UC5: Build a Station",
+               // new BuildStationUI()));
+        // options.add(new MenuItem("UC6: Upgrade a Station",
+                // new UpgradeStationUI()));
         options.add(new MenuItem("UC7: List all Stations",
                 new StationListUI()));
         options.add(new MenuItem("UC8: Build a Railway Line",
@@ -25,7 +25,7 @@ public class PlayerMenuUI implements Runnable {
         options.add(new MenuItem("UC11: List all Trains",
                 new ListTrainsUI()));
         options.add(new MenuItem("UC12: Operate Simulation",
-                new OperateSimulationUI()));
+                new SimulatorUI()));
 
         // Jump back to Editor menu
         options.add(new MenuItem("Switch to Editor Menu", new EditorMenuUI()));
