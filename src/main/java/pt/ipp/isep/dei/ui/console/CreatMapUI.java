@@ -5,15 +5,38 @@ import pt.ipp.isep.dei.repository.MapRepository;
 
 import java.util.Scanner;
 
+/**
+ * Console-based UI for creating a new map.
+ * <p>
+ * Guides the user through the process of entering a map name and dimensions,
+ * validates the input, and confirms creation.
+ * </p>
+ */
 public class CreatMapUI {
     private CreateMapController createMapController;
     private MapRepository repositoryMap;
 
-    // Setter para injetar o controller
+    /**
+     * Sets the controller to be used for map creation logic.
+     *
+     * @param createMapController the CreateMapController instance to inject
+     */
     public void setCreateMapController(CreateMapController createMapController) {
         this.createMapController = createMapController;
     }
 
+    /**
+     * Starts the interactive flow for creating a map.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Prompts the user for a map name and dimensions.</li>
+     *   <li>Validates the dimensions and map name.</li>
+     *   <li>Asks the user for confirmation before creation.</li>
+     *   <li>Creates the map and displays a success message.</li>
+     * </ol>
+     * </p>
+     */
     public void create() {
         repositoryMap.saveMap(new Map());
         int width;

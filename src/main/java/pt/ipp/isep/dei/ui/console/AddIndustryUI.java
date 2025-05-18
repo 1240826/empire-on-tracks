@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * UI para adicionar indústrias ao mapa pelo console.
+ * UI for adding industries to the map via the console.
  */
 public class AddIndustryUI {
     private final AddIndustryController controller;
@@ -21,33 +21,33 @@ public class AddIndustryUI {
     }
 
     public void run() {
-        System.out.println("=== Adicionar Indústria ===");
+        System.out.println("=== Add Industry ===");
 
         // 1) Coordenadas
-        System.out.print("Introduza a coordenada X: ");
+        System.out.print("Enter X coordinate: ");
         int x = scanner.nextInt();
-        System.out.print("Introduza a coordenada Y: ");
+        System.out.print("Enter Y coordinate: ");
         int y = scanner.nextInt();
 
         // 2) Valida e prepara localização
         if (!controller.iniciarAdicaoIndustria(x, y)) {
-            System.out.println("Erro ao iniciar o processo. Tente novamente.");
+            System.out.println("Error initializing the process. Please try again.");
             return;
         }
 
         // 3) Exibe modelos de indústria
         List<Industry> modelos = controller.obterModelosIndustria();
-        System.out.println("Tipos de indústria disponíveis:");
+        System.out.println("Available industry types:");
         for (int i = 0; i < modelos.size(); i++) {
             System.out.printf("%d – %s%n", i, modelos.get(i));
         }
 
         // 4) Escolha
-        System.out.print("Escolha o índice do modelo: ");
+        System.out.print("Choose the template index: ");
         int indice = scanner.nextInt();
 
         // 5) Adiciona ao mapa
         controller.adicionarIndustria(indice);
-        System.out.println("Processo concluído.");
+        System.out.println("Process completed.");
     }
 }

@@ -7,6 +7,13 @@ import pt.ipp.isep.dei.repository.Repositories;
 
 import java.util.List;
 
+/**
+ * Controller responsible for managing the purchase of locomotives and creation of trains for a player.
+ *
+ * Provides methods to display available locomotives and handle the logic of buying a locomotive
+ * and assigning it to a new train.
+ */
+
 public class BuyLocomotiveController {
     private Player player;
 

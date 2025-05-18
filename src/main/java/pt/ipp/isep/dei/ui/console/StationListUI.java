@@ -1,19 +1,42 @@
 package pt.ipp.isep.dei.ui.console;
 
-import pt.ipp.isep.dei.controller.ListStationController;
+import pt.ipp.isep.dei.controller.StationController;
 import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Console-based user interface for listing and viewing station details.
+ * <p>
+ * Allows the user to see all available stations and select one to display
+ * its buildings and cargoes.
+ */
 public class StationListUI {
-    private final ListStationController controller;
+    private final StationController controller;
     private final Scanner scanner = new Scanner(System.in);
 
-    public StationListUI(ListStationController controller) {
+    /**
+     * Constructs the UI with the specified controller.
+     *
+     * @param controller the StationController instance responsible for station operations
+     */
+    public StationListUI(StationController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Runs the interactive station list and detail viewer.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Displays all available station names.</li>
+     *   <li>Prompts the user to select a station by number.</li>
+     *   <li>Displays details of the selected station (buildings and cargoes).</li>
+     *   <li>Handles invalid selections and missing stations gracefully.</li>
+     * </ol>
+     * </p>
+     */
     public void run() {
         List<String> stationNames = controller.getAllStations();
         if (stationNames.isEmpty()) {
