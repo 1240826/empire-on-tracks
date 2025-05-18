@@ -6,14 +6,37 @@ import pt.ipp.isep.dei.domain.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Console-based UI for building rail lines between stations.
+ *
+ * Guides the user through the selection of stations, electrification, double-tracking options,
+ * and the creation of a new rail line on the map.
+ */
 public class BuildLineUI {
     private final BuildLineController controller;
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Constructs the UI with the specified controller.
+     *
+     * @param controller The controller responsible for line construction logic.
+     */
     public BuildLineUI(BuildLineController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Starts the interactive process for building a rail line.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Checks if at least two stations are available.</li>
+     *   <li>Prompts the user to select two stations.</li>
+     *   <li>Asks the user to specify if the line is electrified and/or double-tracked.</li>
+     *   <li>Confirms the user's choices before proceeding.</li>
+     *   <li>Attempts to create the rail line and displays the result.</li>
+     * </ol>
+     */
     public void run() {
         List<Station> stations = controller.getAvailableStations();
         if (stations.size() < 2) {

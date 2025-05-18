@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Controller que une mapa, relógio e cenários.
+ * Controller that links together the map, simulation clock, and scenario management,
+ * coordinating simulation updates and scenario application during the simulation lifecycle.
  */
 public class SimulatorController {
     private final Map map;
@@ -17,6 +18,15 @@ public class SimulatorController {
     private final IndustryRepository industryRepo;
     private final LocomotiveRepository locomotiveRepo;
 
+    /**
+     * Constructs a SimulatorController with the required domain components.
+     *
+     * @param map              The map used for the simulation.
+     * @param clock            The simulation clock.
+     * @param scenarioRepo     Repository of simulation scenarios.
+     * @param industryRepo     Repository of industries.
+     * @param locomotiveRepo   Repository of locomotives.
+     */
     public SimulatorController(Map map,
                                Date clock,
                                ScenarioRepository scenarioRepo,
@@ -29,17 +39,20 @@ public class SimulatorController {
         this.locomotiveRepo  = locomotiveRepo;
     }
 
-    /** Liga o auto-tick do clock. */
+    /** Starts the auto-tick of the clock (automatic simulation progression). */
     public void startSimulation() {
         clock.start();
     }
 
-    /** Pausa o auto-tick do clock. */
+    /** Pauses the auto-tick of the clock (pauses simulation progression). */
     public void pauseSimulation() {
         clock.stop();
     }
 
-    /** Um passo manual: +1 mês, atualiza mapa e dispara cenários. */
+    /**
+     * Performs a manual step: advances the simulation by one month,
+     * updates the map, and triggers scenarios for the current date.
+     */
     public void step() {
         clock.advanceManually();
         map.update();

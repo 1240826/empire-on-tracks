@@ -5,14 +5,37 @@ import java.util.Scanner;
 import pt.ipp.isep.dei.controller.BuyLocomotiveController;
 import pt.ipp.isep.dei.domain.Locomotive;
 
+/**
+ * Console-based UI for purchasing a locomotive and assigning it to a new train.
+ * <p>
+ * Guides the player through viewing available locomotives, making a purchase,
+ * and naming the new train.
+ */
 public class BuyLocomotiveUI {
     private BuyLocomotiveController controller;
     private Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Constructs the UI with the specified controller.
+     *
+     * @param controller The controller responsible for locomotive purchase logic.
+     */
     public BuyLocomotiveUI(BuyLocomotiveController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Starts the interactive flow for purchasing a locomotive and assigning it to a new train.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Displays all available locomotives.</li>
+     *   <li>Prompts the player to select a locomotive to buy.</li>
+     *   <li>Asks the player to provide a name for the new train.</li>
+     *   <li>Attempts the purchase and assignment, displaying feedback based on the result.</li>
+     * </ol>
+     * </p>
+     */
     public void start() {
         System.out.println("\n=== Buy Locomotive ===");
         List<Locomotive> locomotives = controller.requestAvailableLocomotives();

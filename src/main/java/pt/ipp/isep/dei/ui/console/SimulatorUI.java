@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Interface de usuário em modo texto para o simulador.
+ * Console-based user interface for the simulator.
+ * <p>
+ * Provides the main loop for user commands to control the simulation,
+ * display status, and interact with map elements.
  */
 public class SimulatorUI {
     private final SimulatorController controller;
@@ -20,10 +23,10 @@ public class SimulatorUI {
     }
 
     /**
-     * Inicia o loop principal de leitura de comandos.
+     * Starts the main command loop for user input.
      */
     public void run() {
-        System.out.println("=== Simulador de Transporte ===");
+        System.out.println("=== Railway Simulator ===");
         printHelp();
 
         boolean exit = false;
@@ -33,15 +36,15 @@ public class SimulatorUI {
             switch (cmd) {
                 case "start":
                     controller.startSimulation();
-                    System.out.println("Simulação automática iniciada.");
+                    System.out.println("Automatic simulation started.");
                     break;
                 case "pause":
                     controller.pauseSimulation();
-                    System.out.println("Simulação automática pausada.");
+                    System.out.println("Automatic simulation paused.");
                     break;
                 case "step":
                     controller.step();
-                    System.out.println("Passo manual executado.");
+                    System.out.println("Manual step executed (advanced by one month).");
                     break;
                 case "status":
                     showStatus();
@@ -54,30 +57,30 @@ public class SimulatorUI {
                     exit = true;
                     break;
                 default:
-                    System.out.println("Comando desconhecido. Digite 'help' para ver opções.");
+                    System.out.println("Unknown command. Type 'help' to see available options.");
             }
         }
 
-        System.out.println("Encerrando simulador. Até logo!");
+        System.out.println("Shutting down simulator. Goodbye!");
         scanner.close();
     }
 
     private void printHelp() {
-        System.out.println("Comandos disponíveis:");
-        System.out.println("  start  – inicia simulação automática (tick a cada 20s)");
-        System.out.println("  pause  – pausa simulação automática");
-        System.out.println("  step   – avança manualmente um mês (um tick)");
-        System.out.println("  status – exibe estado atual de indústrias, estações e trens");
-        System.out.println("  help   – mostra esta ajuda");
-        System.out.println("  exit   – sai do simulador");
+        System.out.println("Available commands:");
+        System.out.println("  start  – start automatic simulation (tick every 20s)");
+        System.out.println("  pause  – pause automatic simulation");
+        System.out.println("  step   – manually advance simulation by one month (one tick)");
+        System.out.println("  status – display current status of industries, stations, and trains");
+        System.out.println("  help   – show this help");
+        System.out.println("  exit   – exit the simulator");
     }
 
     private void showStatus() {
         LocalDateTime now = controller.getCurrentDate();
-        System.out.println("\n== STATUS DA SIMULAÇÃO ==");
-        System.out.println("Data atual: " + now);
+        System.out.println("\n== SIMULATION STATUS ==");
+        System.out.println("Current date: " + now);
 
-        System.out.println("\n-- Indústrias no Mapa --");
+        System.out.println("\n-- Industries on Map --");
         List<Industry> inds = controller.getIndustries();
         for (int i = 0; i < inds.size(); i++) {
             Industry ind = inds.get(i);
@@ -85,7 +88,7 @@ public class SimulatorUI {
             String stockInfo = String.format("%s: %.2f",
                     stock.getType(), stock.getQuantity());
             System.out.printf(
-                    "[%d] %s | Estoque: %s | Prod: %.2f | Dem: %.2f | Local: %s%n",
+                    "[%d] %s | Stock: %s | Prod: %.2f | Dem: %.2f | Locat.: %s%n",
                     i,
                     ind.getIndustryName(),
                     stockInfo,
@@ -95,7 +98,7 @@ public class SimulatorUI {
             );
         }
 
-        System.out.println("\n-- Estações e Estoques --");
+        System.out.println("\n-- Stations and Cargoes --");
         for (Station s : controller.getStations()) {
             System.out.printf("%s @ %s -> %s%n",
                     s.getStationName(),
@@ -103,12 +106,12 @@ public class SimulatorUI {
                     s.getCargoes());
         }
 
-        System.out.println("\n-- Locomotivas no Mapa --");
+        System.out.println("\n-- Locomotives on Map --");
         for (Locomotive l : controller.getMapLocomotives()) {
             System.out.println(l);
         }
 
-        System.out.println("\n-- Templates de Locomotivas --");
+        System.out.println("\n-- Locomotive Templates --");
         for (Locomotive tpl : controller.getLocomotiveTemplates()) {
             System.out.println(tpl);
         }
@@ -116,7 +119,9 @@ public class SimulatorUI {
     }
 
     /**
-     * Ponto de entrada do aplicativo de console.
+     * Entry point for the console application.
+     *
+     * @param args command-line arguments
      */
     public static void main(String[] args) {
         // 1) Inicialização de repositórios

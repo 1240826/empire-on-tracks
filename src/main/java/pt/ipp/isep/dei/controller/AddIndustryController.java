@@ -6,8 +6,9 @@ import pt.ipp.isep.dei.repository.Repositories;
 import java.util.List;
 
 /**
- * Controlador para adicionar indústrias ao mapa.
+ * Controller to add industries to a map.
  */
+
 public class AddIndustryController {
     private final Repositories repositorios;
     private final Map mapa;
@@ -19,20 +20,21 @@ public class AddIndustryController {
     }
 
     /**
-     * Valida coordenadas e prepara a Location.
+     * Validates coordinates and prepares the Location.
      *
-     * @param x coordenada X (coluna)
-     * @param y coordenada Y (linha)
-     * @return true se as coordenadas forem positivas e a posição estiver livre
+     * @param x X coordinate (column)
+     * @param y Y coordinate (row)
+     * @return true if coordinates are positive and the position is free
      */
+
     public boolean iniciarAdicaoIndustria(int x, int y) {
         ValueValidator validador = new ValueValidator();
         if (!validador.isPositive(x) || !validador.isPositive(y)) {
-            System.out.println("Coordenadas inválidas.");
+            System.out.println("Invalid coordinates.");
             return false;
         }
         if (!mapa.isEmpty(x, y)) {
-            System.out.println("A posição está ocupada.");
+            System.out.println("The position is already occupied.");
             return false;
         }
         this.location = new Location(x, y);
@@ -40,17 +42,18 @@ public class AddIndustryController {
     }
 
     /**
-     * Cria e adiciona ao mapa uma nova indústria, com base no modelo escolhido.
+     * Creates and adds a new industry to the map, based on the selected template.
      *
-     * @param indiceModelo índice do modelo no repositório
+     * @param indiceModelo index of the template in the repository.
      */
+
     public void adicionarIndustria(int indiceModelo) {
         Industry modelo =
                 repositorios.getIndustryRepository()
                         .getIndustryTemplate(indiceModelo);
 
         if (modelo == null) {
-            System.out.println("Índice de indústria inválido.");
+            System.out.println("Invalid industry index.");
             return;
         }
 
@@ -92,21 +95,22 @@ public class AddIndustryController {
             );
         }
         else {
-            System.out.println("Tipo de indústria não suportado.");
+            System.out.println("Industry type not supported.");
             return;
         }
 
         boolean adicionou = mapa.addIndustry(novaIndustria, location);
         if (adicionou) {
-            System.out.println("Indústria adicionada com sucesso!");
+            System.out.println("Industry added successfully!");
         } else {
-            System.out.println("Erro ao adicionar a indústria.");
+            System.out.println("Error adding the industry.");
         }
     }
 
     /**
-     * @return lista de todos os modelos de indústria disponíveis
+     * @return list of all available industry templates
      */
+
     public List<Industry> obterModelosIndustria() {
         return repositorios
                 .getIndustryRepository()

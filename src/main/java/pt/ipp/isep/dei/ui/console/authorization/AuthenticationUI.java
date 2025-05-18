@@ -5,6 +5,12 @@ import pt.ipp.isep.dei.user.SessionManager;
 import pt.ipp.isep.dei.user.User;
 import pt.ipp.isep.dei.ui.console.utils.Console;
 
+/**
+ * Console-based user interface for authentication.
+ * <p>
+ * Provides an interactive menu for user registration and login,
+ * managing user sessions via the console.
+ */
 public class AuthenticationUI implements Runnable {
     private final AuthenticationController ctrl = new AuthenticationController();
     private final SessionManager sessionMgr = new SessionManager();
