@@ -278,6 +278,39 @@ public class Station {
         // não deveria ocorrer, mas garante registro
         cargoes.add(new Cargo(type, quantity));
     }
+    /**
+     * Checks whether the station has an active building of the given type.
+     * @param type the type of building (e.g., "TELEPHONE")
+     * @return true if present and active, false otherwise
+     */
+    public boolean hasBuilding(String type) {
+        if (buildings == null) return false;
+        return buildings.stream()
+                .anyMatch(b -> b.getType().equalsIgnoreCase(type) && b.isActive());
+    }
 
+    /**
+     * Removes all buildings of the given type, regardless of their state.
+     * Used for replacing buildings like TELEGRAPH with TELEPHONE.
+     * @param type the type of building to remove
+     */
+    public void removeBuilding(String type) {
+        if (buildings != null) {
+            buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
+        }
+    }
 
+    /**
+     * Reactivates an existing building of the given type if it is inactive.
+     * Optional helper in case inactive buildings are supported.
+     * @param type the type of building to activate
+     */
+    public void activateBuilding(String type) {
+        if (buildings != null) {
+            buildings.stream()
+                    .filter(b -> b.getType().equalsIgnoreCase(type) && !b.isActive())
+                    .findFirst()
+                    .ifPresent(b -> b.isActive());
+        }
+    }
 }
