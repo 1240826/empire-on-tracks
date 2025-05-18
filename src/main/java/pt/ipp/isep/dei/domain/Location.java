@@ -51,10 +51,18 @@ public class Location {
      */
     public static Location computeBlockPosition(Location center) {
         Objects.requireNonNull(center, "center must not be null");
-        int dx = (int) Math.round(rand.nextGaussian() * STD_DEV);
-        int dy = (int) Math.round(rand.nextGaussian() * STD_DEV);
-        return new Location(center.x + dx, center.y + dy);
+
+        int newX, newY;
+        do {
+            int dx = (int) Math.round(rand.nextGaussian() * STD_DEV);
+            int dy = (int) Math.round(rand.nextGaussian() * STD_DEV);
+            newX = center.x + dx;
+            newY = center.y + dy;
+        } while (newX < 0 || newY < 0);
+
+        return new Location(newX, newY);
     }
+
 
     /**
      * Returns a string representation of this Location in the form "(x, y)".
