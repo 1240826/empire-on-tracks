@@ -30,8 +30,9 @@ class "Station" {
 }
 
 class "StationType" {
-    + name
+    + name: String
     + cost: double
+    + range: int
 }
 
 enum CenterPosition {
@@ -46,6 +47,7 @@ class "Map" {
     + isOccupied(location: Location): boolean
     + isStationNameDuplicate(name: String): boolean
     + addStation(station: Station): void
+    + getNearestCityName(location: Location): String
 }
 
 class "Repositories" {
@@ -73,6 +75,7 @@ class "BuildStationUI" {
 class "Location" {
     + x: int
     + y: int
+    + Location(x: int, y: int)
 }
 
 class "Simulation" {
@@ -84,22 +87,16 @@ class "GameState" {
     + save(): void
 }
 
-class "ValidationService" {
-    + isNameDuplicate(map: Map, name: String): boolean
-    + isLocationOccupied(map: Map, location: Location): boolean
-    + isValidBudget(player: Player, amount: double): boolean
-}
-
 BuildStationUI .> BuildStationController : interacts >
 BuildStationController ..> Repositories : accesses >
 BuildStationController ..> MapRepository : accesses >
-BuildStationController ..> Player : verifies budget >
+BuildStationController ..> Player : uses >
 BuildStationController ..> Station : creates >
 BuildStationController ..> StationType : uses >
 BuildStationController ..> Location : uses >
-BuildStationController ..> Simulation : checks date >
-BuildStationController ..> GameState : saves state >
-BuildStationController ..> ValidationService : validates >
+BuildStationController ..> Simulation : uses >
+BuildStationController ..> GameState : saves >
+BuildStationController ..> Map : validates name & location >
 
 Repositories --> "1" MapRepository : mapRepository
 MapRepository --> "1" Map : currentMap
@@ -107,7 +104,5 @@ MapRepository --> "1" Map : currentMap
 Map --> "*" Station : contains >
 Station --> "1" StationType : is of type >
 Station --> "1" Location : is at >
-
 Player --> "*" Station : owns >
-
 @enduml
