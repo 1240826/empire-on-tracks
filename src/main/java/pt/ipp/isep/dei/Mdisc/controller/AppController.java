@@ -215,6 +215,7 @@ public class AppController {
             List<Line> lines       = lineRepo.loadAll(stations);
             int[][] m  = matrixRepo.buildAdjacency(stations, lines);
             boolean[][] e = matrixRepo.buildElectrification(stations, lines);
+            System.out.println("Graph lines: blue = electrified   red = non-electrified");
 
             GraphUI ui = new GraphUI("FullGraph");
             ui.addStations(stations);
@@ -281,7 +282,7 @@ public class AppController {
                 for (int j = 0; j < n; j++)
                     if (m[i][j] > 0) r[i][j] = true;
             }
-            // Warshall
+
             for (int k = 0; k < n; k++)
                 for (int i = 0; i < n; i++)
                     if (r[i][k])
