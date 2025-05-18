@@ -19,7 +19,7 @@ public class BuyLocomotiveUI implements Runnable {
     /**
      * Constructs the UI with the specified controller.
      */
-    public BuyLocomotiveUI() {
+    public BuyLocomotiveUI( BuyLocomotiveController controller) {
         this.controller = controller;
     }
 

@@ -2,6 +2,7 @@ package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.AssignTrainToRouteController;
 import pt.ipp.isep.dei.controller.BuildLineController;
+import pt.ipp.isep.dei.controller.BuyLocomotiveController;
 import pt.ipp.isep.dei.controller.SimulatorController;
 import pt.ipp.isep.dei.domain.*;
 import pt.ipp.isep.dei.repository.Repositories;
@@ -116,7 +117,7 @@ public class SimulatorUI implements Runnable {
         editOptions.add(new MenuItem("UC6 – Upgrade a Station", new UpgradeStationUI()));
         editOptions.add(new MenuItem("UC7 – List all Stations", new StationListUI()));
         editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI(new BuildLineController(player, Repositories.getInstance().getMapRepository().getCurrentMap()))));
-        editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI()));
+        editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI(new BuyLocomotiveController(player))));
         editOptions.add(new MenuItem("UC10 – Assign a Train to a Route", this::setRoute));
         editOptions.add(new MenuItem("UC11 – List all Trains", this::listTrains));
         editOptions.add(new MenuItem("UC12 – Operate Simulation", this::showStatus));
