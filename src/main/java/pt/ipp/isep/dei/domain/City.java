@@ -47,6 +47,9 @@ public class City {
         if (houseBlocksCount <= 0) {
             throw new IllegalArgumentException("Invalid number of house blocks: " + houseBlocksCount);
         }
+        if (centerX <= 0 || centerY <= 0) {
+            throw new IllegalArgumentException("City center coordinates must be positive and not (0,0). Provided: (" + centerX + ", " + centerY + ")");
+        }
         return new City(name, centerX, centerY, houseBlocksCount);
     }
 
