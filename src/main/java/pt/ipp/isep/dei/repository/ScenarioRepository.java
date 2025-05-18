@@ -1,6 +1,5 @@
 package pt.ipp.isep.dei.repository;
 
-import pt.ipp.isep.dei.domain.Date;
 import pt.ipp.isep.dei.domain.Scenario;
 
 import java.time.LocalDateTime;
@@ -16,7 +15,7 @@ public class ScenarioRepository {
 
     private final List<Scenario> scenarios = new ArrayList<>();
 
-    public void addScenario(Scenario scenario) {
+    public void addScenario(LocalDateTime march, Scenario scenario) {
         scenarios.add(scenario);
     }
 

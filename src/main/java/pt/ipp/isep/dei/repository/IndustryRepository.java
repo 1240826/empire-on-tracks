@@ -6,16 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Singleton que guarda modelos de Indústria e retorna cópias defensivas.
+ * Singleton repository that holds industry model templates and provides
+ * defensive copies to callers.
+ * <p>
+ * On initialization, this repository creates a set of default industry models:
+ * producing, transforming, and mixed industries with various cargo types.
+ * Clients can retrieve the full list of templates or a single template copy
+ * by index.
+ * </p>
  */
 public class IndustryRepository {
+
+    /** Singleton instance of this repository. */
     private static IndustryRepository instance;
+
+    /** Internal list of industry templates. */
     private final List<Industry> industriesModel;
 
+    /**
+     * Private constructor that initializes the model list
+     * with predefined industry templates.
+     */
     private IndustryRepository() {
         industriesModel = new ArrayList<>();
 
-        // ProducingIndustry
+        // ProducingIndustry templates
         industriesModel.add(new ProducingIndustry(
                 "Solar Farm", 700, 15, 20, CargoType.COAL
         ));
@@ -23,7 +38,7 @@ public class IndustryRepository {
                 "Coal Mine", 1200, 100, 150, CargoType.COAL
         ));
 
-        // TransformingIndustry
+        // TransformingIndustry templates
         industriesModel.add(new TransformingIndustry(
                 "Steel Factory", 1500, 90, 10,
                 CargoType.COAL, CargoType.STEEL
@@ -33,7 +48,7 @@ public class IndustryRepository {
                 CargoType.PLASTIC, CargoType.FOOD
         ));
 
-        // MixedIndustry
+        // MixedIndustry templates
         industriesModel.add(new MixedIndustry(
                 "Tech Plant", 2000, 50, 90,
                 CargoType.PLASTIC, CargoType.TECHNOLOGY
@@ -44,6 +59,12 @@ public class IndustryRepository {
         ));
     }
 
+    /**
+     * Returns the singleton instance of the repository,
+     * creating it if necessary.
+     *
+     * @return the {@link IndustryRepository} singleton
+     */
     public static IndustryRepository getInstance() {
         if (instance == null) {
             instance = new IndustryRepository();
@@ -52,14 +73,26 @@ public class IndustryRepository {
     }
 
     /**
-     * Retorna uma nova lista com todos os modelos disponíveis.
+     * Returns a new {@code List} containing all available industry templates.
+     * <p>
+     * The returned list is a defensive copy of the internal model list.
+     * </p>
+     *
+     * @return a {@code List<Industry>} of template instances
      */
     public List<Industry> getListOfIndustry() {
         return new ArrayList<>(industriesModel);
     }
 
     /**
-     * Retorna uma cópia defensiva do modelo no índice fornecido.
+     * Returns a defensive copy of the industry template at the given index.
+     * <p>
+     * Supports ProducingIndustry, TransformingIndustry, and MixedIndustry.
+     * If the index is out of bounds, returns {@code null}.
+     * </p>
+     *
+     * @param index the zero-based index of the desired template
+     * @return a new {@link Industry} instance matching the template, or {@code null} if index invalid
      */
     public Industry getIndustryTemplate(int index) {
         if (index < 0 || index >= industriesModel.size()) {
@@ -76,8 +109,7 @@ public class IndustryRepository {
                     p.getDemand(),
                     p.getCargoType()
             );
-        }
-        else if (model instanceof TransformingIndustry) {
+        } else if (model instanceof TransformingIndustry) {
             TransformingIndustry t = (TransformingIndustry) model;
             return new TransformingIndustry(
                     t.getIndustryName(),
@@ -87,8 +119,7 @@ public class IndustryRepository {
                     t.getInputCargoType(),
                     t.getOutputCargoType()
             );
-        }
-        else if (model instanceof MixedIndustry) {
+        } else if (model instanceof MixedIndustry) {
             MixedIndustry m = (MixedIndustry) model;
             return new MixedIndustry(
                     m.getIndustryName(),
@@ -100,7 +131,7 @@ public class IndustryRepository {
             );
         }
 
-        // Se for algum outro tipo de Industry (não esperado), devolve o próprio
+        // For any other Industry implementation, return the original instance
         return model;
     }
 }

@@ -74,4 +74,8 @@ public class SimulatorController {
     public void shutdown() {
         clock.shutdown();
     }
+
+    public List<String> stepWithEvents() {
+        return null;
+    }
 }

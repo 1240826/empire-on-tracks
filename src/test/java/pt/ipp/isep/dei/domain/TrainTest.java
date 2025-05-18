@@ -9,7 +9,7 @@ class TrainTest {
 
     @Test
     void testConstructorAndGetters() {
-        Locomotive loco = new Locomotive("L1", "Steam", 8000, false, 1000, 1.0, 80, 1900, 300, 200);
+        Locomotive loco = new Locomotive("L1", "Steam", 8000.0, false, 1000, 1.0, 80, 1900, 300, 200, 10,  new Route(List.of("StationA,Steel", "StationB,Coal")));
         Carriage c1 = new Carriage("cargo", 50);
         Carriage c2 = new Carriage("passenger", 100);
         List<Carriage> carriages = List.of(c1, c2);
