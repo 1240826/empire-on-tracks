@@ -11,16 +11,14 @@ import pt.ipp.isep.dei.domain.Locomotive;
  * Guides the player through viewing available locomotives, making a purchase,
  * and naming the new train.
  */
-public class BuyLocomotiveUI {
+public class BuyLocomotiveUI implements Runnable {
     private BuyLocomotiveController controller;
     private Scanner scanner = new Scanner(System.in);
 
     /**
      * Constructs the UI with the specified controller.
-     *
-     * @param controller The controller responsible for locomotive purchase logic.
      */
-    public BuyLocomotiveUI(BuyLocomotiveController controller) {
+    public BuyLocomotiveUI() {
         this.controller = controller;
     }
 
@@ -82,5 +80,14 @@ public class BuyLocomotiveUI {
                 System.out.println("Locomotive not found (unexpected error).");
                 break;
         }
+    }
+
+    /**
+     * Entry‐point for Runnable dispatch.
+     */
+
+    @Override
+    public void run() {
+        start();
     }
 }

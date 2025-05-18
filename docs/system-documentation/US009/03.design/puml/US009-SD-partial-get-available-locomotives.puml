@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+participant ":BuyLocomotiveController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant ":LocomotiveCatalog" as Catalog
+
+autonumber 2
+-> Controller : requestAvailableLocomotives()
+activate Controller
+
+group Get Available Locomotives
+
+autonumber 2.1
+Controller -> REPOS : getInstance()
+activate REPOS
+REPOS --> Controller : repositories
+deactivate REPOS
+
+Controller -> REPOS_SINGLETON : getLocomotiveCatalog()
+activate REPOS_SINGLETON
+REPOS_SINGLETON --> Controller : catalog
+deactivate REPOS_SINGLETON
+
+Controller -> Catalog : getAvailableLocomotives()
+activate Catalog
+Catalog --> Controller : list of available locomotives
+deactivate Catalog
+
+end group
+
+autonumber 13
+    <-- Controller : list of available locomotives
+    deactivate Controller
+@enduml

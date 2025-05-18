@@ -34,9 +34,8 @@ public class AddTemplateLocomotiveEvent implements ScenarioEvent {
                 template.getTopSpeed(),
                 template.getStartYear(),
                 template.getFuelCostPerYear(),
-                template.getMaintenancePerYear(),
-                template.getCapacity(),
-                List.of()  // rota inicial vazia
+                template.getMaintenancePerYear()
+                // rota inicial vazia
         );
         locomotives.add(clone);
     }

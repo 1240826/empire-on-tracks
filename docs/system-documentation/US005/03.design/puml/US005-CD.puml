@@ -5,44 +5,52 @@ skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
 class "BuildStationController" {
-    + startBuildingStation()
-    + submitStationDetails(name: String, type: StationType, x: int, y: int)
-    + setStationCenter(orientation: String)  ' caso necessário
-    + confirmStationCreation(): boolean
+    + startBuildStation()
+    + submitStationType(type: StationType)
+    + submitCoordinates(x: int, y: int)
+    + submitCenterPosition(position: CenterPosition)
+    + proposeStationName(): String
+    + submitNameDecision(accept: boolean, customName: String)
+    + confirmStationCreation()
 }
 
 class "Player" {
     - budget: double
-    + buildStation(name: String, type: StationType, location: Location, center: Location): Station
+    + hasSufficientBudget(amount: double): boolean
+    + deductBudget(amount: double): void
+    + registerStation(station: Station): void
 }
 
 class "Station" {
     - name: String
     - type: StationType
     - location: Location
-    - center: Location
-    + create(name: String, type: StationType, location: Location, center: Location): Station
+    - centerPosition: CenterPosition
+    + Station(name: String, type: StationType, location: Location, center: CenterPosition)
 }
 
 class "StationType" {
-    - name: String
-    - range: int
-    - cost: double
+    + name: String
+    + cost: double
+    + range: int
 }
 
-class "Location" {
-    - x: int
-    - y: int
-    + Location(x: int, y: int)
+enum CenterPosition {
+    NE
+    SE
+    NW
+    SW
+    CENTER
 }
 
 class "Map" {
     + isOccupied(location: Location): boolean
-    + addStation(station: Station)
+    + isStationNameDuplicate(name: String): boolean
+    + addStation(station: Station): void
+    + getNearestCityName(location: Location): String
 }
 
 class "Repositories" {
-    - Repositories()
     + {static} getInstance(): Repositories
     + getMapRepository(): MapRepository
 }
@@ -52,26 +60,49 @@ class "MapRepository" {
 }
 
 class "BuildStationUI" {
-    + requestStationDetails()
-    + showInvalidCoordinates()
+    + startBuildStation()
+    + requestStationTypeSelection()
+    + requestCoordinates()
+    + requestCenterPosition()
+    + proposeStationName(name: String)
+    + requestNameDecision()
+    + showStationPreview(name: String, location: Location)
+    + showError(message: String)
     + showSuccessMessage()
-    + showInsufficientBudget()
+    + highlightNewStation(station: Station)
+}
+
+class "Location" {
+    + x: int
+    + y: int
+    + Location(x: int, y: int)
+}
+
+class "Simulation" {
+    + getCurrentDate(): Date
+}
+
+class "GameState" {
+    + {static} getInstance(): GameState
+    + save(): void
 }
 
 BuildStationUI .> BuildStationController : interacts >
-
 BuildStationController ..> Repositories : accesses >
 BuildStationController ..> MapRepository : accesses >
-BuildStationController ..> Player : requests action >
+BuildStationController ..> Player : uses >
 BuildStationController ..> Station : creates >
-BuildStationController ..> Location : constructs >
+BuildStationController ..> StationType : uses >
+BuildStationController ..> Location : uses >
+BuildStationController ..> Simulation : uses >
+BuildStationController ..> GameState : saves >
+BuildStationController ..> Map : validates name & location >
 
 Repositories --> "1" MapRepository : mapRepository
 MapRepository --> "1" Map : currentMap
 
-Map --> "*" Station : stations
-Station --> "1" Location : location
-Station --> "1" StationType : has >
-Station --> "1" Location : center
-
+Map --> "*" Station : contains >
+Station --> "1" StationType : is of type >
+Station --> "1" Location : is at >
+Player --> "*" Station : owns >
 @enduml

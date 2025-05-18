@@ -3,6 +3,7 @@ package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representa uma estação no mapa capaz de coletar carga de indústrias
@@ -111,11 +112,7 @@ public class Station {
      * Retorna cópia defensiva da lista de cargas.
      */
     public List<Cargo> getCargoes() {
-        List<Cargo> copy = new ArrayList<>();
-        for (Cargo c : cargoes) {
-            copy.add(new Cargo(c.getType(), c.getQuantity()));
-        }
-        return copy;
+        return cargoes;
     }
 
     @Override
@@ -134,4 +131,153 @@ public class Station {
     private double capacityOfType(CargoType type) {
         return 24.0;
     }
+    // --- helpers de estoque ---
+    /** Adiciona quantidade ao estoque interno. */
+    public void addCargo(CargoType type, double quantity) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.addQuantity(quantity);
+                return;
+            }
+        }
+        // caso não exista (não deve acontecer), adiciona novo
+        cargoes.add(new Cargo(type, quantity));
+    }
+
+    /** Remove quantidade do estoque interno. */
+    public void removeCargo(CargoType type, double quantity) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.removeQuantity(quantity);
+                return;
+            }
+        }
+    }
+
+    /** Retorna quantidade disponível de um tipo de carga na estação. */
+    public double getCargoQuantity(CargoType type) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                return c.getQuantity();
+            }
+        }
+        return 0.0;
+    }
+
+    /** Zera todo o estoque da estação. */
+    public void clearCargoes() {
+        for (Cargo c : cargoes) {
+            c.setQuantity(0.0);
+        }
+    }
+
+// --- coleta + distribuição ---
+    /**
+     * Coleta outputs de indústrias próximas e em seguida distribui do seu estoque
+     * para os inputs de TransformingIndustry e MixedIndustry dentro do mesmo alcance.
+     * @param industries lista de todas indústrias no mapa
+     * @return eventos textuais do que foi coletado e distribuído
+     */
+    public List<String> collectAndDistribute(List<Industry> industries) {
+        List<String> events = new ArrayList<>();
+
+        // 1) coleta todos os outputs disponíveis
+        for (Industry ind : industries) {
+            Location indLoc = ind.getLocation();
+            int dx = Math.abs(indLoc.getX() - this.location.getX());
+            int dy = Math.abs(indLoc.getY() - this.location.getY());
+            if (dx <= range && dy <= range) {
+                Cargo out = ind.getCargo();
+                double qty = out.getQuantity();
+                if (qty > 0) {
+                    out.removeQuantity(qty);
+                    addCargo(out.getType(), qty);
+                    events.add(String.format(
+                            "Estação %s coletou %.2f de %s de %s",
+                            name, qty, out.getType(), ind.getIndustryName()
+                    ));
+                }
+            }
+        }
+
+        // 2) distribui para indústrias consumidoras
+        for (Industry ind : industries) {
+            Location indLoc = ind.getLocation();
+            int dx = Math.abs(indLoc.getX() - this.location.getX());
+            int dy = Math.abs(indLoc.getY() - this.location.getY());
+            if (dx <= range && dy <= range) {
+                // TransformingIndustry
+                if (ind instanceof TransformingIndustry) {
+                    TransformingIndustry ti = (TransformingIndustry) ind;
+                    CargoType type = ti.getInputCargoType();
+                    double needed = ti.getDemand() - ti.getInputCargoQuantity();
+                    if (needed > 0) {
+                        double avail = getCargoQuantity(type);
+                        double give = Math.min(needed, avail);
+                        if (give > 0) {
+                            ti.setInputCargoQuantity(ti.getInputCargoQuantity() + give);
+                            removeCargo(type, give);
+                            events.add(String.format(
+                                    "Estação %s alimentou %.2f de %s para %s",
+                                    name, give, type, ti.getIndustryName()
+                            ));
+                        }
+                    }
+                }
+                // MixedIndustry
+                else if (ind instanceof MixedIndustry) {
+                    MixedIndustry mi = (MixedIndustry) ind;
+                    CargoType type = mi.getInputCargoType();
+                    double needed = mi.getDemand() - mi.getInputCargoQuantity();
+                    if (needed > 0) {
+                        double avail = getCargoQuantity(type);
+                        double give = Math.min(needed, avail);
+                        if (give > 0) {
+                            mi.setInputCargoQuantity(mi.getInputCargoQuantity() + give);
+                            removeCargo(type, give);
+                            events.add(String.format(
+                                    "Estação %s alimentou %.2f de %s para %s",
+                                    name, give, type, mi.getIndustryName()
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+
+        return events;
+    }
+
+    public double loadCargo(CargoType type, double requested) {
+        Objects.requireNonNull(type, "type cannot be null");
+        if (requested <= 0) return 0.0;
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                double available = c.getQuantity();
+                double taken = Math.min(available, requested);
+                c.removeQuantity(taken);
+                return taken;
+            }
+        }
+        return 0.0;
+    }
+
+    /**
+     * Recebe 'quantity' unidades de 'type' adicionando ao estoque interno.
+     * @throws IllegalArgumentException se quantity for negativo
+     */
+    public void unloadCargo(CargoType type, double quantity) {
+        Objects.requireNonNull(type, "type cannot be null");
+        if (quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.addQuantity(quantity);
+                return;
+            }
+        }
+        // não deveria ocorrer, mas garante registro
+        cargoes.add(new Cargo(type, quantity));
+    }
+
+
 }

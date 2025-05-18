@@ -1,44 +1,59 @@
+// File: pt/ipp/isep/dei/domain/Route.java
 package pt.ipp.isep.dei.domain;
 
-import java.util.ArrayList;
+import pt.ipp.isep.dei.controller.AssignTrainToRouteController.StationCargo;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * Represents a route as an ordered list of station–cargo assignments.
- * Now implemented as a generic container so it can hold any type of elements (e.g., String or StationCargo).
- *
- * @param <T> the type of elements in the route list
+ * Representa uma rota como uma sequência ordenada de pares estação+carga (StationCargo).
+ * A rota deve ter pelo menos duas paradas: inicial e final.
  */
-public class Route<T> {
-
-    private final List<T> stationCargoList;
+public class Route {
+    private final List<StationCargo> stops;
 
     /**
-     * Constructs a new Route.
-     *
-     * @param stationCargoList list of elements; must not be null
-     * @throws IllegalArgumentException if stationCargoList is null
+     * Constrói uma rota com a lista de paradas.
+     * @param stops lista de StationCargo, deve ter tamanho >= 2
+     * @throws IllegalArgumentException se stops for nulo ou tiver menos de 2 elementos
      */
-    public Route(List<T> stationCargoList) {
-        if (stationCargoList == null) {
-            throw new IllegalArgumentException("stationCargoList cannot be null");
+    public Route(List<StationCargo> stops) {
+        Objects.requireNonNull(stops, "stops não pode ser null");
+        if (stops.size() < 2) {
+            throw new IllegalArgumentException("A rota deve ter pelo menos estação inicial e final");
         }
-        this.stationCargoList = new ArrayList<>(stationCargoList);
+        this.stops = List.copyOf(stops);
     }
 
-    /**
-     * Returns an unmodifiable view of the route elements.
-     *
-     * @return list of elements (non-null)
-     */
-    public List<T> getStationCargoList() {
-        return Collections.unmodifiableList(stationCargoList);
+    /** Retorna os pares estação+carga desta rota (imutável). */
+    public List<StationCargo> getStops() {
+        return Collections.unmodifiableList(stops);
+    }
+
+    /** Primeira parada (estação + carga). */
+    public StationCargo getInitialStop() {
+        return stops.get(0);
+    }
+
+    /** Última parada (estação + carga). */
+    public StationCargo getFinalStop() {
+        return stops.get(stops.size() - 1);
+    }
+
+    /** Sequência de tipos de carga transportados, na ordem das paradas. */
+    public List<CargoType> getCargoTypes() {
+        return stops.stream()
+                .map(StationCargo::getCargoType)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public String toString() {
-        return stationCargoList.toString();
+        return stops.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(" -> "));
     }
 }

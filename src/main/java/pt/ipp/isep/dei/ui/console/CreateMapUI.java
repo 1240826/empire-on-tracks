@@ -12,7 +12,7 @@ import java.util.Scanner;
  * validates the input, and confirms creation.
  * </p>
  */
-public class CreatMapUI {
+public class CreateMapUI implements Runnable {
     private CreateMapController createMapController;
     private MapRepository repositoryMap;
 
@@ -71,5 +71,13 @@ public class CreatMapUI {
         }
         createMapController.createMap(name, width, height);
         System.out.println("Map created: " + name + " (" + width + "x" + height + ")");
+    }
+
+    /**
+     * The menu‐dispatcher entry point
+     */
+    @Override
+    public void run() {
+        create();
     }
 }

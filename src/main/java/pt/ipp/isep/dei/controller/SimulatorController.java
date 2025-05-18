@@ -5,7 +5,9 @@ import pt.ipp.isep.dei.domain.*;
 import pt.ipp.isep.dei.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller that links together the map, simulation clock, and scenario management,
@@ -87,4 +89,39 @@ public class SimulatorController {
     public void shutdown() {
         clock.shutdown();
     }
+
+
+    // SimulatorController.java
+    public List<String> stepWithEvents() {
+        clock.advanceManually();
+
+        // 1) produção pura
+        map.update();
+
+        List<String> events = new ArrayList<>();
+
+        // 2) coleta+distribuição (tudo num só método)
+        for (Station st : map.getStations()) {
+            events.addAll(st.collectAndDistribute(map.getIndustries()));
+        }
+
+        // 3) cenários
+        LocalDateTime now = clock.getDate();
+        for (Scenario sc : scenarioRepo.getScenariosForDate(now)) {
+            List<String> scE = sc.applyAll(map, map.getLocomotives());
+            if (scE != null) events.addAll(scE);
+        }
+
+        // DEBUG: imprime stock real das estações
+        for (Station st : map.getStations()) {
+            System.out.println("DEBUG pós-step: estação " + st.getStationName() +
+                    " stock = " + st.getCargoes().stream()
+                    .map(c -> c.getType() + ":" + c.getQuantity())
+                    .collect(Collectors.joining(", ")));
+        }
+
+        return events;
+    }
+
+
 }

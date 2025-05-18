@@ -1,12 +1,15 @@
 package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.controller.AuthenticationController;
+import pt.ipp.isep.dei.controller.SimulatorController;
+import pt.ipp.isep.dei.domain.*;
+import pt.ipp.isep.dei.repository.IndustryRepository;
+import pt.ipp.isep.dei.repository.LocomotiveRepository;
+import pt.ipp.isep.dei.repository.ScenarioRepository;
 import pt.ipp.isep.dei.user.User;
-import pt.ipp.isep.dei.example_US6.Organization;
-import pt.ipp.isep.dei.example_US6.OrganizationRepository;
-import pt.ipp.isep.dei.example_US6.TaskCategory;
-import pt.ipp.isep.dei.example_US6.TaskCategoryRepository;
-import pt.ipp.isep.dei.repository.Repositories;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Bootstraps application data: task categories, organization, and initial game player.
@@ -30,4 +33,6 @@ public class Bootstrap implements Runnable {
         User player = authCtrl.register(username, password);
         System.out.printf("Bootstrapped player → Username=%s%n", player.getUsername());
     }
+
+
 }

@@ -139,14 +139,16 @@ public class Scenario {
      *
      * @param map         the Map context to which resources are applied
      * @param locomotives list of locomotives to place on the map
+     * @return
      * @throws NullPointerException if map or locomotives is null
      */
-    public void applyAll(Map map, List<Locomotive> locomotives) {
+    public List<String> applyAll(Map map, List<Locomotive> locomotives) {
         Objects.requireNonNull(map, "map must not be null");
         Objects.requireNonNull(locomotives, "locomotives must not be null");
         for (Locomotive loco : locomotives) {
             map.addLocomotive(loco);
         }
+        return null;
     }
 }
 

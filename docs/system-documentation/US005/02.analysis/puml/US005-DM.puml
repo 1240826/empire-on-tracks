@@ -2,37 +2,59 @@
 skinparam monochrome true
 skinparam packageStyle rectangle
 skinparam shadowing false
-
-'left to right direction
-
 skinparam classAttributeIconSize 0
 
 hide circle
 hide methods
 
-'title Domain Model
+'title Domain Model Refinado – US5
 
 class Editor {
 }
 
 class Map {
     name
+    + isStationNameDuplicate(name: String): boolean
+    + isOccupied(location: Location): boolean
 }
+
 class Player {
-budget
+    budget
 }
 
 class Station {
     name
+}
+
+class StationType {
+    name
     range
-    type
     cost
 }
 
-Editor "1" -down- "1*" Map : creates >
+class Location {
+    x
+    y
+}
 
-Player "1" --right- "1*" Station : buys >
+class CenterPosition {
+    <<enum>>
+    NE
+    SE
+    NW
+    SW
+    CENTER
+}
 
-Player "1" -up- "1" Map : places elements >
+Editor "1" -down- "1..*" Map : creates >
+
+Map "1" -- "*" Station : contains >
+Station "1" --> "1" StationType : is of type >
+Station "1" --> "1" Location : is placed at >
+Station "0..1" --> "1" CenterPosition : uses >
+
+Player "1" -- "*" Station : owns >
+Player "1" -- "1" Map : places elements >
+Player "1" -- "*" StationType : selects >
 
 @enduml

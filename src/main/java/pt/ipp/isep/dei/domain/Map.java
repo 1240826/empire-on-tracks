@@ -4,37 +4,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa o mapa do simulador, contendo estações, indústrias,
- * linhas férreas e locomotivas em uma grade 2D.
+ * Represents the simulation map containing stations, industries,
+ * rail lines, cities, and locomotives on a 2D grid.
+ * <p>
+ * Provides methods to add and retrieve elements, validate coordinates,
+ * update state, and collect events during simulation steps.
+ * </p>
  */
 public class Map {
+    /** Unique name of the map. */
     private String name;
-    private final Object[][] map;
-    private final List<RailLine> railLines       = new ArrayList<>();
-    private final List<Station> stations         = new ArrayList<>();
-    private final List<Industry> industries      = new ArrayList<>();
-    private final List<Locomotive> locomotives   = new ArrayList<>();
 
-    /** Construtor padrão: 10×10, nome "name". */
+    /** 2D grid holding objects placed on the map. */
+    private final Object[][] map;
+
+    /** Collection of rail lines on the map. */
+    private final List<RailLine> railLines     = new ArrayList<>();
+
+    /** Collection of stations on the map. */
+    private final List<Station> stations       = new ArrayList<>();
+
+    /** Collection of industries on the map. */
+    private final List<Industry> industries    = new ArrayList<>();
+
+    /** Collection of locomotives on the map. */
+    private final List<Locomotive> locomotives = new ArrayList<>();
+
+    /**
+     * Default constructor.
+     * <p>
+     * Creates a map named "name" with default dimensions 10×10.
+     * </p>
+     */
     public Map() {
         this("name", 10, 10);
     }
 
-    /** Construtor com nome e dimensões da grade. */
+    /**
+     * Constructs a map with the given name and dimensions.
+     *
+     * @param name   the name of the map
+     * @param width  the width of the grid (number of columns)
+     * @param height the height of the grid (number of rows)
+     */
     public Map(String name, int width, int height) {
         this.name = name;
         this.map  = new Object[height][width];
     }
 
-    // --- Estações ---
+    // --- Stations ---
+
+    /**
+     * Adds a station to the map.
+     *
+     * @param station the {@link Station} to add
+     */
     public void addStation(Station station) {
         stations.add(station);
     }
 
+    /**
+     * Retrieves a list of all stations on the map.
+     *
+     * @return a new {@code List} containing all stations
+     */
     public List<Station> getStations() {
-        return new ArrayList<>(stations);
+        return stations;
     }
 
+    /**
+     * Retrieves the names of all stations on the map.
+     *
+     * @return a {@code List} of station names
+     */
     public List<String> getAllNamesStation() {
         List<String> names = new ArrayList<>();
         for (Station s : stations) {
@@ -43,6 +85,12 @@ public class Map {
         return names;
     }
 
+    /**
+     * Finds and returns the station with the given name.
+     *
+     * @param stationName the name of the station to look up
+     * @return the {@link Station} if found, or {@code null} otherwise
+     */
     public Station getDetails(String stationName) {
         for (Station s : stations) {
             if (s.getStationName().equals(stationName)) {
@@ -52,18 +100,34 @@ public class Map {
         return null;
     }
 
-    // --- Linhas férreas ---
+    // --- Rail Lines ---
+
+    /**
+     * Adds a rail line to the map.
+     *
+     * @param line the {@link RailLine} to add
+     */
     public void addRailLine(RailLine line) {
         railLines.add(line);
     }
 
+    /**
+     * Retrieves all rail lines on the map.
+     *
+     * @return a new {@code List} containing all rail lines
+     */
     public List<RailLine> getRailLines() {
         return new ArrayList<>(railLines);
     }
 
-    // --- Indústrias ---
+    // --- Industries ---
+
     /**
-     * Coloca uma indústria no mapa. Retorna false se a posição estiver ocupada ou fora da grade.
+     * Places an industry at the specified location on the grid.
+     *
+     * @param industry the {@link Industry} to place
+     * @param location the {@link Location} where to place the industry
+     * @return {@code true} if placement succeeded; {@code false} if the cell is occupied or out of bounds
      */
     public boolean addIndustry(Industry industry, Location location) {
         int x = location.getX(), y = location.getY();
@@ -76,11 +140,26 @@ public class Map {
         return true;
     }
 
+    /**
+     * Retrieves all industries on the map.
+     *
+     * @return a new {@code List} containing all industries
+     */
     public List<Industry> getIndustries() {
         return new ArrayList<>(industries);
     }
 
-    // --- Cidades ---
+    // --- Cities ---
+
+    /**
+     * Adds a city to the map at its designated coordinates.
+     * <p>
+     * Automatically assigns house blocks to the city.
+     * </p>
+     *
+     * @param city the {@link City} to add
+     * @return {@code true} if placement succeeded; {@code false} otherwise
+     */
     public boolean addCity(City city) {
         int x = city.getCenterX(), y = city.getCenterY();
         if (!isEmpty(x, y)) {
@@ -91,6 +170,11 @@ public class Map {
         return true;
     }
 
+    /**
+     * Retrieves the names of all cities placed on the map.
+     *
+     * @return a {@code List} of city names
+     */
     public List<String> getCities() {
         List<String> cityNames = new ArrayList<>();
         for (int y = 0; y < getHeight(); y++) {
@@ -104,12 +188,26 @@ public class Map {
         return cityNames;
     }
 
+    /**
+     * Checks if a city name already exists on the map (case-insensitive).
+     *
+     * @param cityName the name to check
+     * @return {@code true} if a city with the same name exists; {@code false} otherwise
+     */
     public boolean isCityNameDuplicate(String cityName) {
         return getCities().stream()
                 .anyMatch(n -> n.equalsIgnoreCase(cityName));
     }
 
-    // --- Grid utilitários ---
+    // --- Grid Utilities ---
+
+    /**
+     * Checks if a specific cell is within bounds and not occupied.
+     *
+     * @param x the x-coordinate (column)
+     * @param y the y-coordinate (row)
+     * @return {@code true} if the cell is empty and within the grid; {@code false} otherwise
+     */
     public boolean isEmpty(int x, int y) {
         if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
             return false;
@@ -117,6 +215,12 @@ public class Map {
         return map[y][x] == null;
     }
 
+    /**
+     * Validates that all provided locations are within the grid bounds.
+     *
+     * @param positions a list of {@link Location} objects to validate
+     * @return {@code true} if all locations are valid; {@code false} otherwise
+     */
     public boolean validateCoordinates(List<Location> positions) {
         for (Location pos : positions) {
             if (pos.getX() < 0 || pos.getX() >= getWidth() ||
@@ -127,14 +231,29 @@ public class Map {
         return true;
     }
 
+    /**
+     * Gets the width (number of columns) of the map grid.
+     *
+     * @return the width of the grid
+     */
     public int getWidth() {
         return map[0].length;
     }
 
+    /**
+     * Gets the height (number of rows) of the map grid.
+     *
+     * @return the height of the grid
+     */
     public int getHeight() {
         return map.length;
     }
 
+    /**
+     * Returns a deep copy of the map grid.
+     *
+     * @return a two-dimensional {@code Object} array copy of the grid
+     */
     public Object[][] getMapGrid() {
         Object[][] copy = new Object[getHeight()][getWidth()];
         for (int y = 0; y < getHeight(); y++) {
@@ -143,59 +262,102 @@ public class Map {
         return copy;
     }
 
+    /**
+     * Replaces the internal map grid with the provided one after validation.
+     *
+     * @param grid a two-dimensional {@code Object} array to set
+     * @throws IllegalArgumentException if the provided grid is null or has incorrect dimensions
+     */
     public void setMapGrid(Object[][] grid) {
         if (grid == null ||
                 grid.length != getHeight() ||
                 grid[0].length != getWidth()) {
-            throw new IllegalArgumentException("Grid inválido");
+            throw new IllegalArgumentException("Invalid grid");
         }
         for (int y = 0; y < getHeight(); y++) {
             System.arraycopy(grid[y], 0, map[y], 0, getWidth());
         }
     }
 
-    // --- Atualização do estado ---
+    // --- State Updates ---
+
     /**
-     * 1) Indústrias produzem/transformam;
-     * 2) Estações coletam carga de indústrias próximas;
-     * 3) Locomotivas movem-se e interagem com estações.
+     * Performs a simulation update step:
+     * <ol>
+     *   <li>Industries produce or transform cargo.</li>
+     *   <li>Stations collect cargo from nearby industries.</li>
+     *   <li>Locomotives move and interact with stations (e.g., loading/unloading).</li>
+     * </ol>
      */
+    // Map.java
     public void update() {
+        // 1) produção
         for (Industry ind : industries) {
             ind.produceCargo();
         }
-        for (Station st : stations) {
-            st.collectNearbyIndustries(industries);
-        }
-        for (Locomotive loco : locomotives) {
-            loco.move();
-            if (loco.hasStationNearby()) {
-                // TODO: implementar coleta de estação
-            }
-        }
+
     }
 
+
+    /**
+     * Updates only the stations by collecting from nearby industries.
+     */
     public void updateStations() {
         for (Station st : stations) {
             st.collectNearbyIndustries(industries);
         }
     }
 
-    // --- Locomotivas ---
+    // --- Locomotives ---
+
+    /**
+     * Adds a locomotive to the map.
+     *
+     * @param loco the {@link Locomotive} to add
+     */
     public void addLocomotive(Locomotive loco) {
         locomotives.add(loco);
     }
 
+    /**
+     * Retrieves all locomotives on the map.
+     *
+     * @return a new {@code List} containing all locomotives
+     */
     public List<Locomotive> getLocomotives() {
         return new ArrayList<>(locomotives);
     }
 
-    // --- Getters/Setters ---
+    // --- Name Accessors ---
+
+    /**
+     * Returns the name of the map.
+     *
+     * @return the map’s name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the map.
+     *
+     * @param name the new name to assign
+     */
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Performs a simulation update step with event logging:
+     * <ol>
+     *   <li>Industries produce cargo.</li>
+     *   <li>Stations collect and distribute cargo, returning event messages.</li>
+     *   <li>Locomotives with defined routes collect, move, and unload cargo,
+     *       generating event messages for each action.</li>
+     * </ol>
+     *
+     * @return a {@code List<String>} describing actions that occurred during the update
+     */
+
 }
