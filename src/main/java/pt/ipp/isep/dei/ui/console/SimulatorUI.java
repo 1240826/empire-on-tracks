@@ -1,6 +1,7 @@
 package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.AssignTrainToRouteController;
+import pt.ipp.isep.dei.controller.BuildLineController;
 import pt.ipp.isep.dei.controller.SimulatorController;
 import pt.ipp.isep.dei.domain.*;
 import pt.ipp.isep.dei.repository.Repositories;
@@ -16,11 +17,13 @@ import java.util.stream.Collectors;
 
 public class SimulatorUI implements Runnable {
     private final SimulatorController controller;
+    private final Player player;
     private final AssignTrainToRouteController assignCtrl;
 
-    public SimulatorUI(SimulatorController controller,
+    public SimulatorUI(SimulatorController controller, Player player,
                        AssignTrainToRouteController assignCtrl) {
         this.controller = Objects.requireNonNull(controller);
+        this.player = player;
         this.assignCtrl = Objects.requireNonNull(assignCtrl);
     }
 
@@ -112,7 +115,7 @@ public class SimulatorUI implements Runnable {
         editOptions.add(new MenuItem("UC5 – Build a Station", new BuildStationUI()));
         editOptions.add(new MenuItem("UC6 – Upgrade a Station", new UpgradeStationUI()));
         editOptions.add(new MenuItem("UC7 – List all Stations", new StationListUI()));
-        editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI()));
+        editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI(new BuildLineController(player, Repositories.getInstance().getMapRepository().getCurrentMap()))));
         editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI()));
         editOptions.add(new MenuItem("UC10 – Assign a Train to a Route", this::setRoute));
         editOptions.add(new MenuItem("UC11 – List all Trains", this::listTrains));
