@@ -1,0 +1,479 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Map</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Map (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Map</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8%
+  </span>
+  <span class="absValue">
+    (2/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10,5%
+  </span>
+  <span class="absValue">
+    (8/76)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents the simulation map containing stations, industries,
+&nbsp; * rail lines, cities, and locomotives on a 2D grid.
+&nbsp; * &lt;p&gt;
+&nbsp; * Provides methods to add and retrieve elements, validate coordinates,
+&nbsp; * update state, and collect events during simulation steps.
+&nbsp; * &lt;/p&gt;
+<b class="fc">&nbsp; */</b>
+<b class="fc">&nbsp;public class Map {</b>
+<b class="fc">&nbsp;    /** Unique name of the map. */</b>
+<b class="fc">&nbsp;    private String name;</b>
+&nbsp;
+&nbsp;    /** 2D grid holding objects placed on the map. */
+&nbsp;    private final Object[][] map;
+<b class="fc">&nbsp;</b>
+&nbsp;    /** Collection of rail lines on the map. */
+&nbsp;    private final List&lt;RailLine&gt; railLines     = new ArrayList&lt;&gt;();
+&nbsp;
+<b class="fc">&nbsp;    /** Collection of stations on the map. */</b>
+<b class="fc">&nbsp;    private final List&lt;Station&gt; stations       = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;</b>
+&nbsp;    /** Collection of industries on the map. */
+&nbsp;    private final List&lt;Industry&gt; industries    = new ArrayList&lt;&gt;();
+&nbsp;
+&nbsp;    /** Collection of locomotives on the map. */
+<b class="nc">&nbsp;    private final List&lt;Locomotive&gt; locomotives = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Default constructor.
+<b class="nc">&nbsp;     * &lt;p&gt;</b>
+&nbsp;     * Creates a map named &quot;name&quot; with default dimensions 10×10.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+<b class="nc">&nbsp;    public Map() {</b>
+<b class="nc">&nbsp;        this(&quot;name&quot;, 10, 10);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+<b class="nc">&nbsp;    /**</b>
+&nbsp;     * Constructs a map with the given name and dimensions.
+&nbsp;     *
+&nbsp;     * @param name   the name of the map
+<b class="nc">&nbsp;     * @param width  the width of the grid (number of columns)</b>
+<b class="nc">&nbsp;     * @param height the height of the grid (number of rows)</b>
+<b class="nc">&nbsp;     */</b>
+&nbsp;    public Map(String name, int width, int height) {
+&nbsp;        this.name = name;
+<b class="nc">&nbsp;        this.map  = new Object[height][width];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- Stations ---
+&nbsp;
+<b class="nc">&nbsp;    /**</b>
+&nbsp;     * Adds a station to the map.
+&nbsp;     *
+&nbsp;     * @param station the {@link Station} to add
+<b class="nc">&nbsp;     */</b>
+&nbsp;    public void addStation(Station station) {
+&nbsp;        stations.add(station);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a list of all stations on the map.
+&nbsp;     *
+<b class="nc">&nbsp;     * @return a new {@code List} containing all stations</b>
+<b class="nc">&nbsp;     */</b>
+<b class="nc">&nbsp;    public List&lt;Station&gt; getStations() {</b>
+&nbsp;        return stations;
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;</b>
+<b class="nc">&nbsp;    /**</b>
+<b class="nc">&nbsp;     * Retrieves the names of all stations on the map.</b>
+&nbsp;     *
+&nbsp;     * @return a {@code List} of station names
+&nbsp;     */
+<b class="nc">&nbsp;    public List&lt;String&gt; getAllNamesStation() {</b>
+&nbsp;        List&lt;String&gt; names = new ArrayList&lt;&gt;();
+&nbsp;        for (Station s : stations) {
+&nbsp;            names.add(s.getStationName());
+&nbsp;        }
+<b class="nc">&nbsp;        return names;</b>
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+<b class="nc">&nbsp;     * Finds and returns the station with the given name.</b>
+<b class="nc">&nbsp;     *</b>
+<b class="nc">&nbsp;     * @param stationName the name of the station to look up</b>
+&nbsp;     * @return the {@link Station} if found, or {@code null} otherwise
+&nbsp;     */
+&nbsp;    public Station getDetails(String stationName) {
+<b class="nc">&nbsp;        for (Station s : stations) {</b>
+<b class="nc">&nbsp;            if (s.getStationName().equals(stationName)) {</b>
+<b class="nc">&nbsp;                return s;</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- Rail Lines ---
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+&nbsp;     * Adds a rail line to the map.
+&nbsp;     *
+<b class="nc">&nbsp;     * @param line the {@link RailLine} to add</b>
+<b class="nc">&nbsp;     */</b>
+&nbsp;    public void addRailLine(RailLine line) {
+&nbsp;        railLines.add(line);
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    /**</b>
+<b class="nc">&nbsp;     * Retrieves all rail lines on the map.</b>
+&nbsp;     *
+<b class="nc">&nbsp;     * @return a new {@code List} containing all rail lines</b>
+&nbsp;     */
+&nbsp;    public List&lt;RailLine&gt; getRailLines() {
+&nbsp;        return new ArrayList&lt;&gt;(railLines);
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;</b>
+<b class="nc">&nbsp;    // --- Industries ---</b>
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+&nbsp;     * Places an industry at the specified location on the grid.
+<b class="nc">&nbsp;     *</b>
+&nbsp;     * @param industry the {@link Industry} to place
+&nbsp;     * @param location the {@link Location} where to place the industry
+&nbsp;     * @return {@code true} if placement succeeded; {@code false} if the cell is occupied or out of bounds
+<b class="nc">&nbsp;     */</b>
+&nbsp;    public boolean addIndustry(Industry industry, Location location) {
+&nbsp;        int x = location.getX(), y = location.getY();
+&nbsp;        if (!isEmpty(x, y)) {
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        industry.setLocation(location);
+&nbsp;        map[y][x] = industry;
+<b class="nc">&nbsp;        industries.add(industry);</b>
+<b class="nc">&nbsp;        return true;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+<b class="nc">&nbsp;    /**</b>
+&nbsp;     * Retrieves all industries on the map.
+&nbsp;     *
+&nbsp;     * @return a new {@code List} containing all industries
+<b class="nc">&nbsp;     */</b>
+<b class="nc">&nbsp;    public List&lt;Industry&gt; getIndustries() {</b>
+<b class="nc">&nbsp;        return new ArrayList&lt;&gt;(industries);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+<b class="nc">&nbsp;    // --- Cities ---</b>
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+&nbsp;     * Adds a city to the map at its designated coordinates.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Automatically assigns house blocks to the city.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     *
+&nbsp;     * @param city the {@link City} to add
+&nbsp;     * @return {@code true} if placement succeeded; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean addCity(City city) {
+<b class="nc">&nbsp;        int x = city.getCenterX(), y = city.getCenterY();</b>
+<b class="nc">&nbsp;        if (!isEmpty(x, y)) {</b>
+&nbsp;            return false;
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        city.assignHouseBlocksAutomatic();</b>
+&nbsp;        map[y][x] = city;
+<b class="nc">&nbsp;        return true;</b>
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+&nbsp;     * Retrieves the names of all cities placed on the map.
+&nbsp;     *
+&nbsp;     * @return a {@code List} of city names
+&nbsp;     */
+&nbsp;    public List&lt;String&gt; getCities() {
+<b class="nc">&nbsp;        List&lt;String&gt; cityNames = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (int y = 0; y &lt; getHeight(); y++) {</b>
+&nbsp;            for (int x = 0; x &lt; getWidth(); x++) {
+&nbsp;                Object obj = map[y][x];
+&nbsp;                if (obj instanceof City) {
+&nbsp;                    cityNames.add(((City) obj).getName());
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;        return cityNames;
+&nbsp;    }
+<b class="nc">&nbsp;</b>
+&nbsp;    /**
+&nbsp;     * Checks if a city name already exists on the map (case-insensitive).
+&nbsp;     *
+&nbsp;     * @param cityName the name to check
+<b class="nc">&nbsp;     * @return {@code true} if a city with the same name exists; {@code false} otherwise</b>
+&nbsp;     */
+&nbsp;    public boolean isCityNameDuplicate(String cityName) {
+&nbsp;        return getCities().stream()
+<b class="nc">&nbsp;                .anyMatch(n -&gt; n.equalsIgnoreCase(cityName));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- Grid Utilities ---
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if a specific cell is within bounds and not occupied.
+&nbsp;     *
+&nbsp;     * @param x the x-coordinate (column)
+&nbsp;     * @param y the y-coordinate (row)
+&nbsp;     * @return {@code true} if the cell is empty and within the grid; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty(int x, int y) {
+&nbsp;        if (x &lt; 0 || x &gt;= getWidth() || y &lt; 0 || y &gt;= getHeight()) {
+&nbsp;            return false;
+&nbsp;        }
+&nbsp;        return map[y][x] == null;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates that all provided locations are within the grid bounds.
+&nbsp;     *
+&nbsp;     * @param positions a list of {@link Location} objects to validate
+&nbsp;     * @return {@code true} if all locations are valid; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean validateCoordinates(List&lt;Location&gt; positions) {
+&nbsp;        for (Location pos : positions) {
+&nbsp;            if (pos.getX() &lt; 0 || pos.getX() &gt;= getWidth() ||
+&nbsp;                    pos.getY() &lt; 0 || pos.getY() &gt;= getHeight()) {
+&nbsp;                return false;
+&nbsp;            }
+&nbsp;        }
+&nbsp;        return true;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the width (number of columns) of the map grid.
+&nbsp;     *
+&nbsp;     * @return the width of the grid
+&nbsp;     */
+&nbsp;    public int getWidth() {
+&nbsp;        return map[0].length;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the height (number of rows) of the map grid.
+&nbsp;     *
+&nbsp;     * @return the height of the grid
+&nbsp;     */
+&nbsp;    public int getHeight() {
+&nbsp;        return map.length;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a deep copy of the map grid.
+&nbsp;     *
+&nbsp;     * @return a two-dimensional {@code Object} array copy of the grid
+&nbsp;     */
+&nbsp;    public Object[][] getMapGrid() {
+&nbsp;        Object[][] copy = new Object[getHeight()][getWidth()];
+&nbsp;        for (int y = 0; y &lt; getHeight(); y++) {
+&nbsp;            System.arraycopy(map[y], 0, copy[y], 0, getWidth());
+&nbsp;        }
+&nbsp;        return copy;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Replaces the internal map grid with the provided one after validation.
+&nbsp;     *
+&nbsp;     * @param grid a two-dimensional {@code Object} array to set
+&nbsp;     * @throws IllegalArgumentException if the provided grid is null or has incorrect dimensions
+&nbsp;     */
+&nbsp;    public void setMapGrid(Object[][] grid) {
+&nbsp;        if (grid == null ||
+&nbsp;                grid.length != getHeight() ||
+&nbsp;                grid[0].length != getWidth()) {
+&nbsp;            throw new IllegalArgumentException(&quot;Invalid grid&quot;);
+&nbsp;        }
+&nbsp;        for (int y = 0; y &lt; getHeight(); y++) {
+&nbsp;            System.arraycopy(grid[y], 0, map[y], 0, getWidth());
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- State Updates ---
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Performs a simulation update step:
+&nbsp;     * &lt;ol&gt;
+&nbsp;     *   &lt;li&gt;Industries produce or transform cargo.&lt;/li&gt;
+&nbsp;     *   &lt;li&gt;Stations collect cargo from nearby industries.&lt;/li&gt;
+&nbsp;     *   &lt;li&gt;Locomotives move and interact with stations (e.g., loading/unloading).&lt;/li&gt;
+&nbsp;     * &lt;/ol&gt;
+&nbsp;     */
+&nbsp;    // Map.java
+&nbsp;    public void update() {
+&nbsp;        // 1) produção
+&nbsp;        for (Industry ind : industries) {
+&nbsp;            ind.produceCargo();
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates only the stations by collecting from nearby industries.
+&nbsp;     */
+&nbsp;    public void updateStations() {
+&nbsp;        for (Station st : stations) {
+&nbsp;            st.collectNearbyIndustries(industries);
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- Locomotives ---
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a locomotive to the map.
+&nbsp;     *
+&nbsp;     * @param loco the {@link Locomotive} to add
+&nbsp;     */
+&nbsp;    public void addLocomotive(Locomotive loco) {
+&nbsp;        locomotives.add(loco);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves all locomotives on the map.
+&nbsp;     *
+&nbsp;     * @return a new {@code List} containing all locomotives
+&nbsp;     */
+&nbsp;    public List&lt;Locomotive&gt; getLocomotives() {
+&nbsp;        return new ArrayList&lt;&gt;(locomotives);
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- Name Accessors ---
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the name of the map.
+&nbsp;     *
+&nbsp;     * @return the map’s name
+&nbsp;     */
+&nbsp;    public String getName() {
+&nbsp;        return name;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the name of the map.
+&nbsp;     *
+&nbsp;     * @param name the new name to assign
+&nbsp;     */
+&nbsp;    public void setName(String name) {
+&nbsp;        this.name = name;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Performs a simulation update step with event logging:
+&nbsp;     * &lt;ol&gt;
+&nbsp;     *   &lt;li&gt;Industries produce cargo.&lt;/li&gt;
+&nbsp;     *   &lt;li&gt;Stations collect and distribute cargo, returning event messages.&lt;/li&gt;
+&nbsp;     *   &lt;li&gt;Locomotives with defined routes collect, move, and unload cargo,
+&nbsp;     *       generating event messages for each action.&lt;/li&gt;
+&nbsp;     * &lt;/ol&gt;
+&nbsp;     *
+&nbsp;     * @return a {@code List&lt;String&gt;} describing actions that occurred during the update
+&nbsp;     */
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

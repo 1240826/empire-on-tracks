@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Player</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Player (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import pt.ipp.isep.dei.user.User;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a player in the system.
+&nbsp; * A player has a username, password, budget, a list of owned locomotives, and a list of owned trains.
+&nbsp; * &lt;p&gt;
+&nbsp; * Supports core actions for buying locomotives (US9), creating and managing trains (US10, US11).
+&nbsp; */
+&nbsp;public class Player extends User {
+&nbsp;
+&nbsp;    /** The current budget available to the player. */
+&nbsp;    private double budget;
+&nbsp;
+&nbsp;    /** The list of locomotives purchased and owned by the player. */
+<b class="nc">&nbsp;    private final List&lt;Locomotive&gt; ownedLocomotives = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    /** The list of trains owned by the player. */
+<b class="nc">&nbsp;    private final List&lt;Train&gt; ownedTrains = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new Player with the given username, password and initial budget.
+&nbsp;     *
+&nbsp;     * @param username the username of the player
+&nbsp;     * @param password the password of the player
+&nbsp;     * @param initialBudget the initial budget value
+&nbsp;     * @throws NullPointerException if username or password is null
+&nbsp;     */
+&nbsp;    public Player(String username, String password, double initialBudget) {
+<b class="nc">&nbsp;        super(username, password);</b>
+<b class="nc">&nbsp;        if (initialBudget &lt; 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Initial budget cannot be negative&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        this.budget = initialBudget;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the player&#39;s current budget.
+&nbsp;     *
+&nbsp;     * @return the player&#39;s budget
+&nbsp;     */
+&nbsp;    public double getBudget() {
+<b class="nc">&nbsp;        return budget;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the player&#39;s budget.
+&nbsp;     *
+&nbsp;     * @param budget the new budget value
+&nbsp;     * @throws IllegalArgumentException if budget is negative
+&nbsp;     */
+&nbsp;    public void setBudget(double budget) {
+<b class="nc">&nbsp;        if (budget &lt; 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Budget cannot be negative&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        this.budget = budget;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the player has enough budget to afford a given price.
+&nbsp;     *
+&nbsp;     * @param price the price to check
+&nbsp;     * @return true if the player&#39;s budget is equal to or greater than the price, false otherwise
+&nbsp;     */
+&nbsp;    public boolean hasSufficientBudget(double price) {
+<b class="nc">&nbsp;        return budget &gt;= price;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Attempts to buy the given locomotive by deducting its price from the player&#39;s budget
+&nbsp;     * and adding it to the player&#39;s owned locomotives.
+&nbsp;     *
+&nbsp;     * @param loco the locomotive to purchase
+&nbsp;     * @return the locomotive if the purchase was successful, or null if insufficient budget
+&nbsp;     */
+&nbsp;    public Locomotive buyLocomotive(Locomotive loco) {
+<b class="nc">&nbsp;        Objects.requireNonNull(loco, &quot;Locomotive cannot be null&quot;);</b>
+<b class="nc">&nbsp;        if (hasSufficientBudget(loco.getPrice())) {</b>
+<b class="nc">&nbsp;            budget -= loco.getPrice();</b>
+<b class="nc">&nbsp;            ownedLocomotives.add(loco);</b>
+<b class="nc">&nbsp;            return loco;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an unmodifiable list of locomotives owned by the player.
+&nbsp;     *
+&nbsp;     * @return an unmodifiable list of owned locomotives
+&nbsp;     */
+&nbsp;    public List&lt;Locomotive&gt; getOwnedLocomotives() {
+<b class="nc">&nbsp;        return Collections.unmodifiableList(ownedLocomotives);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // --- US11 Support: Trains ---
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a train to the player&#39;s owned trains.
+&nbsp;     * Used when a player creates a train (US10).
+&nbsp;     *
+&nbsp;     * @param train the train to add
+&nbsp;     * @throws NullPointerException if train is null
+&nbsp;     */
+&nbsp;    public void addTrain(Train train) {
+<b class="nc">&nbsp;        Objects.requireNonNull(train, &quot;Train cannot be null&quot;);</b>
+<b class="nc">&nbsp;        ownedTrains.add(train);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an unmodifiable list of all trains owned by the player.
+&nbsp;     * Used for listing trains (US11).
+&nbsp;     *
+&nbsp;     * @return an unmodifiable list of owned trains
+&nbsp;     */
+&nbsp;    public List&lt;Train&gt; getOwnedTrains() {
+<b class="nc">&nbsp;        return Collections.unmodifiableList(ownedTrains);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deducts a specified amount from the player&#39;s budget, if possible.
+&nbsp;     *
+&nbsp;     * @param amount the amount to spend
+&nbsp;     * @return true if the amount was successfully deducted, false otherwise
+&nbsp;     */
+&nbsp;    public boolean spend(double amount) {
+<b class="nc">&nbsp;        if (amount &lt; 0) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Spend amount cannot be negative&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (hasSufficientBudget(amount)) {</b>
+<b class="nc">&nbsp;            budget -= amount;</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

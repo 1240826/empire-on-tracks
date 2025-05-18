@@ -1,0 +1,357 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TransformingIndustry</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: TransformingIndustry (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransformingIndustry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents an industry that transforms one type of cargo into another.
+&nbsp; * &lt;p&gt;
+&nbsp; * A transforming industry consumes input cargo when sufficient demand is met,
+&nbsp; * produces output cargo each cycle, and tracks its location on the map.
+&nbsp; * &lt;/p&gt;
+&nbsp; */
+&nbsp;public class TransformingIndustry implements Industry {
+&nbsp;
+&nbsp;    /** Name of the industry. */
+&nbsp;    private final String industryName;
+&nbsp;
+&nbsp;    /** Fixed operating cost of the industry. */
+&nbsp;    private final int industryCost;
+&nbsp;
+&nbsp;    /** Quantity of output cargo produced per cycle. */
+&nbsp;    private double production;
+&nbsp;
+&nbsp;    /** Quantity of input cargo required per cycle. */
+&nbsp;    private double demand;
+&nbsp;
+&nbsp;    /** Location of this industry on the map grid. */
+&nbsp;    private Location location;
+&nbsp;
+&nbsp;    /** Internal cargo storage for input type. */
+&nbsp;    private final Cargo inputCargo;
+&nbsp;
+&nbsp;    /** Internal cargo storage for output type. */
+&nbsp;    private final Cargo outputCargo;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a transforming industry without an assigned location.
+&nbsp;     *
+&nbsp;     * @param industryName  the unique name of the industry
+&nbsp;     * @param industryCost  the fixed operating cost
+&nbsp;     * @param production    the amount of cargo produced per cycle
+&nbsp;     * @param demand        the amount of input cargo required per cycle
+&nbsp;     * @param inputType     the type of cargo consumed
+&nbsp;     * @param outputType    the type of cargo produced
+&nbsp;     * @throws NullPointerException if {@code inputType} or {@code outputType} is null
+&nbsp;     */
+&nbsp;    public TransformingIndustry(String industryName,
+&nbsp;                                int industryCost,
+&nbsp;                                double production,
+&nbsp;                                double demand,
+&nbsp;                                CargoType inputType,
+&nbsp;                                CargoType outputType) {
+<b class="nc">&nbsp;        this(industryName, industryCost, production, demand, null, inputType, outputType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a transforming industry with an assigned location.
+&nbsp;     *
+&nbsp;     * @param industryName  the unique name of the industry
+&nbsp;     * @param industryCost  the fixed operating cost
+&nbsp;     * @param production    the amount of cargo produced per cycle
+&nbsp;     * @param demand        the amount of input cargo required per cycle
+&nbsp;     * @param location      the {@link Location} where the industry is placed
+&nbsp;     * @param inputType     the type of cargo consumed
+&nbsp;     * @param outputType    the type of cargo produced
+&nbsp;     * @throws NullPointerException if {@code inputType} or {@code outputType} is null
+&nbsp;     */
+&nbsp;    public TransformingIndustry(String industryName,
+&nbsp;                                int industryCost,
+&nbsp;                                double production,
+&nbsp;                                double demand,
+&nbsp;                                Location location,
+&nbsp;                                CargoType inputType,
+<b class="nc">&nbsp;                                CargoType outputType) {</b>
+<b class="nc">&nbsp;        Objects.requireNonNull(inputType,  &quot;Input cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        Objects.requireNonNull(outputType, &quot;Output cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        this.industryName = industryName;</b>
+<b class="nc">&nbsp;        this.industryCost = industryCost;</b>
+<b class="nc">&nbsp;        this.production   = production;</b>
+<b class="nc">&nbsp;        this.demand       = demand;</b>
+<b class="nc">&nbsp;        this.location     = location;</b>
+<b class="nc">&nbsp;        this.inputCargo   = new Cargo(inputType,  0.0);</b>
+<b class="nc">&nbsp;        this.outputCargo  = new Cargo(outputType, 0.0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getIndustryName() {
+<b class="nc">&nbsp;        return industryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getIndustryCost() {
+<b class="nc">&nbsp;        return industryCost;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public double getProduction() {
+<b class="nc">&nbsp;        return production;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public double getDemand() {
+<b class="nc">&nbsp;        return demand;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void setLocation(Location location) {
+<b class="nc">&nbsp;        this.location = location;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Location getLocation() {
+<b class="nc">&nbsp;        return location;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Produces output cargo if enough input cargo is available.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Consumes {@code demand} units of input cargo and adds {@code production}
+&nbsp;     * units to the output cargo storage.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void produceCargo() {
+<b class="nc">&nbsp;        if (inputCargo.getQuantity() &gt;= demand) {</b>
+<b class="nc">&nbsp;            outputCargo.addQuantity(production);</b>
+<b class="nc">&nbsp;            inputCargo.removeQuantity(demand);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Consumes a specified quantity of input cargo.
+&nbsp;     *
+&nbsp;     * @param quantity the amount of input cargo to consume
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void consumeCargo(double quantity) {
+<b class="nc">&nbsp;        inputCargo.removeQuantity(quantity);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the output cargo produced by this industry.
+&nbsp;     *
+&nbsp;     * @return the {@link Cargo} instance representing output storage
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Cargo getCargo() {
+<b class="nc">&nbsp;        return outputCargo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the type of input cargo this industry consumes.
+&nbsp;     *
+&nbsp;     * @return the {@link CargoType} of input cargo
+&nbsp;     */
+&nbsp;    public CargoType getInputCargoType() {
+<b class="nc">&nbsp;        return inputCargo.getType();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the type of output cargo this industry produces.
+&nbsp;     *
+&nbsp;     * @return the {@link CargoType} of output cargo
+&nbsp;     */
+&nbsp;    public CargoType getOutputCargoType() {
+<b class="nc">&nbsp;        return outputCargo.getType();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the per-cycle production rate.
+&nbsp;     *
+&nbsp;     * @param production the new production amount per cycle
+&nbsp;     */
+&nbsp;    public void setProduction(double production) {
+<b class="nc">&nbsp;        this.production = production;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the per-cycle demand rate.
+&nbsp;     *
+&nbsp;     * @param demand the new input demand per cycle
+&nbsp;     */
+&nbsp;    public void setDemand(double demand) {
+<b class="nc">&nbsp;        this.demand = demand;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the input cargo type. Resets stored quantity if type changes.
+&nbsp;     *
+&nbsp;     * @param newType the new {@link CargoType} for input
+&nbsp;     * @throws NullPointerException if {@code newType} is null
+&nbsp;     */
+&nbsp;    public void setInputCargo(CargoType newType) {
+<b class="nc">&nbsp;        Objects.requireNonNull(newType, &quot;Input cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        this.inputCargo.setCargoType(newType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the output cargo type. Resets stored quantity if type changes.
+&nbsp;     *
+&nbsp;     * @param newType the new {@link CargoType} for output
+&nbsp;     * @throws NullPointerException if {@code newType} is null
+&nbsp;     */
+&nbsp;    public void setOutputCargo(CargoType newType) {
+<b class="nc">&nbsp;        Objects.requireNonNull(newType, &quot;Output cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        this.outputCargo.setCargoType(newType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the current quantity of input cargo stored.
+&nbsp;     *
+&nbsp;     * @return the input cargo quantity
+&nbsp;     */
+&nbsp;    public double getInputCargoQuantity() {
+<b class="nc">&nbsp;        return inputCargo.getQuantity();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the current quantity of input cargo.
+&nbsp;     *
+&nbsp;     * @param quantity the new input cargo quantity
+&nbsp;     */
+&nbsp;    public void setInputCargoQuantity(double quantity) {
+<b class="nc">&nbsp;        inputCargo.setQuantity(quantity);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this transforming industry,
+&nbsp;     * including current cargo levels.
+&nbsp;     *
+&nbsp;     * @return a formatted string summarizing consumption and production
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return String.format(</b>
+&nbsp;                &quot;TransformingIndustry[%s] Consumes %s:%.2f -&gt; Produces %s:%.2f&quot;,
+&nbsp;                industryName,
+<b class="nc">&nbsp;                getInputCargoType(), inputCargo.getQuantity(),</b>
+<b class="nc">&nbsp;                getOutputCargoType(), outputCargo.getQuantity()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>
