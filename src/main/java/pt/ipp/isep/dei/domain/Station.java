@@ -3,6 +3,7 @@ package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representa uma estação no mapa capaz de coletar carga de indústrias
@@ -111,11 +112,7 @@ public class Station {
      * Retorna cópia defensiva da lista de cargas.
      */
     public List<Cargo> getCargoes() {
-        List<Cargo> copy = new ArrayList<>();
-        for (Cargo c : cargoes) {
-            copy.add(new Cargo(c.getType(), c.getQuantity()));
-        }
-        return copy;
+        return cargoes;
     }
 
     @Override
@@ -250,5 +247,37 @@ public class Station {
 
         return events;
     }
+
+    public double loadCargo(CargoType type, double requested) {
+        Objects.requireNonNull(type, "type cannot be null");
+        if (requested <= 0) return 0.0;
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                double available = c.getQuantity();
+                double taken = Math.min(available, requested);
+                c.removeQuantity(taken);
+                return taken;
+            }
+        }
+        return 0.0;
+    }
+
+    /**
+     * Recebe 'quantity' unidades de 'type' adicionando ao estoque interno.
+     * @throws IllegalArgumentException se quantity for negativo
+     */
+    public void unloadCargo(CargoType type, double quantity) {
+        Objects.requireNonNull(type, "type cannot be null");
+        if (quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.addQuantity(quantity);
+                return;
+            }
+        }
+        // não deveria ocorrer, mas garante registro
+        cargoes.add(new Cargo(type, quantity));
+    }
+
 
 }

@@ -2,8 +2,9 @@ package pt.ipp.isep.dei.domain;
 
 import pt.ipp.isep.dei.user.User;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a player in the system.
@@ -23,15 +24,19 @@ public class Player extends User {
     private final List<Train> ownedTrains = new ArrayList<>();
 
     /**
-     * Constructs a new Player.
+     * Constructs a new Player with the given username, password and initial budget.
      *
      * @param username the username of the player
      * @param password the password of the player
-     * @param budget   the initial budget of the player
+     * @param initialBudget the initial budget value
+     * @throws NullPointerException if username or password is null
      */
-    public Player(String username, String password, double budget) {
+    public Player(String username, String password, double initialBudget) {
         super(username, password);
-        this.budget = budget;
+        if (initialBudget < 0) {
+            throw new IllegalArgumentException("Initial budget cannot be negative");
+        }
+        this.budget = initialBudget;
     }
 
     /**
@@ -47,18 +52,13 @@ public class Player extends User {
      * Sets the player's budget.
      *
      * @param budget the new budget value
+     * @throws IllegalArgumentException if budget is negative
      */
     public void setBudget(double budget) {
+        if (budget < 0) {
+            throw new IllegalArgumentException("Budget cannot be negative");
+        }
         this.budget = budget;
-    }
-
-    /**
-     * Validates that the player's budget is non-negative.
-     *
-     * @return true if the budget is non-negative, false otherwise
-     */
-    public boolean validateBudget() {
-        return budget >= 0;
     }
 
     /**
@@ -79,6 +79,7 @@ public class Player extends User {
      * @return the locomotive if the purchase was successful, or null if insufficient budget
      */
     public Locomotive buyLocomotive(Locomotive loco) {
+        Objects.requireNonNull(loco, "Locomotive cannot be null");
         if (hasSufficientBudget(loco.getPrice())) {
             budget -= loco.getPrice();
             ownedLocomotives.add(loco);
@@ -100,11 +101,13 @@ public class Player extends User {
 
     /**
      * Adds a train to the player's owned trains.
-     * Used when a player buys a locomotive and creates a train (US9/US10).
+     * Used when a player creates a train (US10).
      *
      * @param train the train to add
+     * @throws NullPointerException if train is null
      */
     public void addTrain(Train train) {
+        Objects.requireNonNull(train, "Train cannot be null");
         ownedTrains.add(train);
     }
 
@@ -125,6 +128,9 @@ public class Player extends User {
      * @return true if the amount was successfully deducted, false otherwise
      */
     public boolean spend(double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Spend amount cannot be negative");
+        }
         if (hasSufficientBudget(amount)) {
             budget -= amount;
             return true;

@@ -69,7 +69,7 @@ public class Map {
      * @return a new {@code List} containing all stations
      */
     public List<Station> getStations() {
-        return new ArrayList<>(stations);
+        return stations;
     }
 
     /**
@@ -289,20 +289,21 @@ public class Map {
      *   <li>Locomotives move and interact with stations (e.g., loading/unloading).</li>
      * </ol>
      */
+    // Map.java
     public void update() {
+        // 1) produção
         for (Industry ind : industries) {
             ind.produceCargo();
         }
-        for (Station st : stations) {
-            st.collectNearbyIndustries(industries);
-        }
+        // 2) movimento de locomotivas (sem tocar nas estações!)
         for (Locomotive loco : locomotives) {
             loco.move();
             if (loco.hasStationNearby()) {
-                // TODO: implement station loading logic
+                // TODO: loading logic
             }
         }
     }
+
 
     /**
      * Updates only the stations by collecting from nearby industries.
@@ -364,48 +365,5 @@ public class Map {
      *
      * @return a {@code List<String>} describing actions that occurred during the update
      */
-    public List<String> updateWithEvents() {
-        List<String> events = new ArrayList<>();
 
-        for (Industry ind : industries) {
-            ind.produceCargo();
-        }
-
-        for (Station st : stations) {
-            events.addAll(st.collectAndDistribute(industries));
-        }
-
-        for (Locomotive loco : locomotives) {
-            Station current = loco.getCurrentStation();
-            if (current == null && !loco.getRoute().isEmpty()) {
-                loco.move();
-                current = loco.getCurrentStation();
-            }
-            if (current == null) {
-                continue;
-            }
-
-            double loaded = loco.collectFromStation();
-            if (loaded > 0) {
-                events.add(String.format(
-                        "Locomotive %s loaded %.2f units at %s",
-                        loco.getId(), loaded, current.getStationName()));
-            }
-
-            loco.move();
-            Station dest = loco.getCurrentStation();
-            events.add(String.format(
-                    "Locomotive %s moved to %s",
-                    loco.getId(), dest.getStationName()));
-
-            double unloaded = loco.unloadAllToCurrentStation();
-            if (unloaded > 0) {
-                events.add(String.format(
-                        "Locomotive %s unloaded %.2f units at %s",
-                        loco.getId(), unloaded, dest.getStationName()));
-            }
-        }
-
-        return events;
-    }
 }

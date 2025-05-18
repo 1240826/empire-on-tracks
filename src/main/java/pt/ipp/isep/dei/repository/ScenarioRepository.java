@@ -10,7 +10,7 @@ public class ScenarioRepository {
     private LocalDateTime initialDate;
     private final List<Scenario> scenarios = new ArrayList<>();
 
-    public void addScenario(LocalDateTime march, Scenario scenario) {
+    public void addScenario(Scenario scenario) {
         scenarios.add(scenario);
     }
 
