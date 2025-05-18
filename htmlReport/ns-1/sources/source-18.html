@@ -1,0 +1,270 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Scenario</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Scenario (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Scenario</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a simulation scenario, including a trigger date, time period,
+&nbsp; * and configured resources such as locomotives, cargos, and industry production settings.
+&nbsp; */
+&nbsp;public class Scenario {
+&nbsp;    // Date when the scenario should be executed
+&nbsp;    private LocalDateTime triggerDate;
+&nbsp;
+&nbsp;    // Configured resources for this scenario
+<b class="fc">&nbsp;    private final List&lt;Locomotive&gt; locomotives = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final List&lt;Cargo&gt; cargos = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    // Time period over which the scenario runs
+&nbsp;    private Period period;
+&nbsp;
+&nbsp;    // Industry production frequency (percentage)
+&nbsp;    private int industryProductionFrequency;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new Scenario with the specified trigger date.
+&nbsp;     *
+&nbsp;     * @param triggerDate the date and time when the scenario is triggered
+&nbsp;     * @throws NullPointerException if triggerDate is null
+&nbsp;     */
+<b class="fc">&nbsp;    public Scenario(LocalDateTime triggerDate) {</b>
+<b class="fc">&nbsp;        this.triggerDate = Objects.requireNonNull(triggerDate, &quot;triggerDate must not be null&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the trigger date of this scenario.
+&nbsp;     *
+&nbsp;     * @return the trigger date
+&nbsp;     */
+&nbsp;    public LocalDateTime getTriggerDate() {
+<b class="fc">&nbsp;        return triggerDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the trigger date for this scenario.
+&nbsp;     *
+&nbsp;     * @param triggerDate the new trigger date
+&nbsp;     * @throws NullPointerException if triggerDate is null
+&nbsp;     */
+&nbsp;    public void setTriggerDate(LocalDateTime triggerDate) {
+<b class="fc">&nbsp;        this.triggerDate = Objects.requireNonNull(triggerDate, &quot;triggerDate must not be null&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the time period for the scenario execution.
+&nbsp;     *
+&nbsp;     * @param period the period over which the scenario runs
+&nbsp;     * @throws NullPointerException if period is null
+&nbsp;     */
+&nbsp;    public void setPeriod(Period period) {
+<b class="fc">&nbsp;        this.period = Objects.requireNonNull(period, &quot;period must not be null&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the time period of the scenario.
+&nbsp;     *
+&nbsp;     * @return the simulation period
+&nbsp;     */
+&nbsp;    public Period getPeriod() {
+<b class="fc">&nbsp;        return period;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a locomotive to this scenario&#39;s configuration.
+&nbsp;     *
+&nbsp;     * @param loco the locomotive to add
+&nbsp;     * @throws NullPointerException if loco is null
+&nbsp;     */
+&nbsp;    public void addLocomotive(Locomotive loco) {
+<b class="fc">&nbsp;        locomotives.add(Objects.requireNonNull(loco, &quot;loco must not be null&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an immutable list of configured locomotives.
+&nbsp;     *
+&nbsp;     * @return list of locomotives
+&nbsp;     */
+&nbsp;    public List&lt;Locomotive&gt; getLocomotives() {
+<b class="fc">&nbsp;        return new ArrayList&lt;&gt;(locomotives);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a cargo type to this scenario&#39;s configuration.
+&nbsp;     *
+&nbsp;     * @param cargo the cargo to add
+&nbsp;     * @throws NullPointerException if cargo is null
+&nbsp;     */
+&nbsp;    public void addCargo(Cargo cargo) {
+<b class="fc">&nbsp;        cargos.add(Objects.requireNonNull(cargo, &quot;cargo must not be null&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an immutable list of configured cargos.
+&nbsp;     *
+&nbsp;     * @return list of cargos
+&nbsp;     */
+&nbsp;    public List&lt;Cargo&gt; getCargos() {
+<b class="fc">&nbsp;        return new ArrayList&lt;&gt;(cargos);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the industry production frequency, as a percentage, for this scenario.
+&nbsp;     *
+&nbsp;     * @param percent production frequency between 0 and 100 inclusive
+&nbsp;     * @throws IllegalArgumentException if percent is outside the range [0, 100]
+&nbsp;     */
+&nbsp;    public void setIndustryProductionFrequency(int percent) {
+<b class="fc">&nbsp;        if (percent &lt; 0 || percent &gt; 100) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;percent must be between 0 and 100&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        this.industryProductionFrequency = percent;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the configured industry production frequency.
+&nbsp;     *
+&nbsp;     * @return production frequency percentage
+&nbsp;     */
+&nbsp;    public int getIndustryProductionFrequency() {
+<b class="fc">&nbsp;        return industryProductionFrequency;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Applies all resources of this scenario to the provided map.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Example: places each locomotive onto the map to start its route.
+&nbsp;     * Additional resource application (cargo distribution, industry setup) can be implemented here.
+&nbsp;     *
+&nbsp;     * @param map         the Map context to which resources are applied
+&nbsp;     * @param locomotives list of locomotives to place on the map
+&nbsp;     * @return
+&nbsp;     * @throws NullPointerException if map or locomotives is null
+&nbsp;     */
+<b class="fc">&nbsp;    public List&lt;String&gt; applyAll(Map map, List&lt;Locomotive&gt; locomotives) {</b>
+<b class="fc">&nbsp;        Objects.requireNonNull(map, &quot;map must not be null&quot;);</b>
+<b class="fc">&nbsp;        Objects.requireNonNull(locomotives, &quot;locomotives must not be null&quot;);</b>
+<b class="fc">&nbsp;        for (Locomotive loco : locomotives) {</b>
+&nbsp;            map.addLocomotive(loco);
+&nbsp;        }
+&nbsp;        return null;
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>
