@@ -22,7 +22,7 @@ public class City {
     /**
      * Private constructor. Use {@link #createCity} to instantiate.
      */
-    private City(String name, int centerX, int centerY, int houseBlocksCount) {
+    City(String name, int centerX, int centerY, int houseBlocksCount) {
         this.name = name;
         this.centerX = centerX;
         this.centerY = centerY;
