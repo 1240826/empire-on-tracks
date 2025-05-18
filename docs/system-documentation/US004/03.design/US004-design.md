@@ -4,24 +4,27 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...                    | Answer                   | Justification (with patterns)                                                                                              |
-|:---------------|:---------------------------------------------------------------|:-------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                                | CreateScenarioUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.             |
-|                | ... coordinating the US?                                       | CreateScenarioController | Controller: manages the flow and logic of the use case.                                                                   |
-|                | ... knowing the user using the system?                         | UserSession              | IE: represents the user session throughout the interaction.                                                               |
-|                |                                                                | ApplicationSession       | IE: manages the session and provides access to the current UserSession.                                                    |
-| Step 2         | ... requesting the map to create the scenario?                 | CreateScenarioController | IE: asks for the map selection to proceed.                                                                                  |
-|                | ... fetching all available maps for selection?                 | MapRepository            | IE: retrieves map information from the data store.                                                                         |
-| Step 3         | ... storing the selected map?                                  | CreateScenarioController | IE: temporarily holds the map choice for the scenario.                                                                     |
-| Step 4         | ... requesting temporal information (start and end dates)?     | CreateScenarioController | IE: asks for temporal details for the scenario.                                                                            |
-| Step 5         | ... validating the period (start and end dates)?               | Period                   | IE: handles and validates the start and end dates for the scenario.                                                         |
-| Step 6         | ... asking for cargo type?                                     | CreateScenarioController | IE: asks the user to specify the cargo type for the scenario.                                                              |
-|                | ... selecting the cargo type?                                  | CargoType                | IE: defines the different types of cargo for the scenario.                                                                  |
-| Step 7         | ... asking for locomotion type?                                | CreateScenarioController | IE: asks the user to specify the locomotion type for the scenario.                                                          |
-|                | ... selecting the locomotion type?                             | LocomotionType           | IE: defines the different types of locomotives for the scenario.                                                            |
-| Step 8         | ... creating the new scenario with all data?                   | ScenarioRepository       | Creator: stores the new scenario with all relevant information, including map, period, cargo type, and locomotion type.     |
-|                | ... saving the scenario to the database?                        | ScenarioRepository       | IE: saves the scenario data permanently.                                                                                    |
-| Step 9         | ... informing the user of success?                             | CreateScenarioUI         | IE: informs the user of the successful creation of the scenario.                                                            |
+| Interaction ID | Question: Which class is responsible for...           | Answer                    | Justification (with patterns)                                                                                 |
+|:---------------|:------------------------------------------------------|:--------------------------|:--------------------------------------------------------------------------------------------------------------|
+| Step 1         | ... interacting with the actor?                       | CreateScenarioUI          | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
+|                | ... coordinating the US?                              | CreateScenarioController  | Controller: manages the flow and logic of the use case.                                                       |
+| Step 2         | ... requesting scenario period (start and end date)?  | CreateScenarioUI          | IE:  is responsible for user interactions.                                                                    |
+|                | ... validating the period (start and end dates)?      | Period                    | IE: knows its own data, handles and validates the start and end dates for the scenario.                       |
+| **Step 3**     | showing all available locomotive types?               | CreateScenarioUI          | IE:  is responsible for user interactions.                                                                    |
+|                | adding each selected locomotive type to the scenario? | CreateScenarioController  | IE: coordinates inclusion in the Scenario.                                                                    |
+|                | storing/fetching available types?                     | LocomotiveRepository      | IE: retrieves and persists locomotive‐type data.                                                              |
+|                | encapsulating availability logic on each locomotive?  | Locomotive                | IE: applies its own availability period.                                                                      |
+| **Step 4**     | showing all available cargo types?                    | CreateScenarioUI          | IE:  is responsible for user interactions.                                                                    |
+|                | adding each selected cargo type to the scenario?      | CreateScenarioController  | IE: coordinates inclusion in the Scenario.                                                                    |
+|                | storing/fetching available cargo?                     | CargoRepository           | IE: retrieves and persists cargo‐type data.                                                                   |
+|                | encapsulating cargo-behavior logic?                   | Cargo                     | IE: applies its own behavior rules.                                                                           |
+| **Step 5**     | requesting production frequency?                      | CreateScenarioUI          | IE: a is responsible for user interactions.                                                                   |
+|                | storing/validating the percentage in the scenario?    | CreateScenarioController  | IE: coordinates setting of production frequency on Scenario.                                                  |
+| **Step 6**     | confirming all data and invoking persistence?         | CreateScenarioUI          | IE:  is responsible for user interactions.                                                                    |
+|                | persisting the new Scenario?                          | ScenarioRepository        | Creator: stores the new scenario with all relevant information.                                               |
+| **Step 7**     | informing operation success?                          | CreateScenarioUI          | IE:  is responsible for user interactions.                                                                    |
+
+
 
 ### Systematization ##
 
@@ -30,8 +33,8 @@ According to the taken rationale, the conceptual classes promoted to software cl
 * Scenario
 * Map
 * Period
-* CargoType
-* LocomotionType
+* Cargo
+* Locomotive
 
 Other software classes (i.e. Pure Fabrication) identified:
 
@@ -39,8 +42,8 @@ Other software classes (i.e. Pure Fabrication) identified:
 * CreateScenarioController
 * ScenarioRepository
 * MapRepository
-* ApplicationSession
-* UserSession
+* CargoRepository
+* LocomotiveRepository
 
 
 ## 3.2. Sequence Diagram (SD)
@@ -49,7 +52,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![US004-SD-full.svg](svg/US004-SD-full.svg)
 
 ### Split Diagrams
 
@@ -57,24 +60,22 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
+![US004-SD-split.svg](svg/US004-SD-split.svg)
 
-**Get Task Category List Partial SD**
+**Create Scenario Partial SD**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
+![US004-SD-partial-create-scenario.svg](svg/US004-SD-partial-create-scenario.svg)
 
-**Get Task Category Object**
+**Define Available Locomotive types**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
+![US004-SD-partial-define-available-locomotive.svg](svg/US004-SD-partial-define-available-locomotive.svg)
 
-**Get Employee**
+**Define Available Cargo types**
 
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
+![US004-SD-partial-define-available-cargo.svg](svg/US004-SD-partial-define-available-cargo.svg)
 
-**Create Task**
 
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![US004-CD.svg](svg/US004-CD.svg)

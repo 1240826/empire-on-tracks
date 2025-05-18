@@ -1,69 +1,117 @@
-# US006 - Create a Task 
+# US004 - Create a Scenario
 
 ## 4. Tests 
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
+**Test 1:** Check that it is not possible to create an instance of the Scenario class with null values. 
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-	}
+	@Test
+    void setPeriod_withNull_throwsException() {
+        assertThrows(NullPointerException.class, () -> scenario.setPeriod(null));
+    }
 	
 
-**Test 2:** Check that it is not possible to create an instance of the Task class with a reference containing less than five chars - AC2. 
+**Test 2:** Check that it is not possible to create an instance of the Scenario class with a null locomotive type. 
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureReferenceMeetsAC2() {
-		Category cat = new Category(10, "Category 10");
-		
-		Task instance = new Task("Ab1", "Task Description", "Informal Data", "Technical Data", 3, 3780, cat);
-	}
+	@Test
+    void addLocomotive_withNull_throwsException() {
+        assertThrows(NullPointerException.class, () -> scenario.addLocomotive(null));
+    }
 
 _It is also recommended to organize this content by subsections._ 
 
 
 ## 5. Construction (Implementation)
 
-### Class CreateTaskController 
+### Class CreateScenarioController 
 
 ```java
-public Task createTask(String reference, String description, String informalDescription, String technicalDescription,
-                       Integer duration, Double cost, String taskCategoryDescription) {
+public void startCreateScenario(LocalDateTime triggerDate, int periodStart, int periodEnd) {
+    Objects.requireNonNull(triggerDate, "triggerDate must not be null");
+    Period period = new Period(periodStart, periodEnd);
 
-	TaskCategory taskCategory = getTaskCategoryByDescription(taskCategoryDescription);
+    this.scenario = new Scenario(triggerDate);
+    this.scenario.setPeriod(period);
+    mapRepo.getCurrentMap();
+}
 
-	Employee employee = getEmployeeFromSession();
-	Organization organization = getOrganizationRepository().getOrganizationByEmployee(employee);
+public List<Locomotive> getAllLocomotiveTemplates() {
+    return locoRepo.getAllTemplates();
+}
 
-	newTask = organization.createTask(reference, description, informalDescription, technicalDescription, duration,
-                                      cost,taskCategory, employee);
-    
-	return newTask;
+public void addLocomotiveByTemplate(int templateIndex) {
+    Locomotive clone = locoRepo.getTemplate(templateIndex);
+    if (clone == null) {
+        throw new IllegalArgumentException("Invalid locomotive template index: " + templateIndex);
+    }
+    scenario.addLocomotive(clone);
+}
+
+
+public void setLocomotiveAvailability(int locoIndex, int periodStart, int periodEnd) {
+    Period availability = new Period(periodStart, periodEnd);
+    List<Locomotive> list = scenario.getLocomotives();
+    if (locoIndex < 0 || locoIndex >= list.size()) {
+        throw new IllegalArgumentException("Invalid locomotive index: " + locoIndex);
+    }
+    list.get(locoIndex).setAvailability(availability);
+}
+
+
+public void addCargoType(CargoType cargoType) {
+    Objects.requireNonNull(cargoType, "cargoType must not be null");
+    Cargo c = new Cargo(cargoType,0);
+    cargoRepo.addAvailableCargo(c);
+    scenario.addCargo(c);
+}
+
+public void setCargoBehavior(CargoType cargoType, String behavior) {
+    scenario.getCargos().stream()
+            .filter(c -> c.getType() == cargoType)
+            .findFirst()
+            .ifPresent(c -> c.setBehavior(behavior));
+}
+
+
+public void setIndustryProductionFrequency(int percent) {
+    scenario.setIndustryProductionFrequency(percent);
+}
+
+public boolean confirmScenarioCreation() {
+    scenarioRepo.addScenario(scenario);
+    return true;
 }
 ```
 
-### Class Organization
+### Class Scenario
 
 ```java
-public Optional<Task> createTask(String reference, String description, String informalDescription,
-                                 String technicalDescription, Integer duration, Double cost, TaskCategory taskCategory,
-                                 Employee employee) {
-    
-    Task task = new Task(reference, description, informalDescription, technicalDescription, duration, cost,
-                         taskCategory, employee);
+public void addLocomotive(Locomotive loco) {
+    locomotives.add(Objects.requireNonNull(loco, "loco must not be null"));
+}
 
-    addTask(task);
-        
-    return task;
+public List<Locomotive> getLocomotives() {
+    return new ArrayList<>(locomotives);
+}
+
+public void addCargo(Cargo cargo) {
+    cargos.add(Objects.requireNonNull(cargo, "cargo must not be null"));
+}
+
+public List<Cargo> getCargos() {
+    return new ArrayList<>(cargos);
+}
+public void setIndustryProductionFrequency(int percent) {
+    if (percent < 0 || percent > 100) {
+        throw new IllegalArgumentException("percent must be between 0 and 100");
+    }
+    this.industryProductionFrequency = percent;
 }
 ```
 
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
-
-* For demo purposes some tasks are bootstrapped while system starts.
+* A new option to create a scenario was added.
 
 
 ## 7. Observations

@@ -1,0 +1,47 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":CreateScenarioController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
+participant ":Scenario" as Scenario
+participant ":MapRepository" as MapRepo
+participant ":Period" as Period
+
+autonumber 4
+-> Controller : startCreateScenario(startDate, endDate)
+activate Controller
+autonumber 4.1
+    group Create Scenario
+    Controller -> REPOS : getInstance()
+    activate REPOS
+    REPOS --> Controller : repositories
+    deactivate REPOS
+
+
+    Controller -> REPOS_SINGLETON : getScenarioRepository()
+    activate REPOS_SINGLETON
+    REPOS_SINGLETON --> Controller : scenarioRepository
+    deactivate REPOS_SINGLETON
+
+    Controller -> Period : newPeriod(start, end)
+    activate Period
+    Period --> Controller : period
+    deactivate Period
+    Controller -> Scenario : setPeriod(period)
+    deactivate REPOS_SINGLETON
+
+
+    Controller -> SCENARIO_REPO : saveScenario(scenario)
+    activate SCENARIO_REPO
+    SCENARIO_REPO -> SCENARIO_REPO : storeRepScenario(scenario)
+    SCENARIO_REPO --> Controller : scenario
+    deactivate SCENARIO_REPO
+    end
+autonumber 5
+<-- Controller : scenario
+
+@enduml

@@ -36,6 +36,14 @@ As an Editor, I want to add a city in a position XY of the selected map, with a 
 
 > **Answer:** Cities are places with a name, a location and a number of house blocks. Each house block functions as an industry blocks but generates mail/passengers, and demand mail/passangers and final produts like food or goods. The house blocks will accept and generate cargos when inside the economic radius of a station as other industries. If you consider a normal distribution the probability of being far from the town center becames zero. no;
 
+> **Question:** Regarding the implementation of house blocks in the city map, I need to clarify how these should be positioned: Should house block coordinates be absolute positions on the map, or relative to the city center (e.g., +2,-3 from center)? Are there any constraints we should implement, such as maximum distance allowed between house blocks and city center?
+
+> **Answer:** If you decide to assign positions on editor's decision, it's up to the editor to decide the position ;-)
+If you decide to assign positions automatically, you can use a normal distribution. Regarding absolute or relative positions, it is up to you to decide what best suits your needs, keeping in mind the overbuilding restriction.
+
+> **Question:** 
+
+
 
 
 ### 1.3. Acceptance Criteria

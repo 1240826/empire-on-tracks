@@ -1,6 +1,5 @@
 package pt.ipp.isep.dei.domain;
 
-import java.util.Objects;
 
 /**
  * Represents a simulation period using integer time units.

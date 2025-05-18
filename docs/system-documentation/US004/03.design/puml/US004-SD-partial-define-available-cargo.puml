@@ -1,0 +1,27 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":CreateScenarioController" as Controller
+
+participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
+participant "cargoRepository\n:CargoRepository" as CargoRepo
+
+
+autonumber 28
+-> Controller :  addCargoType(cargo)
+autonumber 28.1
+activate Controller
+Controller -> CargoRepo : addAvailableCargo(cargo)
+
+    group Define available cargo
+       loop for each selected behavior
+               -> Controller : setCargoBehavior(cargo, behavior)
+
+
+       end
+    end
+
+
+@enduml
