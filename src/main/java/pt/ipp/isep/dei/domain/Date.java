@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
 /**
- * Relógio da simulação com auto-tick configurável e tick manual.
+ * Simulation clock with configurable auto-tick and manual tick support.
  */
 public class Date {
     private LocalDateTime currentDate;
@@ -13,21 +13,29 @@ public class Date {
     private ScheduledFuture<?> futureTick;
     private final long tickIntervalSeconds;
 
-    /** @param startDate Data inicial da simulação */
-    /** @param tickIntervalSeconds Intervalo em segundos para cada mês automático */
+    /**
+     * Constructs the simulation clock.
+     *
+     * @param startDate           Initial date of the simulation.
+     * @param tickIntervalSeconds Interval in seconds for each automatic month tick.
+     */
     public Date(LocalDateTime startDate, long tickIntervalSeconds) {
         this.currentDate          = startDate;
         this.tickIntervalSeconds  = tickIntervalSeconds;
     }
 
-
-
-    /** Data atual do simulador. */
+    /**
+     * Returns the current date of the simulator.
+     *
+     * @return the current simulation date
+     */
     public LocalDateTime getDate() {
         return currentDate;
     }
 
-    /** Inicia auto-tick (mês a cada tickIntervalSeconds). */
+    /**
+     * Starts auto-tick (advances a month every tickIntervalSeconds).
+     */
     public void start() {
         if (futureTick == null || futureTick.isDone() || futureTick.isCancelled()) {
             futureTick = scheduler.scheduleAtFixedRate(
@@ -39,7 +47,9 @@ public class Date {
         }
     }
 
-    /** Pausa auto-tick. */
+    /**
+     * Pauses the auto-tick.
+     */
     public void stop() {
         if (futureTick != null) {
             futureTick.cancel(false);
@@ -47,12 +57,16 @@ public class Date {
         }
     }
 
-    /** Avança manualmente um mês. */
+    /**
+     * Advances the clock by one month manually.
+     */
     public void advanceManually() {
         currentDate = currentDate.plusMonths(1);
     }
 
-    /** Desliga o executor (ao encerrar a app). */
+    /**
+     * Shuts down the scheduler (when closing the application).
+     */
     public void shutdown() {
         scheduler.shutdownNow();
     }
