@@ -43,14 +43,14 @@ class Map {
 }
 
 
-class StationController {
+class ListStationController {
     + StationController()
     + getAllStations()
     + getStationDetails(stationId)
     - getStationByName(name)
 }
 
-note right of StationController
+note right of ListStationController
     Station details are retrieved
     from selected station ID
 end note
@@ -61,11 +61,11 @@ class StationListUI {
 }
 
 ' Relationships
-StationListUI .> StationController
+StationListUI .> ListStationController
 
-StationController ..> Player
-StationController ..> Station
-StationController ..> Map
+ListStationController ..> Player
+ListStationController ..> Station
+ListStationController ..> Map
 
 
 Map --> "*" Station : stations

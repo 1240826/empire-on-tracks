@@ -11,7 +11,7 @@ import java.util.List;
  * Provides methods to display trains grouped by locomotive type,
  * sorted by name, and shows details for each train.
  */
-public class ListTrainsUI {
+public class ListTrainsUI implements Runnable {
     private ListTrainsController controller;
 
     public ListTrainsUI(ListTrainsController controller) {
@@ -52,5 +52,9 @@ public class ListTrainsUI {
                     train.getCurrentCargoes().isEmpty() ? "None" : String.join(", ", train.getCurrentCargoes()));
         }
     }
-
+    /** Menu dispatch entry-point */
+    @Override
+    public void run() {
+        requestTrainList();
+    }
 }

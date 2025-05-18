@@ -9,10 +9,10 @@ import java.util.List;
  *
  * Provides methods to retrieve station names and obtain details about specific stations.
  */
-public class StationController {
+public class ListStationController {
     private final Map map;
 
-    public StationController(Map map) {
+    public ListStationController(Map map) {
         this.map = map;
     }
 
