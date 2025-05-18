@@ -1,6 +1,5 @@
 package pt.ipp.isep.dei.repository;
 
-import pt.ipp.isep.dei.domain.Date;
 import pt.ipp.isep.dei.domain.Scenario;
 
 import java.time.LocalDateTime;
@@ -46,5 +45,8 @@ public class ScenarioRepository {
         initial.setTriggerDate(startDate);
         // adiciona à lista interna
         addScenario(initial);
+    }
+
+    public void addScenario(Scenario scenario) {
     }
 }

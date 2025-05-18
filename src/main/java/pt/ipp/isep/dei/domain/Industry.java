@@ -1,39 +1,87 @@
 package pt.ipp.isep.dei.domain;
 
-import pt.ipp.isep.dei.domain.Location;
-import pt.ipp.isep.dei.domain.Cargo;
-
 /**
- * Interface comum para todos os tipos de indústria.
+ * Common interface for different types of industries in the simulation.
+ * <p>
+ * Defines the contract for production, consumption, cost, and location tracking.
+ * Implementing classes may represent industries that produce, transform,
+ * or handle cargo in various ways.
+ * </p>
  */
 public interface Industry {
 
-    /** Nome da indústria */
+    /**
+     * Returns the unique name of this industry.
+     *
+     * @return the industry name
+     */
     String getIndustryName();
 
-    /** Custo fixo de operação da indústria */
+    /**
+     * Returns the fixed operating cost of this industry per cycle.
+     *
+     * @return the operating cost
+     */
     int getIndustryCost();
 
-    /** Taxa de produção mensal */
+    /**
+     * Returns the quantity of cargo produced or transformed each cycle.
+     *
+     * @return the production rate
+     */
     double getProduction();
 
-    /** Demanda mensal para processo (quando aplicável) */
+    /**
+     * Returns the demand threshold required to enable production or transformation.
+     * May be zero for industries with no input requirements.
+     *
+     * @return the demand amount
+     */
     double getDemand();
 
-    /** Localização no mapa */
+    /**
+     * Sets the location of this industry on the simulation map.
+     *
+     * @param location the {@link Location} to place the industry
+     */
     void setLocation(Location location);
+
+    /**
+     * Returns the current location of this industry on the simulation map.
+     *
+     * @return the {@link Location} of the industry, or null if unplaced
+     */
     Location getLocation();
 
-    /** Executa um ciclo de produção/transformação */
+    /**
+     * Executes one production or transformation cycle.
+     * <p>
+     * Implementations should handle input consumption, output generation,
+     * and any internal state updates required per simulation tick.
+     * </p>
+     */
     void produceCargo();
 
-    /** Consome a quantidade especificada do estoque de entrada (quando aplicável) */
+    /**
+     * Consumes a specified quantity of input cargo from internal storage.
+     * Only applicable to industries that require input resources.
+     *
+     * @param quantity the amount of cargo to consume
+     */
     void consumeCargo(double quantity);
 
-    /** Retorna o objeto Cargo associado (geralmente o estoque de saída) */
+    /**
+     * Returns the {@link Cargo} object representing output or current stock.
+     *
+     * @return the cargo storage for this industry
+     */
     Cargo getCargo();
 
-    /** Quantidade em estoque do Cargo retornado por getCargo() */
+    /**
+     * Returns the current quantity in the cargo storage returned by {@link #getCargo()}.
+     *
+     * @return the cargo quantity
+     */
     default double getCargoQuantity() {
         return getCargo().getQuantity();
     }

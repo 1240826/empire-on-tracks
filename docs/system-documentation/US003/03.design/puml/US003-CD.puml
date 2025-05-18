@@ -27,11 +27,11 @@ class "City" {
     - houseBlocks: int
     - houseBlocksList: List<HouseBlock>
     + createCity(name: String, positionX: int, positionY: int, houseBlocks: int): City
-    + validateName(): boolean
-    + validateHouseBlocks(): boolean
+    + assignHouseBlocksAutomatic()
     + assignHouseBlocksManually(positions: List<Location>)
     + getCityCenter(): Location
-    + addHouseBlock(houseBlock: HouseBlock): void
+    + getHouseBlocksCount()
+
 }
 
 class "Location" {
