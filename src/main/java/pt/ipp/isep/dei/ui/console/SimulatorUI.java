@@ -21,6 +21,8 @@ public class SimulatorUI implements Runnable {
     private final Player player;
     private final AssignTrainToRouteController assignCtrl;
 
+
+
     public SimulatorUI(SimulatorController controller, Player player,
                        AssignTrainToRouteController assignCtrl) {
         this.controller = Objects.requireNonNull(controller);
@@ -114,7 +116,28 @@ public class SimulatorUI implements Runnable {
         List<MenuItem> editOptions = new ArrayList<>();
 
         editOptions.add(new MenuItem("UC5 – Build a Station", new BuildStationUI()));
-        editOptions.add(new MenuItem("UC6 – Upgrade a Station", new UpgradeStationUI()));
+        editOptions.add(new MenuItem("UC6 – Upgrade a Station", () -> {
+            List<Station> stations = controller.getStations();
+            if (stations.isEmpty()) {
+                System.out.println("No stations available.");
+                return;
+            }
+
+            int selectedIndex = Utils.showAndSelectIndex(
+                    stations.stream()
+                            .map(s -> String.format("%s @ %s", s.getStationName(), s.getLocation()))
+                            .collect(Collectors.toList()),
+                    "Select a station to upgrade:"
+            );
+
+            if (selectedIndex == -1) {
+                System.out.println("Operation cancelled.");
+                return;
+            }
+
+            Station selectedStation = stations.get(selectedIndex);
+            new UpgradeStationUI(selectedStation, player).run();
+        }));
         editOptions.add(new MenuItem("UC7 – List all Stations", new StationListUI()));
         editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI(new BuildLineController(player, Repositories.getInstance().getMapRepository().getCurrentMap()))));
         editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI(new BuyLocomotiveController(player))));
