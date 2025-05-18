@@ -14,8 +14,8 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class SimulatorUI {
-    private final SimulatorController controller;
+public class SimulatorUI implements Runnable {
+    private SimulatorController controller;
     private final AssignTrainToRouteController assignCtrl;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -25,7 +25,7 @@ public class SimulatorUI {
         this.assignCtrl = Objects.requireNonNull(assignCtrl);
     }
 
-    public void run() {
+    public void start() {
         System.out.println("=== Railway Simulator ===");
         printHelp();
 
@@ -222,5 +222,11 @@ public class SimulatorUI {
 
         // 7) Ao sair
         clock.shutdown();
+    }
+
+    /** Menu dispatch entry-point */
+    @Override
+    public void run() {
+        start();
     }
 }

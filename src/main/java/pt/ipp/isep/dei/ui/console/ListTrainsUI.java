@@ -18,6 +18,9 @@ public class ListTrainsUI {
         this.controller = controller;
     }
 
+    public ListTrainsUI() {
+    }
+
     /**
      * Requests the player's train list from the controller and displays it,
      * grouping by locomotive type and sorting by train name.

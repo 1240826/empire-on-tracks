@@ -11,16 +11,19 @@ import java.util.Scanner;
 /**
  * UI for adding industries to the map via the console.
  */
-public class AddIndustryUI {
-    private final AddIndustryController controller;
-    private final Scanner scanner;
+public class AddIndustryUI implements Runnable {
+    private AddIndustryController controller;
+    private Scanner scanner;
 
     public AddIndustryUI(Repositories repositorios, Map mapa) {
         this.controller = new AddIndustryController(repositorios, mapa);
         this.scanner = new Scanner(System.in);
     }
 
-    public void run() {
+    public AddIndustryUI() {
+    }
+
+    public void start() {
         System.out.println("=== Add Industry ===");
 
         // 1) Coordenadas
@@ -50,4 +53,13 @@ public class AddIndustryUI {
         controller.adicionarIndustria(indice);
         System.out.println("Process completed.");
     }
+
+    /**
+     * Entry‐point for Runnable dispatch.
+     */
+    @Override
+    public void run() {
+        start();
+    }
 }
+

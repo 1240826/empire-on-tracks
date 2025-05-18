@@ -24,7 +24,7 @@ import java.util.Set;
  *   <li>Confirm scenario creation and display the outcome.</li>
  * </ol>
  */
-public class CreateScenarioUI {
+public class CreateScenarioUI implements Runnable {
     private final CreateScenarioController controller = new CreateScenarioController();
     private final Scanner scanner = new Scanner(System.in);
 
@@ -32,7 +32,7 @@ public class CreateScenarioUI {
      * Runs the interactive scenario creation flow, prompting the user step-by-step
      * and invoking corresponding controller methods.
      */
-    public void run() {
+    public void start() {
         System.out.println("--- Create Scenario ---");
 
         // 1) Scenario period
@@ -173,6 +173,13 @@ public class CreateScenarioUI {
             System.out.println("Scenario creation cancelled.");
         }
     }
+    /**
+     * Entry‐point for Runnable dispatch.
+     */
+    @Override
+    public void run() {
+        start();
+    }
 
     /**
      * Entry point for launching this console UI.
@@ -180,6 +187,6 @@ public class CreateScenarioUI {
      * @param args not used
      */
     public static void main(String[] args) {
-        new CreateScenarioUI().run();
+        new CreateScenarioUI().start();
     }
 }

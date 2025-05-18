@@ -1,0 +1,40 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+autonumber
+
+actor ":Player" as Player
+participant ":BuyLocomotiveUI" as UI
+participant ":BuyLocomotiveController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant ":LocomotiveCatalog" as Catalog
+participant ":Player" as PlayerObject
+participant ":Train" as Train
+
+Player -> UI : requests to buy a locomotive
+activate UI
+
+UI -> Controller : requestAvailableLocomotives()
+activate Controller
+ref over Controller
+    Get Available Locomotives
+end ref
+deactivate Controller
+
+Controller --> UI : list of available locomotives
+deactivate UI
+UI --> Player : shows list and requests selection
+
+Player -> UI : selects a locomotive and enters train name
+activate UI
+UI --> Controller : buyLocomotiveAsTrain(locomotiveID, trainName)
+activate Controller
+ref over Controller
+    Buy Locomotive and Create Train
+end ref
+deactivate Controller
+@enduml

@@ -12,8 +12,8 @@ import java.util.Scanner;
  * Guides the user through the selection of stations, electrification, double-tracking options,
  * and the creation of a new rail line on the map.
  */
-public class BuildLineUI {
-    private final BuildLineController controller;
+public class BuildLineUI implements Runnable {
+    private BuildLineController controller;
     private final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -23,6 +23,9 @@ public class BuildLineUI {
      */
     public BuildLineUI(BuildLineController controller) {
         this.controller = controller;
+    }
+
+    public BuildLineUI() {
     }
 
     /**
@@ -37,7 +40,7 @@ public class BuildLineUI {
      *   <li>Attempts to create the rail line and displays the result.</li>
      * </ol>
      */
-    public void run() {
+    public void start() {
         List<Station> stations = controller.getAvailableStations();
         if (stations.size() < 2) {
             System.out.println("Not enough stations available.");
@@ -73,4 +76,13 @@ public class BuildLineUI {
             System.out.println("Operation cancelled.");
         }
     }
+
+    /**
+     * Entry‐point for Runnable dispatch.
+     */
+    @Override
+    public void run() {
+        start();
+    }
+
 }
