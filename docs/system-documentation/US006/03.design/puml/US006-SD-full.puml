@@ -14,7 +14,6 @@ participant "mapRepository\n:MapRepository" as MAP_REPO
 participant ":Map" as Map
 participant ":Station" as Station
 participant ":Building" as Building
-participant ":BuildingType" as BuildingType
 participant ":Player" as PlayerObj
 participant ":GameState" as GameState
 participant ":Simulation" as Simulation
@@ -53,7 +52,7 @@ activate UI
     UI -> Controller : submitUpgrade(stationName, buildingType)
     activate Controller
 
-        Controller -> Map : getStationByName(stationName)
+        Controller -> Map : retrieveStation(stationName)
         activate Map
             Map --> Controller : station
         deactivate Map
@@ -63,15 +62,12 @@ activate UI
             Simulation --> Controller : currentDate
         deactivate Simulation
 
-        Controller -> BuildingType : retrieve(buildingType)
-        activate BuildingType
-            BuildingType --> Controller : type
-        deactivate BuildingType
+        Controller -> Controller : validate building type availability
 
         alt type not available yet
             Controller -> UI : showError("Building not yet available")
         else
-            Controller -> Station : isCompatible(type)
+            Controller -> Station : isCompatible(buildingType)
             activate Station
                 Station --> Controller : true / false
             deactivate Station
@@ -79,7 +75,7 @@ activate UI
             alt not compatible
                 Controller -> UI : showError("Incompatible building type")
             else
-                Controller -> Station : hasBuildingType(type)
+                Controller -> Station : hasBuildingType(buildingType)
                 activate Station
                     Station --> Controller : true / false
                 deactivate Station
@@ -87,7 +83,7 @@ activate UI
                 alt already has that building
                     Controller -> UI : warn("Station already has this building")
                 else
-                    Controller -> PlayerObj : hasSufficientBudget(type.cost)
+                    Controller -> PlayerObj : hasSufficientBudget(buildingType.cost)
                     activate PlayerObj
                         PlayerObj --> Controller : true / false
                     deactivate PlayerObj
@@ -96,22 +92,22 @@ activate UI
                         Controller -> UI : showError("Not enough budget")
                     else
                         alt building is Telephone and station has Telegraph
-                            Controller -> Station : removeBuilding("Telegraph")
-                            Controller -> UI : showInfo("Telegraph") removed; Telephone installed")
+                            Controller -> Station : removeBuilding(TELEGRAPH)
+                            Controller -> UI : showInfo("Telegraph removed; Telephone installed")
                         end
 
-                        Controller -> Building : create(type)
+                        Controller -> Building : create(buildingType)
                         activate Building
                             Building --> Controller : building
                         deactivate Building
 
                         Controller -> Station : addBuilding(building)
-                        Controller -> PlayerObj : registerBuildingUpgrade(station, building)
-                        Controller -> PlayerObj : deductBudget(type.cost)
+                        Controller -> PlayerObj : deductBudget(buildingType.cost)
 
-                        UI -> Map : animateBuildingUpgrade(station, type)
+                        UI -> Map : animateBuildingUpgrade(station, buildingType)
 
                         Controller -> GameState : save()
+                        GameState --> Controller : confirmation
 
                         Controller -> UI : showSuccessMessage()
                     end

@@ -46,7 +46,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![US006-SD-full.svg](svg/US006-SD-full.svg)
 
 ### Split Diagrams
 
@@ -54,24 +54,16 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
+![US006-SD-split.svg](svg/US006-SD-split.svg)
 
-**Get Task Category List Partial SD**
+**Retrieve and Validate Building Type**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
+![US006-SD-partial-Retrieve-Validate-Building-Type.svg](svg/US006-SD-partial-Retrieve-Validate-Building-Type.svg)
 
-**Get Task Category Object**
+**Apply Building Upgrade Partial SD**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
-
-**Get Employee**
-
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
-
-**Create Task**
-
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
+![US006-SD-partial-Apply-Building-Upgrade.svg](svg/US006-SD-partial-Apply-Building-Upgrade.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![US006-CD.svg](svg/US006-CD.svg)
