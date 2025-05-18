@@ -33,3 +33,4 @@ public class Building {
         return type + " (Added: " + dateAdded + ", Active: " + isActive + ")";
     }
 }
+
