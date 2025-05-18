@@ -24,7 +24,7 @@ class Station {
     + getCargoes()
 }
 
-class Upgrade {
+class Building {
     - type : String
     - dateAdded : Date
     - isActive : boolean
@@ -71,7 +71,7 @@ ListStationController ..> Map
 Map --> "*" Station : stations
 
 
-Station  o--  Upgrade : upgrades
+Station  o--  Building : upgrades
 Station  o--  Cargo : cargoes
 
 

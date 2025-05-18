@@ -1,4 +1,3 @@
-// File: pt/ipp/isep/dei/domain/Route.java
 package pt.ipp.isep.dei.domain;
 
 import pt.ipp.isep.dei.controller.AssignTrainToRouteController.StationCargo;
@@ -9,41 +8,41 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Representa uma rota como uma sequência ordenada de pares estação+carga (StationCargo).
- * A rota deve ter pelo menos duas paradas: inicial e final.
+ * Represents a route as an ordered sequence of station+cargo (StationCargo) pairs.
+ * The route must have at least two stops: initial and final.
  */
 public class Route {
     private final List<StationCargo> stops;
 
     /**
-     * Constrói uma rota com a lista de paradas.
-     * @param stops lista de StationCargo, deve ter tamanho >= 2
-     * @throws IllegalArgumentException se stops for nulo ou tiver menos de 2 elementos
+     * Constructs a route with the given list of stops.
+     * @param stops list of StationCargo, must have size >= 2
+     * @throws IllegalArgumentException if stops is null or has fewer than 2 elements
      */
     public Route(List<StationCargo> stops) {
-        Objects.requireNonNull(stops, "stops não pode ser null");
+        Objects.requireNonNull(stops, "stops cannot be null");
         if (stops.size() < 2) {
-            throw new IllegalArgumentException("A rota deve ter pelo menos estação inicial e final");
+            throw new IllegalArgumentException("The route must have at least initial and final stations");
         }
         this.stops = List.copyOf(stops);
     }
 
-    /** Retorna os pares estação+carga desta rota (imutável). */
+    /** Returns the station+cargo pairs in this route (immutable). */
     public List<StationCargo> getStops() {
         return Collections.unmodifiableList(stops);
     }
 
-    /** Primeira parada (estação + carga). */
+    /** First stop (station + cargo). */
     public StationCargo getInitialStop() {
         return stops.get(0);
     }
 
-    /** Última parada (estação + carga). */
+    /** Last stop (station + cargo). */
     public StationCargo getFinalStop() {
         return stops.get(stops.size() - 1);
     }
 
-    /** Sequência de tipos de carga transportados, na ordem das paradas. */
+    /** Sequence of cargo types transported, in the order of the stops. */
     public List<CargoType> getCargoTypes() {
         return stops.stream()
                 .map(StationCargo::getCargoType)

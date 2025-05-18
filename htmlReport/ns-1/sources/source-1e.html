@@ -1,0 +1,150 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ValueValidator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: ValueValidator (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ValueValidator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import pt.ipp.isep.dei.ui.console.menu.MainMenuUI;
+&nbsp;
+&nbsp;/**
+&nbsp; * Utility class for validating numeric values related to map dimensions.
+&nbsp; * &lt;p&gt;
+&nbsp; * Provides methods to check if a value is positive and
+&nbsp; * to validate width and height dimensions for the map.
+&nbsp; * &lt;/p&gt;
+&nbsp; */
+<b class="nc">&nbsp;public class ValueValidator {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the given integer value is strictly positive.
+&nbsp;     *
+&nbsp;     * @param value the integer to check
+&nbsp;     * @return {@code true} if {@code value} is greater than zero; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isPositive(int value) {
+<b class="nc">&nbsp;        return value &gt; 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates that both width and height are positive values.
+&nbsp;     *
+&nbsp;     * @param width  the width dimension to validate
+&nbsp;     * @param height the height dimension to validate
+&nbsp;     * @return {@code true} if both {@code width} and {@code height} are positive; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean validateWidthLength(int width, int height) {
+<b class="nc">&nbsp;        return isPositive(width) &amp;&amp; isPositive(height);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

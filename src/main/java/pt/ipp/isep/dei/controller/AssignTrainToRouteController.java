@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Controller usado para atribuir uma rota a um trem do jogador.
+ * Controller used to assign a route to a player's train.
  */
 public class AssignTrainToRouteController {
 
@@ -28,7 +28,7 @@ public class AssignTrainToRouteController {
         this.availableCargoTypes = Objects.requireNonNull(availableCargoTypes);
     }
 
-    /** Retorna os trens do jogador. */
+    /** Returns the player's trains. */
     public List<Train> getOwnedTrains() {
         return player.getOwnedTrains();
     }
@@ -42,7 +42,7 @@ public class AssignTrainToRouteController {
     }
 
     /**
-     * Representa uma parada: estação + tipo de carga.
+     * Represents a stop: station + cargo type.
      */
     public static class StationCargo {
         private final Station station;
@@ -68,8 +68,8 @@ public class AssignTrainToRouteController {
     }
 
     /**
-     * Constrói uma Route a partir de input do utilizador:
-     * ex: "Central, COAL, Porto, STEEL, Industrial, FOOD"
+     * Builds a Route from user input.
+     * Example: "Central, COAL, Porto, STEEL, Industrial, FOOD"
      */
     public Route parseRouteFromInput(String input) {
         if (input == null || input.isBlank()) return null;
@@ -102,7 +102,7 @@ public class AssignTrainToRouteController {
     }
 
     /**
-     * Atribui a rota ao trem no índice especificado.
+     * Assigns the route to the train at the specified index.
      */
     public boolean assignRouteToTrain(int index, Route route) {
         if (route == null) return false;

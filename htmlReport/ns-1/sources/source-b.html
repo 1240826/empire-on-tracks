@@ -1,0 +1,140 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HouseBlock</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: HouseBlock (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HouseBlock</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a single house block in a city, located at a specific coordinate.
+&nbsp; */
+&nbsp;public class HouseBlock {
+&nbsp;    private final Location position;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Private constructor. Use {@link #createAt} to instantiate.
+&nbsp;     *
+&nbsp;     * @param position the coordinates of the house block
+&nbsp;     */
+<b class="fc">&nbsp;    private HouseBlock(Location position) {</b>
+<b class="fc">&nbsp;        this.position = position;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Factory method to create a HouseBlock at the given position.
+&nbsp;     *
+&nbsp;     * @param position the coordinates where the block should be placed
+&nbsp;     * @return a new HouseBlock instance
+&nbsp;     */
+&nbsp;    public static HouseBlock createAt(Location position) {
+<b class="fc">&nbsp;        return new HouseBlock(position);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the location of this house block.
+&nbsp;     *
+&nbsp;     * @return the block&#39;s position
+&nbsp;     */
+&nbsp;    public Location getPosition() {
+<b class="fc">&nbsp;        return position;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

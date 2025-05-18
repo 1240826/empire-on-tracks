@@ -1,0 +1,302 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProducingIndustry</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: ProducingIndustry (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProducingIndustry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * Industry that produces a single type of cargo each cycle.
+&nbsp; * &lt;p&gt;
+&nbsp; * A ProducingIndustry generates cargo at a fixed rate per simulation tick,
+&nbsp; * tracks a minimum demand threshold before production, and maintains
+&nbsp; * an internal stock of produced cargo.
+&nbsp; * &lt;/p&gt;
+&nbsp; */
+&nbsp;public class ProducingIndustry implements Industry {
+&nbsp;
+&nbsp;    /** Unique name of the industry. */
+&nbsp;    private final String industryName;
+&nbsp;
+&nbsp;    /** Fixed operating cost of the industry. */
+&nbsp;    private final int industryCost;
+&nbsp;
+&nbsp;    /** Quantity of cargo produced per cycle. */
+&nbsp;    private double production;
+&nbsp;
+&nbsp;    /** Minimum cargo demand required to enable production. */
+&nbsp;    private double demand;
+&nbsp;
+&nbsp;    /** Location of this industry on the map grid (may be null if unplaced). */
+&nbsp;    private Location location;
+&nbsp;
+&nbsp;    /** Internal stock of produced cargo. */
+&nbsp;    private final Cargo cargoStock;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a ProducingIndustry without an initial location.
+&nbsp;     *
+&nbsp;     * @param industryName the unique name of the industry
+&nbsp;     * @param industryCost the fixed operating cost per cycle
+&nbsp;     * @param production   the amount of cargo produced per cycle
+&nbsp;     * @param demand       the minimum demand threshold to produce cargo
+&nbsp;     * @param cargoType    the {@link CargoType} of the produced cargo
+&nbsp;     * @throws NullPointerException if {@code cargoType} is null
+&nbsp;     */
+&nbsp;    public ProducingIndustry(String industryName,
+&nbsp;                             int industryCost,
+&nbsp;                             double production,
+&nbsp;                             double demand,
+&nbsp;                             CargoType cargoType) {
+<b class="nc">&nbsp;        this(industryName, industryCost, production, demand, null, cargoType);</b>
+&nbsp;    }
+<b class="nc">&nbsp;    public ProducingIndustry(){</b>
+<b class="nc">&nbsp;        this.industryName = &quot;Industry&quot;;</b>
+<b class="nc">&nbsp;        this.production=20;</b>
+<b class="nc">&nbsp;        this.demand=0;</b>
+<b class="nc">&nbsp;        this.industryCost=20;</b>
+<b class="nc">&nbsp;        this.cargoStock=new Cargo(CargoType.OIL,0);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a ProducingIndustry with an assigned location.
+&nbsp;     *
+&nbsp;     * @param industryName the unique name of the industry
+&nbsp;     * @param industryCost the fixed operating cost per cycle
+&nbsp;     * @param production   the amount of cargo produced per cycle
+&nbsp;     * @param demand       the minimum demand threshold to produce cargo
+&nbsp;     * @param location     the {@link Location} where the industry is placed
+&nbsp;     * @param cargoType    the {@link CargoType} of the produced cargo
+&nbsp;     * @throws NullPointerException if {@code cargoType} is null
+&nbsp;     */
+&nbsp;    public ProducingIndustry(String industryName,
+&nbsp;                             int industryCost,
+&nbsp;                             double production,
+&nbsp;                             double demand,
+&nbsp;                             Location location,
+<b class="nc">&nbsp;                             CargoType cargoType) {</b>
+<b class="nc">&nbsp;        Objects.requireNonNull(cargoType, &quot;Cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        this.industryName = industryName;</b>
+<b class="nc">&nbsp;        this.industryCost = industryCost;</b>
+<b class="nc">&nbsp;        this.production   = production;</b>
+<b class="nc">&nbsp;        this.demand       = demand;</b>
+<b class="nc">&nbsp;        this.location     = location;</b>
+<b class="nc">&nbsp;        this.cargoStock   = new Cargo(cargoType, 0.0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getIndustryName() {
+<b class="nc">&nbsp;        return industryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getIndustryCost() {
+<b class="nc">&nbsp;        return industryCost;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public double getProduction() {
+<b class="nc">&nbsp;        return production;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public double getDemand() {
+<b class="nc">&nbsp;        return demand;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void setLocation(Location location) {
+<b class="nc">&nbsp;        this.location = location;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Location getLocation() {
+<b class="nc">&nbsp;        return location;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Produces cargo unconditionally at the specified production rate.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Each call adds {@code production} units to the internal cargo stock.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void produceCargo() {
+<b class="nc">&nbsp;        cargoStock.addQuantity(production);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Consumes a specified quantity of cargo from internal stock.
+&nbsp;     *
+&nbsp;     * @param quantity the amount of cargo to remove
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void consumeCargo(double quantity) {
+<b class="nc">&nbsp;        cargoStock.removeQuantity(quantity);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the internal cargo stock of this industry.
+&nbsp;     *
+&nbsp;     * @return the {@link Cargo} representing stored cargo
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Cargo getCargo() {
+<b class="nc">&nbsp;        return cargoStock;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the type of cargo produced by this industry.
+&nbsp;     *
+&nbsp;     * @return the {@link CargoType} of produced cargo
+&nbsp;     */
+&nbsp;    public CargoType getCargoType() {
+<b class="nc">&nbsp;        return cargoStock.getType();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the production rate per cycle.
+&nbsp;     *
+&nbsp;     * @param production the new production amount
+&nbsp;     */
+&nbsp;    public void setProduction(double production) {
+<b class="nc">&nbsp;        this.production = production;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the minimum demand threshold required to start production.
+&nbsp;     *
+&nbsp;     * @param demand the new demand threshold
+&nbsp;     */
+&nbsp;    public void setDemand(double demand) {
+<b class="nc">&nbsp;        this.demand = demand;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the type of cargo produced and resets stock if type changes.
+&nbsp;     *
+&nbsp;     * @param newType the new {@link CargoType} for production
+&nbsp;     * @throws NullPointerException if {@code newType} is null
+&nbsp;     */
+&nbsp;    public void setCargoType(CargoType newType) {
+<b class="nc">&nbsp;        Objects.requireNonNull(newType, &quot;Cargo type cannot be null&quot;);</b>
+<b class="nc">&nbsp;        cargoStock.setCargoType(newType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a summary of this industry including current cargo stock.
+&nbsp;     *
+&nbsp;     * @return a formatted {@code String} describing production status
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return String.format(</b>
+&nbsp;                &quot;ProducingIndustry[%s] Produces %s:%.2f&quot;,
+&nbsp;                industryName,
+<b class="nc">&nbsp;                getCargoType(),</b>
+<b class="nc">&nbsp;                cargoStock.getQuantity()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

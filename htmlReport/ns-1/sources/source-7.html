@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ChangeIndustryPoductionRateEven</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">pt.ipp.isep.dei.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: ChangeIndustryPoductionRateEven (pt.ipp.isep.dei.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChangeIndustryPoductionRateEven</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package pt.ipp.isep.dei.domain;
+&nbsp;
+&nbsp;import pt.ipp.isep.dei.repository.IndustryRepository;
+&nbsp;import pt.ipp.isep.dei.repository.LocomotiveRepository;
+&nbsp;import pt.ipp.isep.dei.repository.ScenarioRepository;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * Evento que ajusta a taxa de produção de um template de indústria,
+&nbsp; * aplicando um incremento percentual sobre a produção atual.
+&nbsp; */
+&nbsp;public class ChangeIndustryPoductionRateEven implements ScenarioEvent {
+&nbsp;    private final int industryIndex;
+&nbsp;    private final double percentageChange;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @param industryIndex    índice da indústria no IndustryRepository
+&nbsp;     * @param percentageChange alteração percentual (por exemplo, 20 para +20%, -10 para -10%)
+&nbsp;     */
+<b class="nc">&nbsp;    public ChangeIndustryPoductionRateEven(int industryIndex, double percentageChange) {</b>
+<b class="nc">&nbsp;        this.industryIndex    = industryIndex;</b>
+<b class="nc">&nbsp;        this.percentageChange = percentageChange;</b>
+&nbsp;    }
+&nbsp; @Override
+&nbsp; public void apply(Map map, List&lt;Locomotive&gt; locomotives) {
+<b class="nc">&nbsp;        List&lt;Industry&gt; inds = map.getIndustries();</b>
+<b class="nc">&nbsp;        if (industryIndex &lt; 0 || industryIndex &gt;= inds.size()) {</b>
+&nbsp;            return;
+&nbsp;        }
+<b class="nc">&nbsp;        Industry ind = Objects.requireNonNull(inds.get(industryIndex));</b>
+&nbsp;
+<b class="nc">&nbsp;        double currentRate = ind.getProduction();</b>
+<b class="nc">&nbsp;        double newRate     = currentRate + (percentageChange / 100.0) * currentRate;</b>
+&nbsp;
+<b class="nc">&nbsp;     if (ind instanceof ProducingIndustry) {</b>
+<b class="nc">&nbsp;         ProducingIndustry psi = (ProducingIndustry) ind;</b>
+<b class="nc">&nbsp;         psi.setProduction(newRate);</b>
+<b class="nc">&nbsp;     } else if (ind instanceof TransformingIndustry) {</b>
+<b class="nc">&nbsp;         TransformingIndustry ti = (TransformingIndustry) ind;</b>
+<b class="nc">&nbsp;         ti.setProduction(newRate);</b>
+<b class="nc">&nbsp;     } else if (ind instanceof MixedIndustry) {</b>
+<b class="nc">&nbsp;         MixedIndustry mi = (MixedIndustry) ind;</b>
+<b class="nc">&nbsp;         mi.setProduction(newRate);</b>
+&nbsp;     }
+&nbsp;        // A produção da instância no mapa foi modificada diretamente
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-18 22:10</div>
+</div>
+</body>
+</html>

@@ -1,3 +1,4 @@
+// SimulationClock.java
 package pt.ipp.isep.dei.domain;
 
 import java.time.LocalDateTime;
@@ -7,25 +8,24 @@ import java.util.concurrent.*;
  * Simulation clock with configurable auto-tick and manual tick support.
  */
 public class Date {
-
     private LocalDateTime currentDate;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> futureTick;
     private final long tickIntervalSeconds;
 
     /**
-     * Constructs a simulation clock with a starting date and tick interval.
+     * Constructs the simulation clock.
      *
-     * @param startDate           the initial simulation date
-     * @param tickIntervalSeconds the interval (in seconds) between automatic monthly ticks
+     * @param startDate           Initial date of the simulation.
+     * @param tickIntervalSeconds Interval in seconds for each automatic month tick.
      */
     public Date(LocalDateTime startDate, long tickIntervalSeconds) {
-        this.currentDate = startDate;
-        this.tickIntervalSeconds = tickIntervalSeconds;
+        this.currentDate          = startDate;
+        this.tickIntervalSeconds  = tickIntervalSeconds;
     }
 
     /**
-     * Returns the current date of the simulation.
+     * Returns the current date of the simulator.
      *
      * @return the current simulation date
      */
@@ -34,7 +34,7 @@ public class Date {
     }
 
     /**
-     * Starts the automatic ticking mechanism (advances by one month every tickIntervalSeconds).
+     * Starts auto-tick (advances a month every tickIntervalSeconds).
      */
     public void start() {
         if (futureTick == null || futureTick.isDone() || futureTick.isCancelled()) {
@@ -48,7 +48,7 @@ public class Date {
     }
 
     /**
-     * Stops the automatic ticking.
+     * Pauses the auto-tick.
      */
     public void stop() {
         if (futureTick != null) {
@@ -58,14 +58,14 @@ public class Date {
     }
 
     /**
-     * Advances the simulation clock manually by one month.
+     * Advances the clock by one month manually.
      */
     public void advanceManually() {
         currentDate = currentDate.plusMonths(1);
     }
 
     /**
-     * Shuts down the internal executor. Should be called when the application exits.
+     * Shuts down the scheduler (when closing the application).
      */
     public void shutdown() {
         scheduler.shutdownNow();

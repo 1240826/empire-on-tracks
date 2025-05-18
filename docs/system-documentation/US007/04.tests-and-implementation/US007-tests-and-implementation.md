@@ -2,22 +2,42 @@
 
 ## 4. Tests 
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
+**Test 1:** Check that getAllNamesStation() returns all added station names.
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-	}
+    @Test
+    public void ensureGetAllNamesStationReturnsCorrectList() {
+    Map map = new Map();
+    map.addStation(new Station("1", "Porto", new Location(1, 1), 3));
+    map.addStation(new Station("2", "Lisboa", new Location(2, 2), 3));
+
+    List<String> result = map.getAllNamesStation();
+    assertEquals(2, result.size());
+    assertTrue(result.contains("Porto"));
+    assertTrue(result.contains("Lisboa"));
+    }
 	
 
-**Test 2:** Check that it is not possible to create an instance of the Task class with a reference containing less than five chars - AC2. 
+**Test 2:** Check that getDetails() returns the correct station if it exists. 
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureReferenceMeetsAC2() {
-		Category cat = new Category(10, "Category 10");
-		
-		Task instance = new Task("Ab1", "Task Description", "Informal Data", "Technical Data", 3, 3780, cat);
-	}
+	@Test
+    public void ensureGetDetailsReturnsCorrectStation() {
+    Map map = new Map();
+    Station s = new Station("1", "Braga", new Location(0, 0), 2);
+    map.addStation(s);
+
+    Station result = map.getDetails("Braga");
+    assertNotNull(result);
+    assertEquals("Braga", result.getStationName());
+    }
+
+**Test 3:** Check that getDetails() returns null when the station does not exist.
+
+     @Test
+     public void ensureGetDetailsReturnsNullForUnknownStation() {
+     Map map = new Map();
+     Station result = map.getDetails("Unknown");
+     assertNull(result);
+     }
 
 _It is also recommended to organize this content by subsections._ 
 
@@ -42,28 +62,33 @@ public Task createTask(String reference, String description, String informalDesc
 }
 ```
 
-### Class Organization
 
+### Class ListStationController
 ```java
-public Optional<Task> createTask(String reference, String description, String informalDescription,
-                                 String technicalDescription, Integer duration, Double cost, TaskCategory taskCategory,
-                                 Employee employee) {
-    
-    Task task = new Task(reference, description, informalDescription, technicalDescription, duration, cost,
-                         taskCategory, employee);
+public Station getStationDetails(String stationName) {
+    Station station = getStationByName(stationName);
 
-    addTask(task);
-        
-    return task;
+    if (station == null) {
+        System.out.println("Station not found.");
+        return null;
+    }
+
+    if (station.getBuildings() == null || station.getBuildings().isEmpty()) {
+        System.out.println("Station found, but it has no buildings.");
+        return station;
+    }
+
+    return station;
 }
+
 ```
+
 
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
+* A new option was added in the Player menu to list all stations and view their details.
 
-* For demo purposes some tasks are bootstrapped while system starts.
 
 
 ## 7. Observations

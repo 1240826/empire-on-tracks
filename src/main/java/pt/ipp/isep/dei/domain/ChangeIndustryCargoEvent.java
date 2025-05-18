@@ -3,13 +3,21 @@ package pt.ipp.isep.dei.domain;
 import java.util.List;
 
 /**
- * Evento que altera os tipos de carga de uma indústria no mapa.
+ * Event that changes the cargo types of an industry on the map.
  */
 public class ChangeIndustryCargoEvent implements ScenarioEvent {
     private final int industryIndex;
     private final CargoType newInput;
     private final CargoType newOutput;
 
+    /**
+     * Constructs a ChangeIndustryCargoEvent with the specified industry index,
+     * new input cargo type, and new output cargo type.
+     *
+     * @param industryIndex the index of the industry to update in the map's industry list
+     * @param newInput      the new input cargo type (nullable)
+     * @param newOutput     the new output cargo type (nullable)
+     */
     public ChangeIndustryCargoEvent(int industryIndex,
                                     CargoType newInput,
                                     CargoType newOutput) {
