@@ -1,11 +1,11 @@
-// File: pt/ipp/isep/dei/ui/console/SimulatorUI.java
 package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.AssignTrainToRouteController;
-import pt.ipp.isep.dei.controller.AssignTrainToRouteController.StationCargo;
 import pt.ipp.isep.dei.controller.SimulatorController;
 import pt.ipp.isep.dei.domain.*;
-import pt.ipp.isep.dei.repository.*;
+import pt.ipp.isep.dei.repository.Repositories;
+import pt.ipp.isep.dei.ui.console.menu.MenuItem;
+import pt.ipp.isep.dei.ui.console.utils.Utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,39 +15,13 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class SimulatorUI implements Runnable {
-    private SimulatorController controller;
+    private final SimulatorController controller;
     private final AssignTrainToRouteController assignCtrl;
-    private final Scanner scanner = new Scanner(System.in);
 
     public SimulatorUI(SimulatorController controller,
                        AssignTrainToRouteController assignCtrl) {
         this.controller = Objects.requireNonNull(controller);
         this.assignCtrl = Objects.requireNonNull(assignCtrl);
-    }
-
-
-    private void printEditCommands() {
-        System.out.println("== Edit Commands (UC5 to UC12) ==");
-        System.out.println("  UC5  – Build a Station");
-        System.out.println("  UC6  – Upgrade a Station");
-        System.out.println("  UC7  – List all Stations");
-        System.out.println("  UC8  – Build a Railway Line");
-        System.out.println("  UC9  – Buy a Locomotive");
-        System.out.println("  UC10 – Assign a Train to a Route");
-        System.out.println("  UC11 – List all Trains");
-        System.out.println("  UC12 – Operate Simulation");
-        System.out.println("Type the corresponding number or use the main menu options.");
-    }
-
-
-    private void printHelp() {
-        System.out.println("Available commands:");
-        System.out.println("  start           – start auto simulation");
-        System.out.println("  pause           – pause auto simulation");
-        System.out.println("  step            – advance one month");
-        System.out.println("  status          – show simulation status");
-        System.out.println("  help            – show this help");
-        System.out.println("  exit            – quit");
     }
 
     private void showStatus() {
@@ -93,8 +67,7 @@ public class SimulatorUI implements Runnable {
         );
 
         System.out.println("\n-- Locomotive Templates --");
-        controller.getLocomotiveTemplates()
-                .forEach(System.out::println);
+        controller.getLocomotiveTemplates().forEach(System.out::println);
 
         System.out.println();
     }
@@ -116,6 +89,7 @@ public class SimulatorUI implements Runnable {
     }
 
     private void setRoute() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Train index: ");
         int idx = Integer.parseInt(scanner.nextLine().trim());
         System.out.print("Enter route (e.g. Central, COAL, Porto, STEEL): ");
@@ -132,63 +106,73 @@ public class SimulatorUI implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        System.out.println("=== Railway Simulator ===");
-        printHelp();
+    private void showEditSubmenu() {
+        List<MenuItem> editOptions = new ArrayList<>();
 
-        boolean exit = false;
-        while (!exit) {
-            System.out.print("> ");
-            String cmd = scanner.nextLine().trim().toLowerCase();
-            switch (cmd) {
-                case "start":
-                    controller.startSimulation();
-                    System.out.println("Automatic simulation started.");
-                    break;
-                case "pause":
-                    controller.pauseSimulation();
-                    System.out.println("Automatic simulation paused.");
-                    break;
-                case "step":
-                    List<String> evs = controller.stepWithEvents();
-                    System.out.println("Manual step executed (advanced one month).");
-                    if (evs.isEmpty()) {
-                        System.out.println("No events this step.");
-                    } else {
-                        System.out.println("Events:");
-                        evs.forEach(e -> System.out.println("  - " + e));
-                    }
-                    break;
-                case "status":
-                    showStatus();
-                    break;
-                case "list-trains":
-                    listTrains();
-                    break;
-                case "set-route":
-                    setRoute();
-                    break;
-                case "edit":
-                    printEditCommands();
-                    break;
-                case "help":
-                    printHelp();
-                    break;
-                case "exit":
-                    controller.pauseSimulation();
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown command. Type 'help'.");
+        editOptions.add(new MenuItem("UC5 – Build a Station", new BuildStationUI()));
+        editOptions.add(new MenuItem("UC6 – Upgrade a Station", new UpgradeStationUI()));
+        editOptions.add(new MenuItem("UC7 – List all Stations", new StationListUI()));
+        editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI()));
+        editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI()));
+        editOptions.add(new MenuItem("UC10 – Assign a Train to a Route", this::setRoute));
+        editOptions.add(new MenuItem("UC11 – List all Trains", this::listTrains));
+        editOptions.add(new MenuItem("UC12 – Operate Simulation", this::showStatus));
+
+        int choice;
+        do {
+            choice = Utils.showAndSelectIndex(editOptions, "== EDIT COMMANDS (UC5–UC12) ==");
+            if (choice >= 0 && choice < editOptions.size()) {
+                editOptions.get(choice).run();
             }
-        }
-        System.out.println("Goodbye!");
-        scanner.close();
+        } while (choice != -1);
     }
 
+    @Override
+    public void run() {
+        List<MenuItem> options = new ArrayList<>();
 
+        options.add(new MenuItem("Start automatic simulation", () -> {
+            controller.startSimulation();
+            System.out.println("Automatic simulation started.");
+        }));
 
-    /** Menu dispatch entry-point */
+        options.add(new MenuItem("Pause automatic simulation", () -> {
+            controller.pauseSimulation();
+            System.out.println("Simulation paused.");
+        }));
 
+        options.add(new MenuItem("Advance one month (manual step)", () -> {
+            List<String> evs = controller.stepWithEvents();
+            System.out.println("Manual step executed (advanced one month).");
+            if (evs.isEmpty()) {
+                System.out.println("No events this step.");
+            } else {
+                System.out.println("Events:");
+                evs.forEach(e -> System.out.println("  - " + e));
+            }
+        }));
+
+        options.add(new MenuItem("Show simulation status", this::showStatus));
+        options.add(new MenuItem("Edit simulation (UC5–UC12)", this::showEditSubmenu));
+        options.add(new MenuItem("Help", this::printHelp));
+        options.add(new MenuItem("Exit", controller::pauseSimulation));
+
+        int choice;
+        do {
+            choice = Utils.showAndSelectIndex(options, "\n--- SIMULATOR MENU ------------------------");
+            if (choice >= 0 && choice < options.size()) {
+                options.get(choice).run();
+            }
+        } while (choice != -1);
+    }
+
+    private void printHelp() {
+        System.out.println("Available options:");
+        System.out.println("  - Start: start auto simulation");
+        System.out.println("  - Pause: pause auto simulation");
+        System.out.println("  - Step: advance one month manually");
+        System.out.println("  - Status: show simulation status");
+        System.out.println("  - Edit: open UC5–UC12 menu");
+        System.out.println("  - Exit: quit simulation");
+    }
 }

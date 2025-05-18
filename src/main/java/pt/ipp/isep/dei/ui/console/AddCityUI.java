@@ -157,9 +157,7 @@ public class AddCityUI implements Runnable {
      *
      * @param args not used
      */
-    public static void main(String[] args) {
-        new AddCityUI().start();
-    }
+
 }
 
 
