@@ -8,14 +8,37 @@ import pt.ipp.isep.dei.domain.Route;
 import pt.ipp.isep.dei.domain.Station;
 import pt.ipp.isep.dei.domain.CargoType;
 
+/**
+ * Console-based UI for assigning a route to a player's train.
+ *
+ * Guides the user through the process of selecting a train, choosing stations and cargo types,
+ * and assigning a route to the chosen train.
+ */
 public class AssignTrainToRouteUI {
     private final AssignTrainToRouteController controller;
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Constructs the UI with the specified controller.
+     *
+     * @param controller The controller responsible for the route assignment logic.
+     */
     public AssignTrainToRouteUI(AssignTrainToRouteController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Starts the interactive assignment flow.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Display owned trains and prompt the user to select one.</li>
+     *   <li>Show available stations and cargo types.</li>
+     *   <li>Prompt the user for a route assignment input in a specified format.</li>
+     *   <li>Attempt to parse and assign the route to the selected train.</li>
+     *   <li>Display success or error messages based on the outcome.</li>
+     * </ol>
+     */
     public void start() {
         List<Train> trains = controller.getOwnedTrains();
         if (trains.isEmpty()) {

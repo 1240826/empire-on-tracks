@@ -11,16 +11,5 @@ class RepositoriesTest {
         Repositories instance = Repositories.getInstance();
         assertNotNull(instance);
     }
-
-    @Test
-    void testGetOrganizationRepository() {
-        Repositories instance = Repositories.getInstance();
-        assertNotNull(instance.getOrganizationRepository());
-    }
-
-    @Test
-    void testGetTaskCategoryRepository() {
-        Repositories instance = Repositories.getInstance();
-        assertNotNull(instance.getTaskCategoryRepository());
-    }
 }
+

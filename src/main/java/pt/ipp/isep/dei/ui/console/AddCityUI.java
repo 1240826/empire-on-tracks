@@ -9,64 +9,109 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Console-based user interface for the "Add City" use case.
+ *
+ * Guides the editor through creating a new City with its center and house blocks,
+ * supporting both automatic and manual block assignment methods.
+ */
 public class AddCityUI {
     private final AddCityController controller = new AddCityController();
+    private final Scanner sc = new Scanner(System.in);
 
-    public void start() {
-        Scanner sc = new Scanner(System.in);
+    /**
+     * Starts the interactive "Add City" flow.
+     * <p>
+     * Steps:
+     * <ol>
+     *   <li>Initialize the controller.</n     *   <li>Collect city name, center coordinates, and house block count.</li>
+     *   <li>Choose assignment method (automatic/manual).</li>
+     *   <li>If manual, collect each block's coordinates.</li>
+     *   <li>Attempt block assignment, retrying on errors.</li>
+     *   <li>Display a review summary and confirm creation.</li>
+     * </ol>
+     */
+    public void run() {
         System.out.println("=== Add New City ===");
 
-        // 1) Inicializa controller e obtém o mapa atual
+        // Initialize controller state
         controller.startAddCity();
 
-        // 2) Coleta dados básicos da cidade
+        // Collect basic city data
         System.out.print("Name: ");
         String name = sc.nextLine().trim();
+
         System.out.print("Position X: ");
-        int x = sc.nextInt();
+        int x = readInt();
+
         System.out.print("Position Y: ");
-        int y = sc.nextInt();
+        int y = readInt();
+
         System.out.print("Number of House Blocks: ");
-        int hb = sc.nextInt();
-        sc.nextLine(); // consome newline
+        int hbCount = readInt();
 
         City city;
         try {
-            // 3) Cria e valida city, incluindo duplicação de nome
-            city = controller.submitCityDetails(name, x, y, hb);
-        } catch (Exception e) {
+            city = controller.submitCityDetails(name, x, y, hbCount);
+        } catch (IllegalArgumentException e) {
             System.err.println("Error: " + e.getMessage());
-            sc.close();
             return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        // 4) Escolhe método de atribuição de blocos
-        System.out.print("Assignment method (automatic/manual): ");
-        String method = sc.nextLine().trim().toLowerCase();
+        // Choose assignment method
+        String method;
+        while (true) {
+            System.out.print("Assignment method (automatic/manual): ");
+            method = sc.nextLine().trim().toLowerCase();
+            if (method.equals("automatic") || method.equals("manual")) {
+                break;
+            }
+            System.out.println("Invalid option. Type 'automatic' or 'manual'.");
+        }
 
+        // Collect house block positions if manual assignment
         List<Location> positions = new ArrayList<>();
-        if ("manual".equals(method)) {
-            for (int i = 1; i <= hb; i++) {
-                System.out.print("Block " + i + " X: ");
-                int bx = sc.nextInt();
-                System.out.print("Block " + i + " Y: ");
-                int by = sc.nextInt();
+        if (method.equals("manual")) {
+            for (int i = 1; i <= hbCount; i++) {
+                System.out.printf("Block %d X: ", i);
+                int bx = readInt();
+                System.out.printf("Block %d Y: ", i);
+                int by = readInt();
                 positions.add(new Location(bx, by));
             }
-            sc.nextLine(); // consome newline
+            sc.nextLine(); // consume leftover newline
         }
 
-        try {
-            controller.selectedAssignmentMethod(method, positions);
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            sc.close();
-            return;
+        // Attempt block assignment, with retry on error
+        boolean assigned = false;
+        while (!assigned) {
+            try {
+                controller.selectedAssignmentMethod(method, positions);
+                assigned = true;
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error: " + e.getMessage());
+                if (method.equals("manual")) {
+                    positions.clear();
+                    System.out.println("Please re-enter block coordinates:");
+                    for (int i = 1; i <= hbCount; i++) {
+                        System.out.printf("Block %d X: ", i);
+                        int bx = readInt();
+                        System.out.printf("Block %d Y: ", i);
+                        int by = readInt();
+                        positions.add(new Location(bx, by));
+                    }
+                    sc.nextLine();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        // 6) Exibe revisão e pede confirmação
+        // Review and confirmation
         System.out.println("\nReview City:");
-        System.out.println("Name:   " + city.getName());
+        System.out.println("Name: " + city.getName());
         System.out.println("Center: (" + city.getCenter().getX() + ", " + city.getCenter().getY() + ")");
         System.out.println("House Blocks:");
         for (HouseBlock hbk : city.getHouseBlocks()) {
@@ -75,13 +120,36 @@ public class AddCityUI {
 
         System.out.print("\nConfirm creation? (yes/no): ");
         String confirm = sc.nextLine().trim().toLowerCase();
-        if ("yes".equals(confirm)) {
+        if (confirm.equals("yes")) {
             controller.confirmCityCreation();
             System.out.println("City created successfully!");
         } else {
             System.out.println("Operation cancelled.");
         }
+    }
 
-        sc.close();
+    /**
+     * Reads an integer from the console, re-prompting on invalid input.
+     *
+     * @return a valid integer entered by the user
+     */
+    private int readInt() {
+        while (true) {
+            try {
+                String line = sc.nextLine().trim();
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid number. Please enter again: ");
+            }
+        }
+    }
+
+    /**
+     * Entry point: launches the Add City UI.
+     *
+     * @param args not used
+     */
+    public static void main(String[] args) {
+        new AddCityUI().run();
     }
 }

@@ -1,5 +1,4 @@
 package pt.ipp.isep.dei.ui.console;
-
 import pt.ipp.isep.dei.controller.CreateMapController;
 import pt.ipp.isep.dei.domain.Map;
 import pt.ipp.isep.dei.repository.MapRepository;
@@ -7,72 +6,70 @@ import pt.ipp.isep.dei.repository.MapRepository;
 import java.util.Scanner;
 
 /**
- * Console-based UI for creating new Map instances.
+ * Console-based UI for creating a new map.
  * <p>
- * Prompts the user for map name and dimensions, validates input,
- * and delegates creation to the CreateMapController.
+ * Guides the user through the process of entering a map name and dimensions,
+ * validates the input, and confirms creation.
+ * </p>
  */
 public class CreatMapUI {
-
     private CreateMapController createMapController;
     private MapRepository repositoryMap;
 
     /**
-     * Injects the controller responsible for map creation logic.
+     * Sets the controller to be used for map creation logic.
      *
-     * @param createMapController the controller to handle validation and creation
+     * @param createMapController the CreateMapController instance to inject
      */
     public void setCreateMapController(CreateMapController createMapController) {
         this.createMapController = createMapController;
     }
 
     /**
-     * Runs the interactive creation process:
+     * Starts the interactive flow for creating a map.
+     * <p>
+     * Steps:
      * <ol>
-     *   <li>Prompts for map name.</li>
-     *   <li>Prompts for width and height.</li>
-     *   <li>Validates inputs via controller.</li>
-     *   <li>Asks for confirmation from the user.</li>
-     *   <li>Delegates actual map creation to the controller.</li>
+     *   <li>Prompts the user for a map name and dimensions.</li>
+     *   <li>Validates the dimensions and map name.</li>
+     *   <li>Asks the user for confirmation before creation.</li>
+     *   <li>Creates the map and displays a success message.</li>
      * </ol>
+     * </p>
      */
     public void create() {
         repositoryMap.saveMap(new Map());
-
+        int width;
+        int height;
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter map name: ");
+
+        System.out.println("Enter map name:");
         String name = sc.nextLine();
 
-        int width, height;
         try {
-            System.out.print("Enter map width: ");
+            System.out.println("Enter map width:");
             width = sc.nextInt();
 
-            System.out.print("Enter map height: ");
+            System.out.println("Enter map height:");
             height = sc.nextInt();
-            sc.nextLine(); // consume trailing newline
         } catch (Exception e) {
-            System.out.println("Error: Width and height must be integers.");
+            System.out.println("It is not an integer");
             return;
         }
 
         if (!createMapController.validateDimensions(width, height)) {
-            System.out.println("Error: Dimensions must be positive.");
+            System.out.println("its not positive");
             return;
         }
         if (!createMapController.validateMapName(name)) {
-            System.out.println("Error: Invalid or duplicate map name.");
+            System.out.println("Error: Invalid or duplicate name.");
             return;
         }
-
-        System.out.printf("Confirm creation of map \"%s\" with size %dx%d? (y/n): ", name, width, height);
-        String confirmation = sc.nextLine().trim();
-        if (!confirmation.equalsIgnoreCase("y")) {
-            System.out.println("Map creation cancelled.");
+        System.out.println("confirmation: " + name + " (" + width + "x" + height + ")? (y/n");
+        if (!sc.nextLine().equalsIgnoreCase("n")) {
             return;
         }
-
         createMapController.createMap(name, width, height);
-        System.out.printf("Map created: %s (%dx%d)%n", name, width, height);
+        System.out.println("Map created: " + name + " (" + width + "x" + height + ")");
     }
 }

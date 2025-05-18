@@ -15,7 +15,7 @@ participant ":Map" as Map
 participant ":Station" as Station
 participant ":StationType" as StationType
 participant ":Location" as Location
-participant ":Player" as PlayerObj
+participant ":Simulation" as Simulation
 participant ":GameState" as GameState
 
 activate Player
@@ -23,7 +23,7 @@ activate Player
 Player -> UI : wants to build a station
 activate UI
 
-    UI -> Controller : startBuild()
+    UI -> Controller : startBuildStation()
     activate Controller
 
         Controller -> REPOS : getInstance()
@@ -41,71 +41,96 @@ activate UI
             MAP_REPO --> Controller : currentMap
         deactivate MAP_REPO
 
-        Controller -> UI : request station details\n(name, type, x, y, orientation)
+        Controller -> UI : request station type selection\n(Depot, Terminal, Station)
+    deactivate Controller
+
+UI --> Player : shows station type options
+Player -> UI : selects station type
+activate UI
+
+    UI -> Controller : submitStationType(type)
+    activate Controller
+
+        Controller -> UI : request coordinates X,Y
+
+        Controller -> Simulation : getCurrentDate()
+        activate Simulation
+            Simulation --> Controller : currentDate
+        deactivate Simulation
+
+        alt Selected type is Station
+            Controller -> UI : request center position (NE, SE, NW, SW)
+            UI --> Player : select center position
+            Player -> UI : submits center position
+        else Selected type is Depot or Terminal
+            Controller -> UI : center will be geometric based on X,Y
+        end
+
+        Controller -> UI : proposes station name based on city and type
+        Controller -> UI : ask if player accepts suggested name or wants custom name
     deactivate Controller
 deactivate UI
 
-UI --> Player : show station input form
-Player -> UI : submits name, type, x, y, orientation
+UI --> Player : shows name suggestion
+Player -> UI : confirms or rejects name
 activate UI
 
-    UI -> Controller : submitStationDetails(name, type, x, y, orientation)
+    UI -> Controller : submitNameDecision(accept/reject, [custom name if rejected])
     activate Controller
 
-        Controller -> Map : isNameUnique(name)
-        activate Map
-            Map --> Controller : true / false
-        deactivate Map
+        alt Player accepts suggested name
+            Controller -> UI : show station preview with name and location
+        else Player inputs custom name
+            Controller -> UI : validate custom name restrictions
+            Controller -> Map : isStationNameDuplicate(name)
+            alt name duplicated
+                Controller -> UI : showError("Station name already exists")
+            else
+                Controller -> UI : show station preview with custom name and location
+            end
+        end
 
-        alt name not unique
-            Controller -> UI : showError("Station name already exists")
+        Controller -> UI : request confirmation of station creation
+    deactivate Controller
+deactivate UI
+
+Player -> UI : confirms station creation
+activate UI
+
+    UI -> Controller : confirmStationCreation()
+    activate Controller
+
+        Controller -> Player : hasSufficientBudget(stationType.cost)
+        alt insufficient budget
+            Controller -> UI : showError("Not enough budget")
         else
-            Controller -> StationType : retrieve(type)
-            activate StationType
-                StationType --> Controller : stationType
-            deactivate StationType
-
-            Controller -> Location : new(x, y)
-            activate Location
-                Location --> Controller : location
-            deactivate Location
-
             Controller -> Map : isOccupied(location)
             activate Map
                 Map --> Controller : true / false
             deactivate Map
 
-            alt location is occupied
-                Controller -> UI : showError("Location already occupied")
+            alt location occupied
+                Controller -> UI : warn("Location is already occupied")
             else
-                Controller -> PlayerObj : hasSufficientBudget(stationType.cost)
-                activate PlayerObj
-                    PlayerObj --> Controller : true / false
-                deactivate PlayerObj
+                Controller -> StationType : retrieve(type)
+                Controller -> Location : create(x,y)
+                Controller -> Station : create(name, stationType, location)
 
-                alt insufficient budget
-                    Controller -> UI : showError("Not enough budget")
-                else
-                    Controller -> Station : create(name, stationType, location, orientation)
-                    activate Station
-                        Station --> Controller : station
-                    deactivate Station
+                Controller -> Map : addStation(station)
+                Controller -> Player : deductBudget(stationType.cost)
 
-                    Controller -> Map : addStation(station)
-                    activate Map
-                        Map -> Map : integrate station
-                    deactivate Map
+                UI -> Map : highlightNewStation(station)
 
-                    Controller -> PlayerObj : deductBudget(stationType.cost)
+                Controller -> GameState : save()
 
-                    UI -> Map : highlightNewStation(station)
-
-                    Controller -> GameState : save()
-
-                    Controller -> UI : showSuccessMessage()
-                end
+                Controller -> UI : showSuccessMessage()
             end
         end
+
+        alt unexpected error
+            Controller -> UI : showError("An unexpected error occurred. Please try again.")
+        end
+
     deactivate Controller
 deactivate UI
 

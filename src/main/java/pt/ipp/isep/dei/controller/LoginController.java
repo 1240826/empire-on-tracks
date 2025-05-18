@@ -12,13 +12,13 @@ public class LoginController {
     private final AuthenticationRepository repo = new AuthenticationRepository();
 
     /**
-     * Regista um novo utilizador com username e password.
+     * Registers a new user with a username and password.
      *
-     * @param username o username escolhido; não pode ser nulo ou vazio
-     * @param password a password escolhida; deve satisfazer a política
-     * @return o User criado
-     * @throws NullPointerException     se username ou password forem nulos
-     * @throws IllegalArgumentException se username for vazio ou password inválida
+     * @param username the chosen username; must not be null or empty
+     * @param password the chosen password; must satisfy the password policy
+     * @return the created User
+     * @throws NullPointerException     if username or password are null
+     * @throws IllegalArgumentException if username is empty or password is invalid
      */
     public User register(String username, String password) {
         Objects.requireNonNull(username, "Username must not be null");
@@ -27,11 +27,11 @@ public class LoginController {
     }
 
     /**
-     * Tenta autenticar um utilizador existente.
+     * Attempts to authenticate an existing user.
      *
-     * @param id       o ID retornado no registo
-     * @param password a password fornecida
-     * @return o User autenticado, ou null se credenciais inválidas
+     * @param id       the ID returned upon registration
+     * @param password the provided password
+     * @return the authenticated User, or null if credentials are invalid
      */
     public User login(String id, String password) {
         if (id == null || password == null) {

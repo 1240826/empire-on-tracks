@@ -4,11 +4,19 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Evento que adiciona uma nova locomotiva ao mapa (rota vazia inicialmente).
+ * Scenario event that adds a new locomotive to the map as a template instance.
+ * <p>
+ * The locomotive is initially created with an empty route.
  */
 public class AddTemplateLocomotiveEvent implements ScenarioEvent {
     private final Locomotive template;
 
+    /**
+     * Constructs an event that will add a locomotive based on the given template.
+     *
+     * @param template the locomotive template to clone and add to the map
+     * @throws NullPointerException if the template is null
+     */
     public AddTemplateLocomotiveEvent(Locomotive template) {
         this.template = Objects.requireNonNull(template);
     }

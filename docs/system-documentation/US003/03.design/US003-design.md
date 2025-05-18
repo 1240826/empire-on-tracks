@@ -48,7 +48,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US003-SD-full.svg)
+![US003-SD-full.svg](svg/US003-SD-full.svg)
 
 ### Split Diagrams
 
@@ -56,24 +56,20 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US003-SD-split.svg)
+![US003-SD-split.svg](svg/US003-SD-split.svg)
 
-**Get Task Category List Partial SD**
+**Create City**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US003-SD-partial-get-task-category-list.svg)
+![US003-SD-partial-create-city.svg](svg/US003-SD-partial-create-city.svg)
 
-**Get Task Category Object**
+**Assign automatic**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US003-SD-partial-get-task-category.svg)
+![US003-SD-partial-assign-automatic.svg](svg/US003-SD-partial-assign-automatic.svg)
 
-**Get Employee**
+**Assign manual**
 
-![Sequence Diagram - Partial - Get Employee](svg/US003-SD-partial-assign-manual.svg)
-
-**Create Task**
-
-![Sequence Diagram - Partial - Create Task](svg/US003-SD-partial-assign-automatic.svg)
+![US003-SD-partial-assign-manual.svg](svg/US003-SD-partial-assign-manual.svg)
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US003-CD.svg)
+![US003-CD.svg](svg/US003-CD.svg)

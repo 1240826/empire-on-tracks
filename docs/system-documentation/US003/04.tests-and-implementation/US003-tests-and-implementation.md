@@ -1,69 +1,106 @@
-# US006 - Create a Task 
+# US003 - Add a City
 
 ## 4. Tests 
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
+**Test 1:** Check that it is not possible to add a city with a null name. 
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-	}
+	@Test
+        void createCity_withNullName_throwsException() {
+            Executable exec = () -> City.createCity(null, 0, 0, 1);
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, exec);
+            assertTrue(e.getMessage().contains("Invalid city name"));
+        }
 	
 
-**Test 2:** Check that it is not possible to create an instance of the Task class with a reference containing less than five chars - AC2. 
+**Test 2:** Check that it is not possible to assign houseblocks manually with invalid coordinates. 
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureReferenceMeetsAC2() {
-		Category cat = new Category(10, "Category 10");
-		
-		Task instance = new Task("Ab1", "Task Description", "Informal Data", "Technical Data", 3, 3780, cat);
-	}
+	@Test
+        void assignHouseBlocksManual_withWrongSize_throwsException() {
+            List<Location> tooFew = new ArrayList<>();
+            tooFew.add(new Location(0, 0));
+            Executable exec = () -> city.assignHouseBlocksManually(tooFew);
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, exec);
+            assertTrue(e.getMessage().contains("must match house block count"));
+        }
 
 _It is also recommended to organize this content by subsections._ 
 
 
 ## 5. Construction (Implementation)
 
-### Class CreateTaskController 
+### Class AddCityController 
 
 ```java
-public Task createTask(String reference, String description, String informalDescription, String technicalDescription,
-                       Integer duration, Double cost, String taskCategoryDescription) {
-
-	TaskCategory taskCategory = getTaskCategoryByDescription(taskCategoryDescription);
-
-	Employee employee = getEmployeeFromSession();
-	Organization organization = getOrganizationRepository().getOrganizationByEmployee(employee);
-
-	newTask = organization.createTask(reference, description, informalDescription, technicalDescription, duration,
-                                      cost,taskCategory, employee);
-    
-	return newTask;
+public City submitCityDetails(String name, int x, int y, int houseBlocks) {
+    Objects.requireNonNull(name, "city name must not be null");
+    city = City.createCity(name, x, y, houseBlocks);
+    if (map.isCityNameDuplicate(name)) {
+        throw new IllegalStateException("City name is already in use: " + name);
+    }
+    return city;
 }
+
+public City selectedAssignmentMethod(String method, List<Location> positions) {
+    Objects.requireNonNull(method, "assignment method must not be null");
+    switch (method.toLowerCase()) {
+        case "automatic":
+            city.assignHouseBlocksAutomatic();
+            break;
+        case "manual":
+            if (!map.validateCoordinates(positions)) {
+                throw new IllegalStateException("Coordinates out of map bounds");
+            }
+            city.assignHouseBlocksManually(positions);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown assignment method: " + method);
+    }
+    return city;
+}
+
+public void confirmCityCreation() {
+    map.addCity(city);
+}
+
+
 ```
 
-### Class Organization
+### Class City
 
 ```java
-public Optional<Task> createTask(String reference, String description, String informalDescription,
-                                 String technicalDescription, Integer duration, Double cost, TaskCategory taskCategory,
-                                 Employee employee) {
-    
-    Task task = new Task(reference, description, informalDescription, technicalDescription, duration, cost,
-                         taskCategory, employee);
+ public static City createCity(String name, int centerX, int centerY, int houseBlocksCount) {
+    if (name == null || name.trim().isEmpty()) {
+        throw new IllegalArgumentException("Invalid city name: " + name);
+    }
+    if (houseBlocksCount <= 0) {
+        throw new IllegalArgumentException("Invalid number of house blocks: " + houseBlocksCount);
+    }
+    return new City(name, centerX, centerY, houseBlocksCount);
+}
 
-    addTask(task);
-        
-    return task;
+public void assignHouseBlocksAutomatic() {
+    for (int i = 0; i < houseBlocksCount; i++) {
+        Location pos = Location.computeBlockPosition(center);
+        houseBlocks.add(HouseBlock.createAt(pos));
+    }
+}
+
+public void assignHouseBlocksManually(List<Location> positions) {
+    Objects.requireNonNull(positions, "positions must not be null");
+    if (positions.size() != houseBlocksCount) {
+        throw new IllegalArgumentException(
+                "Number of positions (" + positions.size() + ") must match house block count (" + houseBlocksCount + ")");
+    }
+    for (Location pos : positions) {
+        houseBlocks.add(HouseBlock.createAt(pos));
+    }
 }
 ```
 
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
-
-* For demo purposes some tasks are bootstrapped while system starts.
+* A new option of adding a city as an Editor was added. 
 
 
 ## 7. Observations

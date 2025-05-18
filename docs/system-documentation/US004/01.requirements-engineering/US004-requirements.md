@@ -34,8 +34,13 @@ Each entry must define the industry and the number of cargos generated per unit 
 
 > **Question:** Are the rates of production and quantity produce from industries decided in the scenario's specifications?
 
-> **Answer:**
-The rates are predefined values but can be redefined in the scenario.
+> **Answer:** The rates are predefined values but can be redefined in the scenario.
+
+> **Question:** Para o Editor, seria relevante saber se os cenários ou mapas são criados por ele ou por outro editor?
+
+> **Answer:** Só a titulo informativo, por exemplo, um determinado jogador prefere jogar os cenários criados por um editor específico.  
+
+
 
 ### 1.3. Acceptance Criteria
 

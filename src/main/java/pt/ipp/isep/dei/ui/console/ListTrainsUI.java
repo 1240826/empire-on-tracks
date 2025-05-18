@@ -6,7 +6,10 @@ import pt.ipp.isep.dei.domain.Train;
 import java.util.List;
 
 /**
- * User interface for listing trains.
+ * Console-based user interface for listing the player's trains.
+ * <p>
+ * Provides methods to display trains grouped by locomotive type,
+ * sorted by name, and shows details for each train.
  */
 public class ListTrainsUI {
     private ListTrainsController controller;
@@ -16,7 +19,8 @@ public class ListTrainsUI {
     }
 
     /**
-     * Requests and displays the player's train list.
+     * Requests the player's train list from the controller and displays it,
+     * grouping by locomotive type and sorting by train name.
      */
     public void requestTrainList() {
         List<Train> trains = controller.requestTrainList();
@@ -24,7 +28,10 @@ public class ListTrainsUI {
     }
 
     /**
-     * Displays the trains grouped by locomotive type and sorted by name.
+     * Displays the provided list of trains, grouping them by locomotive type
+     * and sorting each group by train name.
+     *
+     * @param trains the list of trains to display
      */
     public void displayTrainList(List<Train> trains) {
         if (trains == null || trains.isEmpty()) {
