@@ -1,0 +1,30 @@
+
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+' SD-Persistir: Fluxo de Persistência (parcial)
+
+participant CreateMapController as C
+participant Repositories         as R
+participant MapRepository        as M
+participant Map                  as Map
+autonumber 11
+activate C
+C -> R : getInstance()
+activate R
+R --> C : repositories
+deactivate R
+C -> M: getMapRepository()
+activate M
+M --> C : MapRepository
+deactivate M
+C -> Map : saveMap(map)
+activate Map
+Map -->C : listOfNames
+deactivate Map
+deactivate C
+autonumber 16
+autonumber
+@enduml

@@ -1,32 +1,25 @@
 package pt.ipp.isep.dei.repository;
 
-import pt.isep.lei.esoft.auth.AuthFacade;
-import pt.isep.lei.esoft.auth.UserSession;
+import pt.ipp.isep.dei.user.User;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class AuthenticationRepository {
-    private final AuthFacade authenticationFacade;
 
-    public AuthenticationRepository() {
-        authenticationFacade = new AuthFacade();
+    private final Map<String,User> users = new HashMap<>();
+
+    public User registerUser(String username, String password) {
+        Objects.requireNonNull(username, "Username must not be null");
+        Objects.requireNonNull(password, "Password must not be null");
+        User user = new User(username, password);
+        users.put(user.getId(), user);
+        return user;
     }
 
-    public boolean doLogin(String email, String pwd) {
-        return authenticationFacade.doLogin(email, pwd).isLoggedIn();
-    }
-
-    public void doLogout() {
-        authenticationFacade.doLogout();
-    }
-
-    public UserSession getCurrentUserSession() {
-        return authenticationFacade.getCurrentUserSession();
-    }
-
-    public boolean addUserRole(String id, String description) {
-        return authenticationFacade.addUserRole(id, description);
-    }
-
-    public boolean addUserWithRole(String name, String email, String pwd, String roleId) {
-        return authenticationFacade.addUserWithRole(name, email, pwd, roleId);
+    public User authenticate(String id, String password) {
+        if (id == null || password == null) return null;
+        User u = users.get(id);
+        return (u != null && u.getPassword().equals(password)) ? u : null;
     }
 }

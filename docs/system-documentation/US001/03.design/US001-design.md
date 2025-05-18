@@ -4,24 +4,19 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question                                                                                | Answer                  | Justification (with patterns)                                                                        |
+|:---------------|:----------------------------------------------------------------------------------------|:------------------------|:-----------------------------------------------------------------------------------------------------|
+| Step 1         | … interacting with the actor ?                                                          | CreateMapUI             | Pure Fabrication: isolates UI logic in a boundary class (HC, LC).                                    |
+|                | … coordinating the use‐case start ?                                                     | CreateMapController     | Controller: orchestrates between UI and domain layers.                                                |
+| Step 2         | … vreate map request?                                                                   | CreateMapController     | Information Expert: holds the provided data and delegates to validation and persistence.             |
+| Step 3         | … validating width and height ?                                                         | MapValidator            | Information Expert: owns and executes dimension‐check logic (HC).                                    |
+| Step 4         | … displaying error on invalid dimensions )?                                             | CreateMapUI             | Pure Fabrication: keeps all user‐feedback responsibilities separate.                                 |
+| Step 5         | … obtaining repository instance ?                                                       | Repositories            | Pure Fabrication: acts as singleton façade to supply repositories (LC).                              |
+|                | … providing a storage?                                                                  | Repositories            | Creator: knows how to instantiate or supply the correct repository.                                  |
+| Step 6         | … retrieving existing map names ?                                        | MapRepository           | Information Expert: manages collection of `Map` objects and returns their names.                     |
+| Step 7         | … validating map‐name uniqueness ?                                   | CreateMapController     | Information Expert: coordinates business rule on map names using domain knowledge.                   |
+| Step 8         | … displaying error on invalid name )?                                    | CreateMapUI             | Pure Fabrication: handles all error reporting to the user.                                           |
+| Step 9         | … asking confirmation before final creation )?                        | CreateMapUI             | Pure Fabrication: centralizes user prompts and confirmations.                                        |
 
 ### Systematization ##
 
@@ -49,7 +44,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![US001-SD-full.svg](svg/US001-SD-full.svg)
 
 ### Split Diagrams
 
@@ -57,24 +52,15 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![Sequence Diagram - split](svg/US006-SD-split.svg)
+![US001-SD-split.svg](svg/US001-SD-split.svg)
 
-**Get Task Category List Partial SD**
+**Get Map list**
 
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
+![US001-SD-partial-get-map-list.svg](svg/US001-SD-partial-get-map-list.svg)
 
-**Get Task Category Object**
+**Validate Values**
 
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
-
-**Get Employee**
-
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
-
-**Create Task**
-
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
-
+![US001-SD-validate-Values.svg](svg/US001-SD-validate-Values.svg)
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![US001-CD.svg](svg/US001-CD.svg)

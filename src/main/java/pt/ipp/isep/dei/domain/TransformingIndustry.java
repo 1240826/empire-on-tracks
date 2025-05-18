@@ -1,28 +1,70 @@
 package pt.ipp.isep.dei.domain;
 
+import java.util.Objects;
+
+/**
+ * Indústria que transforma um tipo de carga em outro.
+ */
 public class TransformingIndustry implements Industry {
-    private String industryName;
-    private int industryCost;
+    private final String industryName;
+    private final int industryCost;
     private double production;
     private double demand;
     private Location location;
-    private CargoType inputCargo;
-    private CargoType outputCargo;
+    private final Cargo inputCargo;
+    private final Cargo outputCargo;
 
-    public TransformingIndustry(String name, int cost, double production, double demand,CargoType inputCargo,CargoType outputCargo ) {
-        this.industryName = name;
-        this.industryCost = cost;
-        this.production = production;
-        this.demand = demand;
-        this.inputCargo = inputCargo;
-        this.outputCargo = outputCargo;
-
+    /**
+     * Construtor principal (sem localização).
+     *
+     * @param industryName Nome da indústria
+     * @param industryCost Custo fixo de operação
+     * @param production   Quantidade produzida por ciclo
+     * @param demand       Quantidade de entrada necessária
+     * @param inputType    Tipo de carga de entrada
+     * @param outputType   Tipo de carga de saída
+     */
+    public TransformingIndustry(String industryName,
+                                int industryCost,
+                                double production,
+                                double demand,
+                                CargoType inputType,
+                                CargoType outputType) {
+        this(industryName, industryCost, production, demand, null, inputType, outputType);
     }
 
+    /**
+     * Construtor completo, incluindo localização.
+     *
+     * @param industryName Nome da indústria
+     * @param industryCost Custo fixo de operação
+     * @param production   Quantidade produzida por ciclo
+     * @param demand       Quantidade de entrada necessária
+     * @param location     Localização no mapa
+     * @param inputType    Tipo de carga de entrada
+     * @param outputType   Tipo de carga de saída
+     */
+    public TransformingIndustry(String industryName,
+                                int industryCost,
+                                double production,
+                                double demand,
+                                Location location,
+                                CargoType inputType,
+                                CargoType outputType) {
+        Objects.requireNonNull(inputType,  "Tipo de carga de entrada não pode ser nulo");
+        Objects.requireNonNull(outputType, "Tipo de carga de saída não pode ser nulo");
+        this.industryName  = industryName;
+        this.industryCost  = industryCost;
+        this.production    = production;
+        this.demand        = demand;
+        this.location      = location;
+        this.inputCargo    = new Cargo(inputType,  0.0);
+        this.outputCargo   = new Cargo(outputType, 0.0);
+    }
 
     @Override
-    public String getindustryname() {
-        return new String(this.industryName);
+    public String getIndustryName() {
+        return industryName;
     }
 
     @Override
@@ -30,46 +72,80 @@ public class TransformingIndustry implements Industry {
         return industryCost;
     }
 
-    public String toString() {
-        return "Producing: " + this.getindustryname() + " (Cost: " + this.getIndustryCost() + ")";
-    }
-
     @Override
     public double getProduction() {
         return production;
     }
+
     @Override
     public double getDemand() {
         return demand;
     }
+
+    @Override
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    @Override
     public Location getLocation() {
         return location;
     }
 
     @Override
-    public Cargo produceCargo() {
-        return new Cargo(outputCargo, production);
-    }
-    public Cargo consumeCargo() {
-        return new Cargo(inputCargo, demand);
-    }
-
-
-    public void setInputCargoType(CargoType cargoType) {
-        this.inputCargo = cargoType;
-    }
-    public void setOutputCargoType(CargoType cargoType) {
-        this.outputCargo = cargoType;
+    public void produceCargo() {
+        if (inputCargo.getQuantity() >= demand) {
+            outputCargo.addQuantity(production);
+            inputCargo.removeQuantity(demand);
+        }
     }
 
-    public CargoType getInputCargoType () {
-        return inputCargo;
+    @Override
+    public void consumeCargo(double quantity) {
+        inputCargo.removeQuantity(quantity);
     }
-    public CargoType getOutputCargoType () {
+
+    @Override
+    public Cargo getCargo() {
         return outputCargo;
     }
-}
 
+    /** Retorna o tipo de carga de entrada. */
+    public CargoType getInputCargoType() {
+        return inputCargo.getType();
+    }
+
+    /** Retorna o tipo de carga de saída. */
+    public CargoType getOutputCargoType() {
+        return outputCargo.getType();
+    }
+
+    /** Ajusta a taxa de produção. */
+    public void setProduction(double production) {
+        this.production = production;
+    }
+
+    /** Ajusta a demanda de entrada. */
+    public void setDemand(double demand) {
+        this.demand = demand;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "TransformingIndustry[%s] Consumes %s:%.2f -> Produces %s:%.2f",
+                industryName,
+                getInputCargoType(), inputCargo.getQuantity(),
+                getOutputCargoType(), outputCargo.getQuantity()
+        );
+    }
+    public void setInputCargo(CargoType newType) {
+        Objects.requireNonNull(newType, "Tipo de carga não pode ser nulo");
+        // substitui o tipo interno
+        this.inputCargo.setCargoType(newType);
+    }
+    public void setOutputCargo(CargoType newType) {
+        Objects.requireNonNull(newType, "Tipo de carga não pode ser nulo");
+        this.outputCargo.setCargoType(newType);
+    }
+}

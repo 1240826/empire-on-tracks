@@ -1,55 +1,53 @@
 package pt.ipp.isep.dei.ui.console;
 
-
 import pt.ipp.isep.dei.controller.AddIndustryController;
 import pt.ipp.isep.dei.domain.Industry;
 import pt.ipp.isep.dei.domain.Map;
 import pt.ipp.isep.dei.repository.Repositories;
 
-
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * UI for adding industries to the map via the console.
+ */
 public class AddIndustryUI {
     private final AddIndustryController controller;
     private final Scanner scanner;
 
-    public AddIndustryUI(Repositories repositories, Map map) {
-        this.controller = new AddIndustryController(repositories, map);
+    public AddIndustryUI(Repositories repositorios, Map mapa) {
+        this.controller = new AddIndustryController(repositorios, mapa);
         this.scanner = new Scanner(System.in);
     }
 
     public void run() {
-        System.out.println("=== Adicionar Indústria ===");
+        System.out.println("=== Add Industry ===");
 
-        // Pedir coordenadas ao utilizador
-        System.out.print("Introduza a coordenada X: ");
+        // 1) Coordenadas
+        System.out.print("Enter X coordinate: ");
         int x = scanner.nextInt();
-
-        System.out.print("Introduza a coordenada Y: ");
+        System.out.print("Enter Y coordinate: ");
         int y = scanner.nextInt();
 
-        // Iniciar processo de adição
-        boolean validStart = controller.startAddIndustryController(x, y);
-        if (!validStart) {
-            System.out.println("Erro ao iniciar o processo. Tente novamente.");
+        // 2) Valida e prepara localização
+        if (!controller.iniciarAdicaoIndustria(x, y)) {
+            System.out.println("Error initializing the process. Please try again.");
             return;
         }
 
-        // Mostrar lista de indústrias disponíveis
-        List<Industry> industryList = controller.getAvailableIndustries();
-        System.out.println("Tipos de indústria disponíveis:");
-        for (int i = 0; i < industryList.size(); i++) {
-            System.out.println(i + " - " + industryList.get(i).toString());
+        // 3) Exibe modelos de indústria
+        List<Industry> modelos = controller.obterModelosIndustria();
+        System.out.println("Available industry types:");
+        for (int i = 0; i < modelos.size(); i++) {
+            System.out.printf("%d – %s%n", i, modelos.get(i));
         }
 
-        // Perguntar opção
-        System.out.print("Escolha o índice da indústria: ");
-        int index = scanner.nextInt();
+        // 4) Escolha
+        System.out.print("Choose the template index: ");
+        int indice = scanner.nextInt();
 
-        // Adicionar indústria
-        controller.addIndustry(index);
-        System.out.println("Processo concluído.");
+        // 5) Adiciona ao mapa
+        controller.adicionarIndustria(indice);
+        System.out.println("Process completed.");
     }
 }
-

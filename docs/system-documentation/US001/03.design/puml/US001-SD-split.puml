@@ -1,0 +1,89 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as Employee
+participant ":CreateMapUI" as UI
+participant ":CreateMapController" as Controller
+
+participant "MapRepository \n: MapRepository" as Repository
+
+participant ":Map" as Map
+
+activate Employee
+
+    Employee -> UI : ask to "Create a Map"
+    activate UI
+
+            UI --> Controller** : startController()
+
+
+
+        UI --> Employee : Ask the name, width, and height
+
+
+
+
+
+
+
+    Employee -> UI : Gives name and size
+
+
+        UI --> Controller  : createMap(name, width, height)
+        activate Controller
+
+
+          ref over Controller
+          Validate Values
+          end ref
+
+            alt If width/length are invalid
+                Controller --> UI : displayError("Invalid width or heigth")
+
+
+            else If width/length are valid
+
+            ref over Controller
+                 Get Map List
+            end ref
+
+
+                Controller -> Controller : validateMapName(name)
+                Controller-->Controller:valid/invalid
+
+                deactivate Controller
+
+                alt If name is valid
+                    UI --> Employee : asks for confirmation to create map
+
+
+                    Employee -> UI : confirms map creation
+
+
+                    UI -> Controller: createMap()
+                    activate Controller
+
+                    Controller->Map**:createMap(Name,whidht,height)
+
+
+
+
+
+                            Controller -> Repository : saveMap()
+                        deactivate Repository
+
+
+                    Controller --> UI : displaySuccess("Map created successfully")
+                else If name is invalid
+                    Controller -> UI : displayError("Invalid name")
+                end
+            end
+
+        deactivate Controller
+    deactivate UI
+
+@enduml

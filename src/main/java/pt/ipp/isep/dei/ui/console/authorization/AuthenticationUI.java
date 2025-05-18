@@ -1,94 +1,51 @@
 package pt.ipp.isep.dei.ui.console.authorization;
 
 import pt.ipp.isep.dei.controller.AuthenticationController;
-import pt.ipp.isep.dei.ui.console.menu.AdminUI;
-import pt.ipp.isep.dei.ui.console.menu.MenuItem;
-import pt.ipp.isep.dei.ui.console.utils.Utils;
-import pt.isep.lei.esoft.auth.mappers.dto.UserRoleDTO;
+import pt.ipp.isep.dei.user.SessionManager;
+import pt.ipp.isep.dei.user.User;
+import pt.ipp.isep.dei.ui.console.utils.Console;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
+/**
+ * Console-based user interface for authentication.
+ * <p>
+ * Provides an interactive menu for user registration and login,
+ * managing user sessions via the console.
+ */
 public class AuthenticationUI implements Runnable {
-    private final AuthenticationController ctrl;
+    private final AuthenticationController ctrl = new AuthenticationController();
+    private final SessionManager sessionMgr = new SessionManager();
 
-    public AuthenticationUI() {
-        ctrl = new AuthenticationController();
-    }
-
+    @Override
     public void run() {
-        boolean success = doLogin();
-
-        if (success) {
-            List<UserRoleDTO> roles = this.ctrl.getUserRoles();
-            if ((roles == null) || (roles.isEmpty())) {
-                System.out.println("No role assigned to user.");
-            } else {
-                UserRoleDTO role = selectsRole(roles);
-                if (!Objects.isNull(role)) {
-                    List<MenuItem> rolesUI = getMenuItemForRoles();
-                    this.redirectToRoleUI(rolesUI, role);
-                } else {
-                    System.out.println("No role selected.");
-                }
-            }
-        }
-        this.logout();
+        Console.println("\n--- AUTH MENU ---");
+        Console.println("1) Register");
+        Console.println("2) Login");
+        String choice = Console.readLine("Select: ");
+        if ("1".equals(choice)) handleRegister();
+        else if ("2".equals(choice)) handleLogin();
+        else Console.println("Exiting.");
     }
 
-    private List<MenuItem> getMenuItemForRoles() {
-        List<MenuItem> rolesUI = new ArrayList<>();
-        rolesUI.add(new MenuItem(AuthenticationController.ROLE_ADMIN, new AdminUI()));
-
-        //TODO: Complete with other user roles and related RoleUI
-        return rolesUI;
-    }
-
-    private boolean doLogin() {
-        System.out.println("\n\n--- LOGIN UI ---------------------------");
-
-        int maxAttempts = 3;
-        boolean success = false;
-        do {
-            maxAttempts--;
-            String id = Utils.readLineFromConsole("Enter UserId/Email: ");
-            String pwd = Utils.readLineFromConsole("Enter Password: ");
-
-            success = ctrl.doLogin(id, pwd);
-            if (!success) {
-                System.out.println("Invalid UserId and/or Password. \n You have  " + maxAttempts + " more attempt(s).");
-            }
-
-        } while (!success && maxAttempts > 0);
-        return success;
-    }
-
-    private void logout() {
-        ctrl.doLogout();
-    }
-
-    private void redirectToRoleUI(List<MenuItem> rolesUI, UserRoleDTO role) {
-        boolean found = false;
-        Iterator<MenuItem> it = rolesUI.iterator();
-        while (it.hasNext() && !found) {
-            MenuItem item = it.next();
-            found = item.hasDescription(role.getDescription());
-            if (found) {
-                item.run();
-            }
-        }
-        if (!found) {
-            System.out.println("There is no UI for users with role '" + role.getDescription() + "'");
+    private void handleRegister() {
+        String user = Console.readLine("Username: ");
+        String pass = Console.readLine("Password: ");
+        try {
+            User u = ctrl.register(user, pass);
+            Console.println("Registered: ID=" + u.getId());
+        } catch (Exception e) {
+            Console.println("Fail: " + e.getMessage());
         }
     }
 
-    private UserRoleDTO selectsRole(List<UserRoleDTO> roles) {
-        if (roles.size() == 1) {
-            return roles.get(0);
+    private void handleLogin() {
+        String id   = Console.readLine("ID: ");
+        String pass = Console.readLine("Password: ");
+        User u = ctrl.login(id, pass);
+        if (u != null) {
+            sessionMgr.startSession(u);
+            Console.println("Welcome, " + u.getUsername());
         } else {
-            return (UserRoleDTO) Utils.showAndSelectOne(roles, "Select the role you want to adopt in this session:");
+            Console.println("Invalid credentials.");
         }
     }
 }

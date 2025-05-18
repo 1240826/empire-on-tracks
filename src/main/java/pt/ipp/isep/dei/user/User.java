@@ -1,38 +1,29 @@
 package pt.ipp.isep.dei.user;
 
-/**
- * Represents a user in the system with a username and password.
- */
-public class User {
-    private String username;
-    private String password;
+import java.util.Objects;
+import pt.ipp.isep.dei.ui.console.utils.CredentialManager;
 
-    /**
-     * Creates a new user with the given username and password.
-     *
-     * @param username the user's username
-     * @param password the user's password
-     */
+public class User {
+    private final String username;
+    private final String id;
+    private final String password;
+
     public User(String username, String password) {
+        Objects.requireNonNull(username, "Username must not be null");
+        if (username.isBlank()) {
+            throw new IllegalArgumentException("Username must not be blank");
+        }
+        if (!CredentialManager.isValidPassword(password)) {
+            throw new IllegalArgumentException(
+                    "Password must be 7 alphanumeric chars, ≥3 uppercase, ≥2 digits"
+            );
+        }
         this.username = username;
+        this.id = CredentialManager.generateUserId();
         this.password = password;
     }
 
-    /**
-     * Returns the username of this user.
-     *
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Returns the password of this user.
-     *
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
+    public String getUsername() { return username; }
+    public String getId()       { return id; }
+    public String getPassword() { return password; }
 }

@@ -68,7 +68,7 @@ As an Editor, I want to create a map with a size and a name.
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US001-SSD.svg)
+![US001-SSD.svg](svg/US001-SSD%20.svg)
 
 **__**
 

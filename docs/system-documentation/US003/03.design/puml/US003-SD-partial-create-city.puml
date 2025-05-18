@@ -6,6 +6,9 @@ skinparam shadowing false
 participant ":AddCityController"    as Controller
 participant ":City"                 as City
 participant ":Map"                  as Map
+participant "Repositories"          as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "mapRepository\n:MapRepository" as MAP_REPO
 
 autonumber 12
 -> Controller: submitCityDetails(name, positionX, positionY, houseBlocks)

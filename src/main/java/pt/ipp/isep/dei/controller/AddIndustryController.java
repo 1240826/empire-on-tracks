@@ -1,93 +1,119 @@
 package pt.ipp.isep.dei.controller;
 
 import pt.ipp.isep.dei.domain.*;
-import pt.ipp.isep.dei.repository.*;
+import pt.ipp.isep.dei.repository.Repositories;
 
 import java.util.List;
 
+/**
+ * Controller to add industries to a map.
+ */
+
 public class AddIndustryController {
-    private Repositories repositories;
-    private Map map;
+    private final Repositories repositorios;
+    private final Map mapa;
     private Location location;
 
-    public AddIndustryController(Repositories repositories, Map map) {
-        this.repositories = repositories;
-        this.map = map;
+    public AddIndustryController(Repositories repositorios, Map mapa) {
+        this.repositorios = repositorios;
+        this.mapa = mapa;
     }
 
     /**
-     * Inicia o processo de adição de indústria.
-     * Solicita as coordenadas ao usuário e valida.
+     * Validates coordinates and prepares the Location.
+     *
+     * @param x X coordinate (column)
+     * @param y Y coordinate (row)
+     * @return true if coordinates are positive and the position is free
      */
-    public boolean startAddIndustryController(int x, int y) {
-        // Valida as coordenadas (usando ValueValidator)
-        ValueValidator validator = new ValueValidator();
-        if (!validator.isPositive(x) || !validator.isPositive(y)) {
-            System.out.println("Coordenadas inválidas.");
+
+    public boolean iniciarAdicaoIndustria(int x, int y) {
+        ValueValidator validador = new ValueValidator();
+        if (!validador.isPositive(x) || !validador.isPositive(y)) {
+            System.out.println("Invalid coordinates.");
             return false;
         }
-
-        // Verifica se a posição no mapa está livre
-        if (!mapPositionIsEmpty(x, y)) {
-            System.out.println("A posição está ocupada.");
+        if (!mapa.isEmpty(x, y)) {
+            System.out.println("The position is already occupied.");
             return false;
         }
-
-        // Cria a localização
-        location = new Location(x, y);
+        this.location = new Location(x, y);
         return true;
     }
 
     /**
-     * Verifica se o local no mapa está vazio.
+     * Creates and adds a new industry to the map, based on the selected template.
+     *
+     * @param indiceModelo index of the template in the repository.
      */
-    private boolean mapPositionIsEmpty(int x, int y) {
-        return map.getMap()[x][y] == null;
+
+    public void adicionarIndustria(int indiceModelo) {
+        Industry modelo =
+                repositorios.getIndustryRepository()
+                        .getIndustryTemplate(indiceModelo);
+
+        if (modelo == null) {
+            System.out.println("Invalid industry index.");
+            return;
+        }
+
+        Industry novaIndustria;
+        // clássico instanceof + cast
+        if (modelo instanceof ProducingIndustry) {
+            ProducingIndustry p = (ProducingIndustry) modelo;
+            novaIndustria = new ProducingIndustry(
+                    p.getIndustryName(),
+                    p.getIndustryCost(),
+                    p.getProduction(),
+                    p.getDemand(),
+                    location,
+                    p.getCargoType()
+            );
+        }
+        else if (modelo instanceof TransformingIndustry) {
+            TransformingIndustry t = (TransformingIndustry) modelo;
+            novaIndustria = new TransformingIndustry(
+                    t.getIndustryName(),
+                    t.getIndustryCost(),
+                    t.getProduction(),
+                    t.getDemand(),
+                    location,
+                    t.getInputCargoType(),
+                    t.getOutputCargoType()
+            );
+        }
+        else if (modelo instanceof MixedIndustry) {
+            MixedIndustry m = (MixedIndustry) modelo;
+            novaIndustria = new MixedIndustry(
+                    m.getIndustryName(),
+                    m.getIndustryCost(),
+                    m.getProduction(),
+                    m.getDemand(),
+                    location,
+                    m.getInputCargoType(),
+                    m.getOutputCargoType()
+            );
+        }
+        else {
+            System.out.println("Industry type not supported.");
+            return;
+        }
+
+        boolean adicionou = mapa.addIndustry(novaIndustria, location);
+        if (adicionou) {
+            System.out.println("Industry added successfully!");
+        } else {
+            System.out.println("Error adding the industry.");
+        }
     }
 
     /**
-     * Adiciona a indústria ao mapa.
-     * Primeiro, escolhe a indústria e cria a instância apropriada.
+     * @return list of all available industry templates
      */
-    public void addIndustry(int industryIndex) {
-        // Recupera o template de indústrias do repositório
-        IndustryRepository industryRepo = repositories.getIndustryRepository();
-        Industry industryTemplate = industryRepo.getIndustryTemplate(industryIndex);
 
-        // Cria uma nova indústria baseada no template
-        Industry newIndustry = null;
-
-        if (industryTemplate instanceof ProducingIndustry) {
-            newIndustry = new ProducingIndustry(industryTemplate.getindustryname(),
-                    industryTemplate.getIndustryCost(),
-                    industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
-        } else if (industryTemplate instanceof TransformingIndustry) {
-            newIndustry = new TransformingIndustry(industryTemplate.getindustryname(),
-                    industryTemplate.getIndustryCost(),
-                    industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
-        } else if (industryTemplate instanceof MixedIndustry) {
-            newIndustry = new MixedIndustry(industryTemplate.getindustryname(),
-                    industryTemplate.getIndustryCost(),
-                    industryTemplate.getProduction(),
-                    industryTemplate.getDemand());
-        }
-
-        // Define a localização da nova indústria
-        if (newIndustry != null) {
-            newIndustry.setLocation(location);
-
-            // Adiciona a indústria ao mapa
-            map.getMap()[location.getX()][location.getY()] = newIndustry;
-            System.out.println("Indústria adicionada com sucesso!");
-        } else {
-            System.out.println("Erro ao criar a indústria.");
-        }
+    public List<Industry> obterModelosIndustria() {
+        return repositorios
+                .getIndustryRepository()
+                .getListOfIndustry();
     }
-    public List<Industry> getAvailableIndustries() {
-        return repositories.getIndustryRepository().getListOfIndustry();
-    }
-
 }
-

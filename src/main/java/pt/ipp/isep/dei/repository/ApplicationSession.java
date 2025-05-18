@@ -1,24 +1,16 @@
 package pt.ipp.isep.dei.repository;
 
-import pt.isep.lei.esoft.auth.UserSession;
+import pt.ipp.isep.dei.user.User;
 
 /**
- * Singleton that manages the application-wide current user session.
+ * Singleton holding the current application user.
  */
 public class ApplicationSession {
     private static ApplicationSession instance;
-    private UserSession currentSession;
+    private User currentUser;
 
-    /**
-     * Private constructor for singleton pattern.
-     */
-    public ApplicationSession() {}
+    private ApplicationSession() { }
 
-    /**
-     * Retrieves the singleton instance of ApplicationSession.
-     *
-     * @return the ApplicationSession instance
-     */
     public static synchronized ApplicationSession getInstance() {
         if (instance == null) {
             instance = new ApplicationSession();
@@ -26,22 +18,11 @@ public class ApplicationSession {
         return instance;
     }
 
-    /**
-     * Returns the current active user session.
-     *
-     * @return current UserSession or null if no session exists
-     */
-    public UserSession getCurrentSession() {
-        return currentSession;
+    public User getCurrentUser() {
+        return currentUser;
     }
 
-    /**
-     * Sets the current active user session.
-     * Intended for use by SessionManager only.
-     *
-     * @param session the UserSession to set as current
-     */
-    void setCurrentSession(UserSession session) {
-        this.currentSession = session;
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }

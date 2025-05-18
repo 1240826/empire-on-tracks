@@ -1,0 +1,50 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+participant ":CreateScenarioController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
+participant ":Scenario" as Scenario
+participant ":Cargo" as Cargo
+participant ":Locomotive" as Locomotive
+participant "locomotiveRepository\n:LocomotiveRepository" as LocoRepo
+
+
+autonumber 14
+-> Controller : addLocomotiveType(type)
+autonumber 14.1
+
+
+group Define Availability
+    loop for each selected locomotive
+        activate Controller
+            Controller -> LocoRepo : addAvailableLocomotionType(type)
+            alt define availability period
+                    else from date
+                        Controller -> Scenario : addLocomotive(year,type)
+                        activate Scenario
+                        Scenario --> SCENARIO_REPO: scenario
+                        deactivate
+                        Controller -> Locomotive : setAvailability(type, period)
+                        deactivate Period
+
+                    else until date
+                        Controller -> Scenario : addLocomotive(year,type)
+                                    activate Scenario
+                                    Scenario --> SCENARIO_REPO: scenario
+                                    deactivate
+                        deactivate Period
+                        Controller -> Locomotive : setAvailability(type, period)
+                        deactivate Period
+                    end
+
+            end
+    autonumber 15
+    <-- Controller: scenario
+    deactivate Controller
+end
+
+@enduml

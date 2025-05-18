@@ -7,7 +7,12 @@ import pt.ipp.isep.dei.repository.Repositories;
 
 import java.util.List;
 
-
+/**
+ * Controller responsible for managing map creation and validation.
+ *
+ * Provides methods to validate map dimensions, check map name availability,
+ * and create new maps in the repository.
+ */
 public class CreateMapController {
     private final ValueValidator validator = new ValueValidator();
     private final MapRepository repository;

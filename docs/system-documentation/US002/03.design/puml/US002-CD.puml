@@ -1,0 +1,70 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+' --- Classes ---
+class AddIndustryUI {
+
+}
+
+class AddIndustryController {
+  + startAddIndustryController(): void
+  + submitCoordinates(x: int, y: int): void
+  + addIndustry(option: IndustryType): void
+}
+
+class ValueValidator {
+  + validateCoordinates(x: int, y: int): boolean
+  + isPositiveInteger(value: int): boolean
+}
+
+class Map {
+  + isEmpty(x: int, y: int): boolean
+  + validatePosition(x: int, y: int): boolean
+  + addIndustry(option: IndustryType, x: int, y: int): void
+}
+
+class CoordinateDTO {
+  - x: int
+  - y: int
+  + CoordinateDTO(x: int, y: int)
+}
+
+class Repositories {
+  - instance: Repositories
+  + getInstance(): Repositories
+  + getIndustryRepository(): IndustryRepository
+}
+
+class IndustryRepository {
+  + getListOfIndustry(): List<IndustryType>
+}
+
+class Industry {
+  - type: IndustryType
+  - productionType: ProductionType
+  + Industry(type: IndustryType, location: CoordinateDTO)
+}
+
+class Location {
+  - coordinate: CoordinateDTO
+  + createLocation(x: int, y: int): Location
+}
+
+
+
+
+
+' --- Relationships ---
+AddIndustryUI --> AddIndustryController : uses
+AddIndustryController ..> ValueValidator : validateCoordinates
+AddIndustryController ..> Map            : addIndustry, validatePosition
+AddIndustryController ..> Repositories   : getInstance
+Repositories --> IndustryRepository      : provides
+AddIndustryController ..> IndustryRepository : retrieve types
+Map *-- Industry : contains
+Industry --> Location : at
+Location --> CoordinateDTO : wraps
+
+@enduml

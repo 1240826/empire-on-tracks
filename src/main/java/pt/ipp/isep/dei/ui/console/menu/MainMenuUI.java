@@ -7,22 +7,41 @@ import pt.ipp.isep.dei.ui.console.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Console UI for the application's main menu.
+ * <p>
+ * Presents options to log in or to view the development team,
+ * and dispatches to the chosen sub-UI until the user exits.
+ */
 public class MainMenuUI implements Runnable {
 
+    /**
+     * Constructs a new MainMenuUI.
+     */
     public MainMenuUI() {
+        // No-op constructor
     }
 
+    /**
+     * Displays the main menu and processes user selections.
+     * <p>
+     * Continues looping until the user chooses to exit (index -1).
+     */
+    @Override
     public void run() {
-        List<MenuItem> options = new ArrayList<MenuItem>();
+        final List<MenuItem> options = new ArrayList<>();
         options.add(new MenuItem("Do Login", new AuthenticationUI()));
         options.add(new MenuItem("Know the Development Team", new DevTeamUI()));
-        int option = 0;
-        do {
-            option = Utils.showAndSelectIndex(options, "\n\n--- MAIN MENU --------------------------");
 
-            if ((option >= 0) && (option < options.size())) {
-                options.get(option).run();
+        int selection;
+        do {
+            selection = Utils.showAndSelectIndex(
+                    options,
+                    "\n\n--- MAIN MENU --------------------------"
+            );
+            if (selection >= 0 && selection < options.size()) {
+                options.get(selection).run();
             }
-        } while (option != -1);
+        } while (selection != -1);
     }
 }
