@@ -313,7 +313,4 @@ public class Station {
                     .ifPresent(b -> b.isActive());
         }
     }
-
-
-
 }

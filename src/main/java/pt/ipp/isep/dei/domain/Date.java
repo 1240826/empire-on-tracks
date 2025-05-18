@@ -1,33 +1,41 @@
-// SimulationClock.java
 package pt.ipp.isep.dei.domain;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
 /**
- * Relógio da simulação com auto-tick configurável e tick manual.
+ * Simulation clock with configurable auto-tick and manual tick support.
  */
 public class Date {
+
     private LocalDateTime currentDate;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> futureTick;
     private final long tickIntervalSeconds;
 
-    /** @param startDate Data inicial da simulação */
-    /** @param tickIntervalSeconds Intervalo em segundos para cada mês automático */
+    /**
+     * Constructs a simulation clock with a starting date and tick interval.
+     *
+     * @param startDate           the initial simulation date
+     * @param tickIntervalSeconds the interval (in seconds) between automatic monthly ticks
+     */
     public Date(LocalDateTime startDate, long tickIntervalSeconds) {
-        this.currentDate          = startDate;
-        this.tickIntervalSeconds  = tickIntervalSeconds;
+        this.currentDate = startDate;
+        this.tickIntervalSeconds = tickIntervalSeconds;
     }
 
-
-
-    /** Data atual do simulador. */
+    /**
+     * Returns the current date of the simulation.
+     *
+     * @return the current simulation date
+     */
     public LocalDateTime getDate() {
         return currentDate;
     }
 
-    /** Inicia auto-tick (mês a cada tickIntervalSeconds). */
+    /**
+     * Starts the automatic ticking mechanism (advances by one month every tickIntervalSeconds).
+     */
     public void start() {
         if (futureTick == null || futureTick.isDone() || futureTick.isCancelled()) {
             futureTick = scheduler.scheduleAtFixedRate(
@@ -39,7 +47,9 @@ public class Date {
         }
     }
 
-    /** Pausa auto-tick. */
+    /**
+     * Stops the automatic ticking.
+     */
     public void stop() {
         if (futureTick != null) {
             futureTick.cancel(false);
@@ -47,12 +57,16 @@ public class Date {
         }
     }
 
-    /** Avança manualmente um mês. */
+    /**
+     * Advances the simulation clock manually by one month.
+     */
     public void advanceManually() {
         currentDate = currentDate.plusMonths(1);
     }
 
-    /** Desliga o executor (ao encerrar a app). */
+    /**
+     * Shuts down the internal executor. Should be called when the application exits.
+     */
     public void shutdown() {
         scheduler.shutdownNow();
     }
