@@ -1,0 +1,103 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor "Editor" as Editor
+participant ":CreateScenarioUI" as UI
+participant ":CreateScenarioController" as Controller
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
+participant ":Scenario" as Scenario
+participant ":Locomotive" as Locomotive
+participant ":Cargo" as Cargo
+participant ":Period" as Period
+participant "locomotiveRepository\n:LocomotiveRepository" as LocoRepo
+participant "cargoRepository\n:CargoRepository" as CargoRepo
+
+autonumber
+
+activate Editor
+Editor -> UI : asks to create a scenario for selected map
+activate UI
+UI --> Editor : requests scenario period (start, end)
+deactivate UI
+
+Editor -> UI : provides start and end date
+activate UI
+UI -> Controller : startCreateScenario(start, end)
+
+
+activate Controller
+ref over Controller
+Create Scenario
+end ref
+Controller -> REPOS : getInstance()
+REPOS --> Controller : repositories
+Controller -> REPOS_SINGLETON : getScenarioRepository()
+activate REPOS_SINGLETON
+REPOS_SINGLETON --> Controller : scenarioRepository
+deactivate REPOS_SINGLETON
+Controller -> Period : newPeriod(start, end)
+activate Period
+Period --> Controller : period
+deactivate Period
+Controller -> Scenario : setPeriod(period)
+deactivate Controller
+
+UI --> Editor : shows all available locomotion types
+deactivate UI
+Editor -> UI : selects locomotion types to include in the scenario
+activate UI
+UI -> Controller : addLocomotiveType(type)
+
+activate Controller
+ref over Controller
+Define Available Locomotive
+end ref
+
+
+Controller -> Scenario : addLocomotive(year, type)
+deactivate Controller
+
+UI --> Editor : shows all available cargo types
+deactivate UI
+Editor -> UI : selects cargo types to \n be part of the scenario (e.g., Iron, Coal, Silver, etc.)
+activate UI
+UI -> Controller : addCargoType(cargo)
+
+
+activate Controller
+ref over Controller
+Define Available Cargo
+end ref
+Controller -> CargoRepo : addAvailableCargo(cargo)
+deactivate Controller
+
+UI --> Editor : requests production frequency for generating industries
+deactivate UI
+Editor -> UI : defines production frequency (percentage)
+activate UI
+UI -> Controller : setIndustryProductionFrequency(percent)
+
+UI --> Editor : shows all data and asks for confirmation
+deactivate UI
+Editor -> UI : confirms data
+activate UI
+UI -> Controller : confirmScenarioCreation()
+
+
+activate Controller
+Controller -> SCENARIO_REPO : saveScenario(scenario)
+activate SCENARIO_REPO
+SCENARIO_REPO -> SCENARIO_REPO : storeRepScenario(scenario)
+SCENARIO_REPO --> Controller : scenario
+deactivate SCENARIO_REPO
+Controller --> UI : scenario
+deactivate Controller
+
+UI --> Editor : displays operation success
+deactivate UI
+@enduml

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a simulation scenario, including its trigger date, time period,
+ * Represents a simulation scenario, including a trigger date, time period,
  * and configured resources such as locomotives, cargos, and industry production settings.
  */
 public class Scenario {
