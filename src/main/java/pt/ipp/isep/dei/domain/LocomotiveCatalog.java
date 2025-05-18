@@ -1,5 +1,7 @@
 package pt.ipp.isep.dei.domain;
 
+import pt.ipp.isep.dei.repository.LocomotiveRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class LocomotiveCatalog {
 
     public List<Locomotive> getAvailableLocomotives() {
         // In future: filter based on scenario
-        return new ArrayList<>(allLocomotives);
+        return LocomotiveRepository.getInstance().getAllTemplates();
     }
 }
 
