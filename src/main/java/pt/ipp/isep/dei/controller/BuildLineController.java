@@ -3,7 +3,7 @@ package pt.ipp.isep.dei.controller;
 import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
-
+//class used build a railway line between two stations
 public class BuildLineController {
     private final Player player;
     private final Map map;

@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.ui.console;
 
-import pt.ipp.isep.dei.controller.StationController;
+import pt.ipp.isep.dei.controller.ListStationController;
 import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Scanner;
  * its buildings and cargoes.
  */
 public class StationListUI implements Runnable {
-    private StationController controller;
+    private ListStationController controller;
     private final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -21,7 +21,7 @@ public class StationListUI implements Runnable {
      *
      * @param controller the StationController instance responsible for station operations
      */
-    public StationListUI(StationController controller) {
+    public StationListUI(ListStationController controller) {
         this.controller = controller;
     }
 
