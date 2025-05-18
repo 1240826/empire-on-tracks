@@ -46,4 +46,7 @@ public class ScenarioRepository {
         // adiciona à lista interna
         addScenario(initial);
     }
+
+    public void addScenario(Scenario scenario) {
+    }
 }
