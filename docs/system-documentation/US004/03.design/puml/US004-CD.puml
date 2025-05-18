@@ -26,9 +26,10 @@ class CreateScenarioUI {
 }
 
 class CreateScenarioController {
-    + startCreateScenario(start: Date, end: Date)
-    + addLocomotiveType(type: String)
-    + setLocomotiveAvailability(type: String, period: Period)
+    + startCreateScenario(LocalDataTime triggerdate, start: Period, end: Period)
+    + getAllLocomotiveTemplates()
+    + addLocomotiveByTemplate(type: int)
+    + setLocomotiveAvailability(type: int, period: Period)
     + addCargoType(cargo: String)
     + setCargoBehavior(cargo: String, behavior: String)
     + setIndustryProductionFrequency(percent: int)
@@ -42,9 +43,15 @@ class Scenario {
     - locomotives: List<Locomotive>
     - cargos: List<Cargo>
     - period: Period
+    + getTriggerDate()
+    + setTriggerDate(triggerDate: LocalDateTime)
     + setPeriod(period: Period)
-    + addLocomotive(year: int, type: String)
+    + getPeriod()
+    + addLocomotive(loco: Locomotive)
     + addCargo(cargo: Cargo)
+    + setIndustryProductionFrequency(type: int)
+    + getIndustryProductionFrequency()
+    + applyAll(map :Map , locomotives: List<Locomotive>)
 }
 
 class Period {
@@ -89,8 +96,7 @@ class CargoRepository {
 }
 
 class LocomotiveRepository {
-    + addAvailableLocomotionType(type: String)
-    + updateAvailability(type: String, period: Period)
+    + getTemplate(type int)
 }
 
 class MapRepository {
