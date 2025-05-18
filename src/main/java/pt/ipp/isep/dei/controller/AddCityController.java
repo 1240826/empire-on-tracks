@@ -4,6 +4,7 @@ import pt.ipp.isep.dei.domain.City;
 import pt.ipp.isep.dei.domain.Location;
 import pt.ipp.isep.dei.domain.Map;
 import pt.ipp.isep.dei.repository.Repositories;
+import java.util.Random;
 
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +70,8 @@ public class AddCityController {
         Objects.requireNonNull(method, "assignment method must not be null");
         switch (method.toLowerCase()) {
             case "automatic":
+                int x = map.getHeight();
+                int y = map.getWidth();
                 city.assignHouseBlocksAutomatic();
                 break;
             case "manual":

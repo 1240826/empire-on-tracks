@@ -7,7 +7,7 @@ autonumber
 
 actor "Player" as PLAYER
 participant ":StationListUI" as UI
-participant ":StationController" as CTRL
+participant ":ListStationController" as CTRL
 participant "map\n:Map" as REPOS
 participant "Map \n :Station" as REPOS_SINGLETON
 participant "Cargo" as CARGO

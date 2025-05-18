@@ -1,0 +1,73 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+participant ":BuyLocomotiveController" as Controller
+participant ":Player" as PlayerObject
+participant ":LocomotiveCatalog" as Catalog
+participant ":Train" as Train
+participant ":BuyLocomotiveUI" as UI
+
+autonumber 14
+-> Controller : buyLocomotiveAsTrain(locomotiveID, trainName)
+activate Controller
+
+group Buy Locomotive and Create Train
+    autonumber 14.1
+    Controller -> PlayerObject : isTrainNameUnique(trainName)
+    activate PlayerObject
+    PlayerObject --> Controller : true/false
+    deactivate PlayerObject
+
+    alt name duplicate
+        autonumber 14.2
+        Controller --> UI : errorCode = DUPLICATE_NAME
+    else
+        autonumber 14.3
+        Controller -> Catalog : findLocomotiveById(locomotiveID)
+        activate Catalog
+        Catalog --> Controller : locomotive or null
+        deactivate Catalog
+
+        alt locomotive not found
+            autonumber 14.4
+            Controller --> UI : errorCode = NOT_FOUND
+        else
+            autonumber 14.5
+            Controller -> PlayerObject : hasSufficientBudget(price)
+            activate PlayerObject
+            PlayerObject --> Controller : true/false
+            deactivate PlayerObject
+
+            alt insufficient budget
+                autonumber 14.6
+                Controller --> UI : errorCode = INSUFFICIENT_BUDGET
+            else
+                autonumber 14.7
+                Controller -> PlayerObject : buyLocomotive(locomotive)
+                activate PlayerObject
+                PlayerObject --> Controller : (locomotive purchased)
+                deactivate PlayerObject
+
+                autonumber 14.8
+                Controller -> Train : create(trainName, locomotive, ...)
+                activate Train
+                Controller -> PlayerObject : addTrain(newTrain)
+                activate PlayerObject
+                PlayerObject --> Controller : (train added)
+                deactivate PlayerObject
+                deactivate Train
+
+                autonumber 14.9
+                Controller --> UI : errorCode = SUCCESS
+            end
+        end
+    end
+end group
+
+autonumber 27
+    <-- Controller : (returns to UI with errorCode)
+    deactivate Controller
+@enduml

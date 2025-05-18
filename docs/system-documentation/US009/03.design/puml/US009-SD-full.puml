@@ -13,8 +13,7 @@ participant "Repositories" as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
 participant ":LocomotiveCatalog" as Catalog
 participant ":Player" as PlayerObject
-
-activate Player
+participant ":Train" as Train
 
 Player -> UI : requests to buy a locomotive
 activate UI
@@ -32,7 +31,7 @@ activate REPOS_SINGLETON
 REPOS_SINGLETON --> Controller : locomotiveCatalog
 deactivate REPOS_SINGLETON
 
-Controller -> Catalog : getAvailableLocomotives(currentDate, currentScenario)
+Controller -> Catalog : getAvailableLocomotives()
 activate Catalog
 Catalog --> Controller : list of available locomotives
 deactivate Catalog
@@ -45,26 +44,75 @@ deactivate UI
 
 Player -> UI : selects a locomotive
 activate UI
+UI -> Player : prompt for train name
+deactivate UI
+Player -> UI : enters train name
+activate UI
 
-UI -> Controller : selectLocomotive(locomotiveID)
+UI -> Controller : buyLocomotiveAsTrain(locomotiveID, trainName)
+deactivate UI
 activate Controller
 
-Controller -> PlayerObject : hasSufficientBudget(price)
+
+Controller -> PlayerObject : isTrainNameUnique(trainName)
 activate PlayerObject
 PlayerObject --> Controller : true/false
 deactivate PlayerObject
 
-alt if budget is sufficient
-    Controller -> PlayerObject : buyLocomotive(locomotive)
-    activate PlayerObject
-    PlayerObject --> Controller : locomotive instance
-    deactivate PlayerObject
-    Controller --> UI : show success message
-else insufficient budget
-    Controller --> UI : show failure message
-end
+alt name duplicate
+    Controller --> UI : errorCode = DUPLICATE_NAME
+    deactivate Controller
+    activate UI
+    UI --> Player : shows duplicate-name message
+    deactivate UI
+    activate Controller
+else
+    Controller -> Catalog : findLocomotiveById(locomotiveID)
+    activate Catalog
+    Catalog --> Controller : locomotive or null
+    deactivate Catalog
 
-deactivate Controller
-deactivate UI
+    alt locomotive not found
+        Controller --> UI : errorCode = NOT_FOUND
+        deactivate Controller
+        activate UI
+        UI --> Player : shows not found message
+        deactivate UI
+        activate Controller
+    else
+        Controller -> PlayerObject : hasSufficientBudget(price)
+        activate PlayerObject
+        PlayerObject --> Controller : true/false
+        deactivate PlayerObject
+
+        alt insufficient budget
+            Controller --> UI : errorCode = INSUFFICIENT_BUDGET
+            deactivate Controller
+            activate UI
+            UI --> Player : shows insufficient budget message
+            deactivate UI
+            activate Controller
+        else
+            Controller -> PlayerObject : buyLocomotive(locomotive)
+            activate PlayerObject
+            PlayerObject --> Controller : (locomotive purchased)
+            deactivate PlayerObject
+
+            Controller -> Train : create(trainName, locomotive, ...)
+            activate Train
+            Controller -> PlayerObject : addTrain(newTrain)
+            activate PlayerObject
+            PlayerObject --> Controller : (train added)
+            deactivate PlayerObject
+            deactivate Train
+
+            Controller --> UI : errorCode = SUCCESS
+            deactivate Controller
+            activate UI
+            UI --> Player : shows success message
+            deactivate UI
+        end
+    end
+end
 
 @enduml

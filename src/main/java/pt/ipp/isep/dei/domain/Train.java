@@ -14,6 +14,8 @@ public class Train {
     private List<Carriage> carriages;
     private List<String> currentCargoes;
     private Route route;
+    private int currentStopIndex = 0;
+
 
     public Train(String name,
                  Locomotive locomotive,
@@ -39,7 +41,9 @@ public class Train {
 
     public void assignRoute(Route route) {
         this.route = Objects.requireNonNull(route);
+        this.currentStopIndex = 0;
     }
+
 
     public Route getRoute() {
         return route;
@@ -52,4 +56,5 @@ public class Train {
                 locomotive.getType(),
                 route != null ? route.toString() : "none");
     }
+
 }

@@ -29,9 +29,15 @@ public class MainMenuUI implements Runnable {
      */
     @Override
     public void run() {
+        // Welcome message
+        System.out.println("\n=== Welcome to Empire on Tracks ===");
+
         final List<MenuItem> options = new ArrayList<>();
         options.add(new MenuItem("Do Login", new AuthenticationUI()));
         options.add(new MenuItem("Know the Development Team", new DevTeamUI()));
+        // Role‐based submenus
+        options.add(new MenuItem("Editor Role", new EditorMenuUI()));
+        options.add(new MenuItem("Player Role", new PlayerMenuUI()));
 
         int selection;
         do {

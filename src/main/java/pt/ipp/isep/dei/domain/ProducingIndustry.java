@@ -47,6 +47,14 @@ public class ProducingIndustry implements Industry {
                              CargoType cargoType) {
         this(industryName, industryCost, production, demand, null, cargoType);
     }
+    public ProducingIndustry(){
+        this.industryName = "Industry";
+        this.production=20;
+        this.demand=0;
+        this.industryCost=20;
+        this.cargoStock=new Cargo(CargoType.OIL,0);
+
+    }
 
     /**
      * Constructs a ProducingIndustry with an assigned location.

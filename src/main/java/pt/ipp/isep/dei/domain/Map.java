@@ -295,13 +295,7 @@ public class Map {
         for (Industry ind : industries) {
             ind.produceCargo();
         }
-        // 2) movimento de locomotivas (sem tocar nas estações!)
-        for (Locomotive loco : locomotives) {
-            loco.move();
-            if (loco.hasStationNearby()) {
-                // TODO: loading logic
-            }
-        }
+
     }
 
 

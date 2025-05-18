@@ -15,7 +15,7 @@ import java.util.Scanner;
  * Guides the editor through creating a new City with its center and house blocks,
  * supporting both automatic and manual block assignment methods.
  */
-public class AddCityUI {
+public class AddCityUI implements Runnable {
     private final AddCityController controller = new AddCityController();
     private final Scanner sc = new Scanner(System.in);
 
@@ -31,7 +31,7 @@ public class AddCityUI {
      *   <li>Display a review summary and confirm creation.</li>
      * </ol>
      */
-    public void run() {
+    public void start() {
         System.out.println("=== Add New City ===");
 
         // Initialize controller state
@@ -145,11 +145,21 @@ public class AddCityUI {
     }
 
     /**
+     * Entry‐point for Runnable dispatch.
+     */
+    @Override
+    public void run() {
+        start();
+    }
+
+    /**
      * Entry point: launches the Add City UI.
      *
      * @param args not used
      */
     public static void main(String[] args) {
-        new AddCityUI().run();
+        new AddCityUI().start();
     }
 }
+
+

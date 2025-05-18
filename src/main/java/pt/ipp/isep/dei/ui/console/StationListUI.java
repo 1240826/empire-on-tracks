@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.ui.console;
 
-import pt.ipp.isep.dei.controller.StationController;
+import pt.ipp.isep.dei.controller.ListStationController;
 import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.Scanner;
  * Allows the user to see all available stations and select one to display
  * its buildings and cargoes.
  */
-public class StationListUI {
-    private final StationController controller;
+public class StationListUI implements Runnable {
+    private ListStationController controller;
     private final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -21,9 +21,11 @@ public class StationListUI {
      *
      * @param controller the StationController instance responsible for station operations
      */
-    public StationListUI(StationController controller) {
+    public StationListUI(ListStationController controller) {
         this.controller = controller;
     }
+
+    public StationListUI() {}
 
     /**
      * Runs the interactive station list and detail viewer.
@@ -37,7 +39,7 @@ public class StationListUI {
      * </ol>
      * </p>
      */
-    public void run() {
+    public void start() {
         List<String> stationNames = controller.getAllStations();
         if (stationNames.isEmpty()) {
             System.out.println("No stations available.");
@@ -72,5 +74,10 @@ public class StationListUI {
         } else {
             System.out.println("Station not found.");
         }
+    }
+    /** Menu dispatch entry-point */
+    @Override
+    public void run() {
+        start();
     }
 }

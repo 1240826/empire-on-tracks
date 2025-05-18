@@ -12,7 +12,7 @@ import java.util.Scanner;
  * validates the input, and confirms creation.
  * </p>
  */
-public class CreatMapUI {
+public class CreateMapUI implements Runnable {
     private CreateMapController createMapController;
     private MapRepository repositoryMap;
 
@@ -65,11 +65,26 @@ public class CreatMapUI {
             System.out.println("Error: Invalid or duplicate name.");
             return;
         }
+        sc.nextLine();
         System.out.println("confirmation: " + name + " (" + width + "x" + height + ")? (y/n");
-        if (!sc.nextLine().equalsIgnoreCase("n")) {
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("n")) {
+            System.out.println("Map creation canceled.");
             return;
         }
         createMapController.createMap(name, width, height);
         System.out.println("Map created: " + name + " (" + width + "x" + height + ")");
     }
+
+    /**
+     * The menu‐dispatcher entry point
+     */
+    @Override
+    public void run() {
+        create();
+    }
+    public void setRepositoryMap(MapRepository repositoryMap) {
+        this.repositoryMap = repositoryMap;
+    }
+
 }

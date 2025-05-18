@@ -47,6 +47,5 @@ public class ScenarioRepository {
         addScenario(initial);
     }
 
-    public void addScenario(Scenario scenario) {
-    }
+
 }

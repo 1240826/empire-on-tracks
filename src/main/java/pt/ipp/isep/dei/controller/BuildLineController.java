@@ -3,7 +3,7 @@ package pt.ipp.isep.dei.controller;
 import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
-
+//class used build a railway line between two stations
 public class BuildLineController {
     private final Player player;
     private final Map map;
@@ -14,8 +14,7 @@ public class BuildLineController {
     }
 
     public List<Station> getAvailableStations() {
-        // Assuming you store stations in the map. You might need to adapt this.
-        return map.getStations(); // Add this method in Map if needed
+        return map.getStations();
     }
 
     public RailLine createRailLine(Station start, Station end, boolean isElectrified, boolean isDouble) {
@@ -24,7 +23,7 @@ public class BuildLineController {
             return null;
         }
         player.setBudget(player.getBudget() - line.getCost());
-        map.addRailLine(line); // Add this method to Map class
+        map.addRailLine(line);
         return line;
     }
 }

@@ -14,8 +14,8 @@ import pt.ipp.isep.dei.domain.CargoType;
  * Guides the user through the process of selecting a train, choosing stations and cargo types,
  * and assigning a route to the chosen train.
  */
-public class AssignTrainToRouteUI {
-    private final AssignTrainToRouteController controller;
+public class AssignTrainToRouteUI implements Runnable {
+    private AssignTrainToRouteController controller;
     private final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -25,6 +25,10 @@ public class AssignTrainToRouteUI {
      */
     public AssignTrainToRouteUI(AssignTrainToRouteController controller) {
         this.controller = controller;
+    }
+
+    public AssignTrainToRouteUI() {
+
     }
 
     /**
@@ -82,6 +86,15 @@ public class AssignTrainToRouteUI {
         } else {
             System.out.println("Error: could not assign route.");
         }
+    }
+
+   /**
+     * Entry‐point for Runnable dispatch.
+     */
+
+    @Override
+    public void run() {
+        start();
     }
 }
 
