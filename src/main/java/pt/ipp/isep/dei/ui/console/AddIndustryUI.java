@@ -14,14 +14,21 @@ import java.util.Scanner;
 public class AddIndustryUI implements Runnable {
     private AddIndustryController controller;
     private Scanner scanner;
+    private Map map;
 
     public AddIndustryUI(Repositories repositorios, Map mapa) {
         this.controller = new AddIndustryController(repositorios, mapa);
         this.scanner = new Scanner(System.in);
     }
+    // importa pt.ipp.isep.dei.domain.Map
 
-    public AddIndustryUI() {
+    public void setMap(Map map) {
+        this.map = map;
     }
+
+
+
+
 
     public void start() {
         System.out.println("=== Add Industry ===");

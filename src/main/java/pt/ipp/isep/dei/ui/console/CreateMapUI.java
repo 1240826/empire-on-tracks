@@ -65,8 +65,11 @@ public class CreateMapUI implements Runnable {
             System.out.println("Error: Invalid or duplicate name.");
             return;
         }
+        sc.nextLine();
         System.out.println("confirmation: " + name + " (" + width + "x" + height + ")? (y/n");
-        if (!sc.nextLine().equalsIgnoreCase("n")) {
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("n")) {
+            System.out.println("Map creation canceled.");
             return;
         }
         createMapController.createMap(name, width, height);
@@ -80,4 +83,8 @@ public class CreateMapUI implements Runnable {
     public void run() {
         create();
     }
+    public void setRepositoryMap(MapRepository repositoryMap) {
+        this.repositoryMap = repositoryMap;
+    }
+
 }

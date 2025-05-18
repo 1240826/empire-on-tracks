@@ -81,4 +81,15 @@ public class MapRepository {
         }
         return names;
     }
+    public List<Map> getAllMaps() {
+        return new ArrayList<>(maps);
+    }
+    public Map getDetails(String selectedMapName) {
+        for (Map map : maps) {
+            if (map.getName().equalsIgnoreCase(selectedMapName)) {
+                return map;
+            }
+        }
+        return null;
+    }
 }
