@@ -75,17 +75,16 @@ loop for each selected locomotive
             Scenario --> SCENARIO_REPO: scenario
             deactivate
             Controller -> Locomotive : setAvailability(type, period)
-            Controller -> LocoRepo : updateAvailability(type, period)
             deactivate Period
 
         else until date
             UI -> Controller : setLocomotiveAvailability(type, untilDate)
-            Controller -> Period : new(null, end)
-            activate Period
-            Period --> Controller : period
+            Controller -> Scenario : addLocomotive(year,type)
+                        activate Scenario
+                        Scenario --> SCENARIO_REPO: scenario
+                        deactivate
             deactivate Period
             Controller -> Locomotive : setAvailability(type, period)
-            Controller -> LocoRepo : updateAvailability(type, period)
             deactivate Period
     end
     deactivate Controller

@@ -1,8 +1,12 @@
 package pt.ipp.isep.dei.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cargo {
     private  CargoType type;
     private  double quantity=0;
+    private final List<String> behaviors = new ArrayList<>();
 
     public Cargo(CargoType type, double quantity) {
         this.type = type;
@@ -41,4 +45,15 @@ public class Cargo {
     public void setCargoType(CargoType type) {
         this.type = type;
     }
+
+    public List<String> getBehaviors() {
+        return behaviors;
+    }
+
+    public void setBehavior(String behavior) {
+        if (!behaviors.contains(behavior)) {
+            behaviors.add(behavior);
+        }
+    }
 }
+

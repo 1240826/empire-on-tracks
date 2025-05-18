@@ -7,13 +7,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Gerencia todos os cenários agendados.
- */
 public class ScenarioRepository {
     private LocalDateTime initialDate;
-
-
     private final List<Scenario> scenarios = new ArrayList<>();
 
     public void addScenario(Scenario scenario) {
@@ -32,6 +27,7 @@ public class ScenarioRepository {
         }
         return result;
     }
+
     public void setInitialDate(LocalDateTime date) {
         this.initialDate = date;
     }
@@ -40,7 +36,15 @@ public class ScenarioRepository {
         return initialDate;
     }
 
+    /**
+     * Define o cenário inicial: armazena a data e o próprio cenário na lista.
+     */
     public void addInitialScenario(LocalDateTime startDate, Scenario initial) {
-
+        // guarda a data de início
+        this.initialDate = startDate;
+        // opcional: sincroniza a triggerDate do cenário, caso exista esse setter
+        initial.setTriggerDate(startDate);
+        // adiciona à lista interna
+        addScenario(initial);
     }
 }

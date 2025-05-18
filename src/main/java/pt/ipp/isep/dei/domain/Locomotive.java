@@ -31,6 +31,9 @@ public class Locomotive {
     private final double capacity;              // max cargo volume the loco can carry
     private final List<Cargo> currentLoad = new ArrayList<>();
 
+    //scenario availability
+    private Period availability;
+
     /**
      * Constructs a new Locomotive instance.
      *
@@ -154,6 +157,17 @@ public class Locomotive {
                 .sum();
         return capacity - used;
     }
+
+    public Period getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(Period availability) {
+        this.availability = availability;
+    }
+
+
+
 
     /**
      * Returns a string representation of the locomotive and its attributes.

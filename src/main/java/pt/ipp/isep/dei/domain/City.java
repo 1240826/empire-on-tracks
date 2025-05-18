@@ -2,64 +2,114 @@ package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * Represents a City with a central location and multiple house blocks.
+ * <p>
+ * A City has a name, a center coordinate, and a specified number of house blocks.
+ * House blocks can be assigned either automatically (random distribution)
+ * or manually (user-provided positions).
+ */
 public class City {
-    private String name;
-    private int positionX;
-    private int positionY;
-    private int houseBlocksCount;        // número desejado de blocos
-    private List<HouseBlock> houseBlocksList = new ArrayList<>();
-    private Location center;
+    private final String name;
+    private final int centerX;
+    private final int centerY;
+    private final int houseBlocksCount;
+    private final List<HouseBlock> houseBlocks = new ArrayList<>();
+    private final Location center;
 
-    private City(String name, int positionX, int positionY, int houseBlocksCount) {
+    /**
+     * Private constructor. Use {@link #createCity} to instantiate.
+     */
+    private City(String name, int centerX, int centerY, int houseBlocksCount) {
         this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
+        this.centerX = centerX;
+        this.centerY = centerY;
         this.houseBlocksCount = houseBlocksCount;
-        this.center = new Location(positionX, positionY);
+        this.center = new Location(centerX, centerY);
     }
 
-    public static City createCity(String name, int positionX, int positionY, int houseBlocksCount) {
-        City c = new City(name, positionX, positionY, houseBlocksCount);
-        if (!c.validateName()) {
+    /**
+     * Factory method to create and validate a new City.
+     *
+     * @param name              non-null, non-empty city name
+     * @param centerX           X coordinate of the city center
+     * @param centerY           Y coordinate of the city center
+     * @param houseBlocksCount  desired number of house blocks (must be > 0)
+     * @return a new valid City instance
+     * @throws IllegalArgumentException if validation fails
+     */
+    public static City createCity(String name, int centerX, int centerY, int houseBlocksCount) {
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid city name: " + name);
         }
-        if (!c.validateHouseBlocks()) {
+        if (houseBlocksCount <= 0) {
             throw new IllegalArgumentException("Invalid number of house blocks: " + houseBlocksCount);
         }
-        return c;
+        return new City(name, centerX, centerY, houseBlocksCount);
     }
 
-    public boolean validateName() {
-        return name != null && !name.trim().isEmpty();
-    }
-
-    public boolean validateHouseBlocks() {
-        return houseBlocksCount > 0;
-    }
-
-    /** gera blocos em volta do centro usando distribuição normal */
+    /**
+     * Assigns house blocks automatically around the center using a random distribution.
+     */
     public void assignHouseBlocksAutomatic() {
         for (int i = 0; i < houseBlocksCount; i++) {
             Location pos = Location.computeBlockPosition(center);
-            houseBlocksList.add(HouseBlock.createAt(pos));
+            houseBlocks.add(HouseBlock.createAt(pos));
         }
     }
 
-    /** usa as posições passadas pelo utilizador */
+    /**
+     * Assigns house blocks at the specified positions.
+     *
+     * @param positions list of positions; size must equal the house block count
+     * @throws IllegalArgumentException if the list size does not match
+     */
     public void assignHouseBlocksManually(List<Location> positions) {
+        Objects.requireNonNull(positions, "positions must not be null");
         if (positions.size() != houseBlocksCount) {
-            throw new IllegalArgumentException("Number of positions must match house blocks count.");
+            throw new IllegalArgumentException(
+                    "Number of positions (" + positions.size() + ") must match house block count (" + houseBlocksCount + ")");
         }
         for (Location pos : positions) {
-            houseBlocksList.add(HouseBlock.createAt(pos));
+            houseBlocks.add(HouseBlock.createAt(pos));
         }
     }
 
-    // getters simples
-    public String getName() { return name; }
-    public int getPositionX() { return positionX; }
-    public int getPositionY() { return positionY; }
-    public Location getCenter()  { return center; }
-    public List<HouseBlock> getHouseBlocks() { return houseBlocksList; }
+    // Getters
+
+    /** @return the city name */
+    public String getName() {
+        return name;
+    }
+
+    /** @return the X coordinate of the city center */
+    public int getCenterX() {
+        return centerX;
+    }
+
+    /** @return the Y coordinate of the city center */
+    public int getCenterY() {
+        return centerY;
+    }
+
+    /** @return the Location object representing the center */
+    public Location getCenter() {
+        return center;
+    }
+
+    /** @return the desired number of house blocks */
+    public int getHouseBlocksCount() {
+        return houseBlocksCount;
+    }
+
+    /**
+     * Returns an immutable list of the assigned house blocks.
+     *
+     * @return list of HouseBlock instances
+     */
+    public List<HouseBlock> getHouseBlocks() {
+        return new ArrayList<>(houseBlocks);
+    }
 }

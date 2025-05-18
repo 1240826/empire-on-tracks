@@ -1,39 +1,51 @@
-// src/main/java/pt/ipp/isep/dei/Mdisc/Main.java
 package pt.ipp.isep.dei.Mdisc;
 
 import pt.ipp.isep.dei.Mdisc.controller.AppController;
 
 import java.util.Scanner;
 
+/**
+ * Entry point for the Railway Network application.
+ * <p>
+ * This class:
+ * <ol>
+ *   <li>Prompts the user for station and line CSV file paths.</li>
+ *   <li>Asks the user to select a train type (electric, diesel, steam).</li>
+ *   <li>Configures GraphStream properties for visualization.</li>
+ *   <li>Initializes and starts the {@link AppController}.</li>
+ * </ol>
+ */
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // 1) Lê os caminhos dos CSV
-        System.out.print("Caminho do ficheiro de estações: ");
+        // 1) Read CSV file paths
+        System.out.print("Path to stations CSV file: ");
         String stationsFile = sc.nextLine().trim();
-        System.out.print("Caminho do ficheiro de linhas: ");
+        System.out.print("Path to lines CSV file:    ");
         String linesFile = sc.nextLine().trim();
 
-        // 2) Pergunta o tipo de comboio
-        System.out.println("\nTipo de comboio:");
-        System.out.println("1) Elétrico");
+        // 2) Select train type
+        System.out.println("\nSelect train type:");
+        System.out.println("1) Electric");
         System.out.println("2) Diesel");
         System.out.println("3) Steam");
-        System.out.print("Escolha: ");
-        int tipo = sc.nextInt();
+        System.out.print("Choice: ");
+        int choice = sc.nextInt();
         sc.nextLine();
-        // Se for elétrico, só eletrificadas = true;
-        // para os outros, false.
-        boolean onlyElectrified = (tipo == 1);
+        boolean onlyElectrified = (choice == 1);
 
-        // 3) Configurações do GraphStream
+        // 3) Configure GraphStream for Swing
         System.setProperty("org.graphstream.ui", "swing");
-        System.setProperty("org.graphstream.ui.renderer",
-                "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        System.setProperty(
+                "org.graphstream.ui.renderer",
+                "org.graphstream.ui.j2dviewer.J2DGraphRenderer"
+        );
 
-        // 4) Inicia o controller com esse flag inicial
-        new AppController(stationsFile, linesFile, onlyElectrified).start();
+        // 4) Start the application controller
+        AppController controller =
+                new AppController(stationsFile, linesFile, onlyElectrified);
+        controller.start();
 
         sc.close();
     }
