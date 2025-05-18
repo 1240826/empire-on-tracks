@@ -4,12 +4,6 @@
 
 ### LocomotiveTest
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
-
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-
 **Test 1:** Check that the constructor correctly sets all fields and getters return expected values.
 
 ```java
@@ -217,13 +211,6 @@ public class Locomotive {
         currentLoad.removeIf(c -> c.getQuantity() == 0);
     }
 
-    /**
-     * Collects cargo from the current station up to capacity.
-     */
-
-
-
-    /** Remaining capacity. */
     public double spaceLeft() {
         double used = currentLoad.stream().mapToDouble(Cargo::getQuantity).sum();
         return capacity - used;
@@ -345,10 +332,7 @@ public class LocomotiveCatalog {
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
-
-* For demo purposes some tasks are bootstrapped while system starts.
-
+* A new option on the Player menu options to "Buy a Locomotive" was added.
 
 ## 7. Observations
 

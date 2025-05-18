@@ -2,69 +2,105 @@
 
 ## 4. Tests 
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
-
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-	}
-	
-
-**Test 2:** Check that it is not possible to create an instance of the Task class with a reference containing less than five chars - AC2. 
-
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureReferenceMeetsAC2() {
-		Category cat = new Category(10, "Category 10");
-		
-		Task instance = new Task("Ab1", "Task Description", "Informal Data", "Technical Data", 3, 3780, cat);
-	}
-
-_It is also recommended to organize this content by subsections._ 
-
-
-## 5. Construction (Implementation)
-
-### Class CreateTaskController 
-
+**Test 1:** Check that the constructor correctly sets the type and capacity for different carriage types.
 ```java
-public Task createTask(String reference, String description, String informalDescription, String technicalDescription,
-                       Integer duration, Double cost, String taskCategoryDescription) {
+	@Test
+void testCarriageConstructorAndGetters() {
+Carriage cargoCarriage = new Carriage("cargo", 50);
+Carriage passengerCarriage = new Carriage("passenger", 100);
 
-	TaskCategory taskCategory = getTaskCategoryByDescription(taskCategoryDescription);
-
-	Employee employee = getEmployeeFromSession();
-	Organization organization = getOrganizationRepository().getOrganizationByEmployee(employee);
-
-	newTask = organization.createTask(reference, description, informalDescription, technicalDescription, duration,
-                                      cost,taskCategory, employee);
-    
-	return newTask;
+    assertEquals("cargo", cargoCarriage.getType());
+    assertEquals(50, cargoCarriage.getCapacity());
+    assertEquals("passenger", passengerCarriage.getType());
+    assertEquals(100, passengerCarriage.getCapacity());
 }
 ```
 
-### Class Organization
+**Test 2:** Check that getType() returns the correct carriage type. 
+```java
+@Test
+void getType_returnsType() {
+    Carriage c = new Carriage("passenger", 80);
+    assertEquals("passenger", c.getType());
+}
+
+```
+
+
+**Test 3:** Check that getCapacity() returns the correct capacity value.
+```java
+@Test
+void getCapacity_returnsCapacity() {
+    Carriage c = new Carriage("mail", 10);
+    assertEquals(10, c.getCapacity());
+}
+```
+
+## 5. Construction (Implementation)
+
+### Class ListTrainsController 
 
 ```java
-public Optional<Task> createTask(String reference, String description, String informalDescription,
-                                 String technicalDescription, Integer duration, Double cost, TaskCategory taskCategory,
-                                 Employee employee) {
-    
-    Task task = new Task(reference, description, informalDescription, technicalDescription, duration, cost,
-                         taskCategory, employee);
+/**
+ * Controller for listing trains owned by the player.
+ */
+public class ListTrainsController {
+    private Player player;
 
-    addTask(task);
-        
-    return task;
+    public ListTrainsController(Player player) {
+        this.player = player;
+    }
+
+    /**
+     * Returns the list of owned trains, grouped by locomotive type and sorted by name.
+     */
+    public List<Train> requestTrainList() {
+        List<Train> trains = player.getOwnedTrains();
+        return groupAndSortTrains(trains);
+    }
+
+    /**
+     * Groups by locomotive type, sorts by name.
+     */
+    private List<Train> groupAndSortTrains(List<Train> trains) {
+        return trains.stream()
+                .sorted(Comparator.comparing(Train::getLocomotiveType)
+                        .thenComparing(Train::getName))
+                .collect(Collectors.toList());
+    }
 }
+```
+
+### Class Carriage
+
+```java
+/**
+ * Represents a train carriage.
+ */
+public class Carriage {
+    private String type; // e.g., "cargo" or "passenger"
+    private int capacity;
+
+    public Carriage(String type, int capacity) {
+        this.type = type;
+        this.capacity = capacity;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+}
+
 ```
 
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
-
-* For demo purposes some tasks are bootstrapped while system starts.
-
+* A new option on the Player menu options to "List All Trains" was added.
 
 ## 7. Observations
 
