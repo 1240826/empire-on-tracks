@@ -8,8 +8,11 @@ autonumber 2
 participant ":StationController" as CTRL
 participant "map\n:Map" as REPOS
 participant "Map \n :Station" as REPOS_SINGLETON
+
 -> CTRL : getAllStations()
+activate CTRL
 autonumber 2.1
+group Get List of Stations
 CTRL -> REPOS : getStation()
 activate REPOS
 REPOS --> CTRL: listStation
@@ -22,6 +25,9 @@ loop
 end
 REPOS_SINGLETON --> CTRL: listStationName
 deactivate REPOS_SINGLETON
+end
 autonumber 3
+
 <-- CTRL: displays(listStationName)
+deactivate CTRL
 @enduml

@@ -12,6 +12,8 @@ participant "Cargo" as CARGO
 participant "Building" as BUILDING
 autonumber 6
 ->CTRL: getStationDetails(stationId)
+group Get Station to See its Details
+activate CTRL
 autonumber 6.1
 CTRL -> REPOS : getStation()
 activate REPOS
@@ -34,7 +36,9 @@ CTRL -> REPOS_SINGLETON : getDetails(listStation[id])
     REPOS_SINGLETON -> BUILDING : getUpgrades()
     REPOS_SINGLETON -> CARGO : getCargoes()
 REPOS_SINGLETON --> CTRL : stationDetails
+end
 deactivate REPOS_SINGLETON
 autonumber 7
 <-- CTRL: displays(stationDetails)
+deactivate CTRL
 @enduml

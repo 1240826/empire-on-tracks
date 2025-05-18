@@ -2,68 +2,71 @@
 
 ## 4. Tests 
 
-**Test 1:** Check that it is not possible to create an instance of the Task class with null values. 
+**Test 1:** Check that a RailLine is added correctly to the map.
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureNullIsNotAllowed() {
-		Task instance = new Task(null, null, null, null, null, null, null);
-	}
+    @Test
+    public void ensureAddRailLineAddsLineToMap() {
+    Map map = new Map();
+    RailLine line = new RailLine("Porto", "Lisboa", true, false);
+
+    map.addRailLine(line);
+
+    List<RailLine> lines = map.getRailLines();
+    assertEquals(1, lines.size());
+    assertEquals("Porto", lines.get(0).getStationA());
+    assertEquals("Lisboa", lines.get(0).getStationB());
+    }
 	
 
-**Test 2:** Check that it is not possible to create an instance of the Task class with a reference containing less than five chars - AC2. 
+**Test 2:** Check that player cannot afford a line if cost exceeds budget.
 
-	@Test(expected = IllegalArgumentException.class)
-		public void ensureReferenceMeetsAC2() {
-		Category cat = new Category(10, "Category 10");
-		
-		Task instance = new Task("Ab1", "Task Description", "Informal Data", "Technical Data", 3, 3780, cat);
-	}
+    @Test
+    public void ensurePlayerCannotAffordLineWithInsufficientBudget() {
+    Player player = new Player("Player1", 1000.0);
+    double cost = 2000.0;
+
+    boolean result = player.canAffordLine(cost);
+
+    assertFalse(result);
+}
 
 _It is also recommended to organize this content by subsections._ 
 
 
 ## 5. Construction (Implementation)
 
-### Class CreateTaskController 
+### Class BuildLineController
 
 ```java
-public Task createTask(String reference, String description, String informalDescription, String technicalDescription,
-                       Integer duration, Double cost, String taskCategoryDescription) {
-
-	TaskCategory taskCategory = getTaskCategoryByDescription(taskCategoryDescription);
-
-	Employee employee = getEmployeeFromSession();
-	Organization organization = getOrganizationRepository().getOrganizationByEmployee(employee);
-
-	newTask = organization.createTask(reference, description, informalDescription, technicalDescription, duration,
-                                      cost,taskCategory, employee);
-    
-	return newTask;
+public RailLine createRailLine(Station start, Station end, boolean isElectrified, boolean isDouble) {
+    RailLine line = new RailLine(start, end, isElectrified, isDouble);
+    if (!player.hasSufficientBudget(line.getCost())) {
+        return null;
+    }
+    player.setBudget(player.getBudget() - line.getCost());
+    map.addRailLine(line);
+    return line;
 }
 ```
 
-### Class Organization
+### Class RailLine
 
 ```java
-public Optional<Task> createTask(String reference, String description, String informalDescription,
-                                 String technicalDescription, Integer duration, Double cost, TaskCategory taskCategory,
-                                 Employee employee) {
-    
-    Task task = new Task(reference, description, informalDescription, technicalDescription, duration, cost,
-                         taskCategory, employee);
-
-    addTask(task);
-        
-    return task;
+private double calculateCost() {
+    // Temos de ver o que colocar aqui
+    double base = 6;
+    if (isElectrified) base += 5;
+    if (isDouble) base += 3;
+    return base;
+}
 }
 ```
 
 
 ## 6. Integration and Demo 
 
-* A new option on the Employee menu options was added.
+* A new option on the Player menu options was added to build a RailLine.
 
-* For demo purposes some tasks are bootstrapped while system starts.
 
 
 ## 7. Observations

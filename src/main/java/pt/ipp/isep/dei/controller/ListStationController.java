@@ -33,11 +33,20 @@ public class ListStationController {
      */
     public Station getStationDetails(String stationName) {
         Station station = getStationByName(stationName);
-        if (station != null) {
+
+        if (station == null) {
+            System.out.println("Station not found.");
+            return null;
+        }
+
+        if (station.getBuildings() == null || station.getBuildings().isEmpty()) {
+            System.out.println("Station found, but it has no buildings.");
             return station;
         }
-        return null;
+
+        return station;
     }
+
 
     /**
      * Finds a station by its name.
