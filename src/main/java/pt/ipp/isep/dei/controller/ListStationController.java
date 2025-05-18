@@ -4,10 +4,10 @@ import pt.ipp.isep.dei.domain.*;
 
 import java.util.List;
 
-public class StationController {
+public class ListStationController {
     private final Map map;
 
-    public StationController(Map map) {
+    public ListStationController(Map map) {
         this.map = map;
     }
 
