@@ -69,7 +69,7 @@ public class PlayerMenuUI implements Runnable {
                 List.of(CargoType.values())
         );
 
-        new SimulatorUI(simCtrl, routeCtrl).run();
+        new SimulatorUI(simCtrl, player, routeCtrl).run();
         clock.shutdown();
     }
 

@@ -2,43 +2,21 @@ package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.ListStationController;
 import pt.ipp.isep.dei.domain.*;
+import pt.ipp.isep.dei.repository.Repositories;
 
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Console-based user interface for listing and viewing station details.
- * <p>
- * Allows the user to see all available stations and select one to display
- * its buildings and cargoes.
- */
 public class StationListUI implements Runnable {
-    private ListStationController controller;
+    private final ListStationController controller;
     private final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Constructs the UI with the specified controller.
-     *
-     * @param controller the StationController instance responsible for station operations
-     */
-    public StationListUI(ListStationController controller) {
-        this.controller = controller;
+    public StationListUI() {
+        this.controller = new ListStationController(
+                Repositories.getInstance().getMapRepository().getCurrentMap()
+        );
     }
 
-    public StationListUI() {}
-
-    /**
-     * Runs the interactive station list and detail viewer.
-     * <p>
-     * Steps:
-     * <ol>
-     *   <li>Displays all available station names.</li>
-     *   <li>Prompts the user to select a station by number.</li>
-     *   <li>Displays details of the selected station (buildings and cargoes).</li>
-     *   <li>Handles invalid selections and missing stations gracefully.</li>
-     * </ol>
-     * </p>
-     */
     public void start() {
         List<String> stationNames = controller.getAllStations();
         if (stationNames.isEmpty()) {
@@ -53,6 +31,7 @@ public class StationListUI implements Runnable {
 
         System.out.print("Select a station by number: ");
         int selectedIndex = scanner.nextInt() - 1;
+        scanner.nextLine(); // consume newline
         if (selectedIndex < 0 || selectedIndex >= stationNames.size()) {
             System.out.println("Invalid selection.");
             return;
@@ -75,7 +54,7 @@ public class StationListUI implements Runnable {
             System.out.println("Station not found.");
         }
     }
-    /** Menu dispatch entry-point */
+
     @Override
     public void run() {
         start();

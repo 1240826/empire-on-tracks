@@ -50,21 +50,21 @@ It uses Interaction Occurrence (a.k.a. Interaction Use).
 
 ![Sequence Diagram - split](svg/US010-SD-split.svg)
 
-**Get Task Category List Partial SD**
+**Get Owned Trains**
 
 ![Sequence Diagram - Partial - Get Owned Trains](svg/US010-SD-partial-get-owned-trains.svg)
 
-**Get Task Category Object**
+**Get Stations and Cargo**
 
 ![Sequence Diagram - Partial - Get Stations And Cargo](svg/US010-SD-partial-get-stations-and-cargo.svg)
 
-**Get Employee**
+**Assign Route to Train**
 
-![Sequence Diagram - Partial - Get Employee](svg/US010-SD-assign-route-to-train.svg)
+![Sequence Diagram - Partial - Assign Route To Train](svg/US010-SD-assign-route-to-train.svg)
 
-**Create Task**
+**Create Route**
 
-![Sequence Diagram - Partial - Create Task](svg/US010-SD-partial-create-route.svg)
+![Sequence Diagram - Partial - Create Route](svg/US010-SD-partial-create-route.svg)
 
 ## 3.3. Class Diagram (CD)
 

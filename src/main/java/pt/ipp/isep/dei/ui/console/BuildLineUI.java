@@ -25,8 +25,7 @@ public class BuildLineUI implements Runnable {
         this.controller = controller;
     }
 
-    public BuildLineUI() {
-    }
+
 
     /**
      * Starts the interactive process for building a rail line.
