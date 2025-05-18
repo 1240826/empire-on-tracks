@@ -20,25 +20,19 @@ public class LocomotiveRepository {
         templates.add(new Locomotive(
                 "S100", "Steam", 75000.0, false,
                 2000, 0.5, 80.0, 1850,
-                10000.0, 5000.0,
-                50.0,
-                List.of()
+                10000.0, 5000.0
         ));
         // Diesel loco
         templates.add(new Locomotive(
                 "D200", "Diesel", 120000.0, false,
                 3000, 0.8, 120.0, 1920,
-                15000.0, 7000.0,
-                80.0,
-                List.of()
+                15000.0, 7000.0
         ));
         // Electric loco
         templates.add(new Locomotive(
                 "E300", "Electric", 200000.0, true,
                 4000, 1.0, 160.0, 1950,
-                8000.0, 6000.0,
-                100.0,
-                List.of()
+                8000.0, 6000.0
         ));
     }
 
@@ -76,9 +70,7 @@ public class LocomotiveRepository {
                 tpl.getTopSpeed(),
                 tpl.getStartYear(),
                 tpl.getFuelCostPerYear(),
-                tpl.getMaintenancePerYear(),
-                tpl.getCapacity(),
-                tpl.getRoute()
+                tpl.getMaintenancePerYear()
         );
     }
 

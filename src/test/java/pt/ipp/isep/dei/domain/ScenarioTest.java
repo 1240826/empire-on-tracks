@@ -2,7 +2,6 @@ package pt.ipp.isep.dei.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ class ScenarioTest {
 
     @Test
     void addLocomotive_andGetLocomotives_returnsImmutableCopy() {
-        Locomotive loco = new Locomotive("id","type",0,false,0,0,0,0,0,0,0,List.of());
+        Locomotive loco = new Locomotive("id","type",0,false,0,0,0,0,0,0);
         scenario.addLocomotive(loco);
         List<Locomotive> list = scenario.getLocomotives();
         assertEquals(1, list.size());
@@ -121,8 +120,8 @@ class ScenarioTest {
             }
         }
         TestMap map = new TestMap();
-        Locomotive loco1 = new Locomotive("id","type",0,false,0,0,0,0,0,0,0,List.of());
-        Locomotive loco2 = new Locomotive("id2","type2",0,false,0,0,0,0,0,0,0,List.of());
+        Locomotive loco1 = new Locomotive("id","type",0,false,0,0,0,0,0,0);
+        Locomotive loco2 = new Locomotive("id2","type2",0,false,0,0,0,0,0,0);
         List<Locomotive> locos = List.of(loco1, loco2);
         scenario.applyAll(map, locos);
         assertEquals(2, map.added.size());

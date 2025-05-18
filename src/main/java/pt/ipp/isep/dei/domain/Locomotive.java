@@ -31,7 +31,7 @@ public class Locomotive {
     private final double maintenancePerYear;    // e.g., €/year
 
 
-    private final double capacity;              // max cargo volume the loco can carry
+    private final double capacity = 0;              // max cargo volume the loco can carry
     private final List<Cargo> currentLoad = new ArrayList<>();
 
     // scenario availability
@@ -49,9 +49,7 @@ public class Locomotive {
                       double topSpeed,
                       int startYear,
                       double fuelCostPerYear,
-                      double maintenancePerYear,
-                      double capacity,
-                      List<Station> route) {
+                      double maintenancePerYear) {
         this.id                      = Objects.requireNonNull(id);
         this.type                    = Objects.requireNonNull(type);
         this.price                   = price;
@@ -62,7 +60,6 @@ public class Locomotive {
         this.startYear               = startYear;
         this.fuelCostPerYear         = fuelCostPerYear;
         this.maintenancePerYear      = maintenancePerYear;
-        this.capacity                = capacity;
         setRoute(route);
     }
 
@@ -117,30 +114,7 @@ public class Locomotive {
     /**
      * Collects cargo from the current station up to capacity.
      */
-    public void collectFromStation() {
-        Station station = getCurrentStation();
-        if (station == null || route == null) return;
 
-        // Verifica se esta estação está na rota
-        StationCargo stop = route.getStops().stream()
-                .filter(sc -> sc.getStation().equals(station))
-                .findFirst().orElse(null);
-        if (stop == null) return;
-
-        CargoType expectedType = stop.getCargoType();
-
-        for (Cargo stCargo : station.getCargoes()) {
-            if (stCargo.getType() == expectedType && stCargo.getQuantity() > 0) {
-                double canTake = Math.min(stCargo.getQuantity(), spaceLeft());
-                if (canTake <= 0) break;
-                double taken = station.loadCargo(expectedType, canTake);
-                addToLoad(expectedType, taken);
-                System.out.printf("[Train] Carregou %.2f de %s em %s%n",
-                        taken, expectedType, station.getStationName());
-                break;
-            }
-        }
-    }
 
 
     /** Remaining capacity. */
