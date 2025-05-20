@@ -6,23 +6,23 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Representa uma estação no mapa capaz de coletar carga de indústrias
- * que estejam dentro de um quadrado de lado (2*range+1) centrado nela.
+ * Represents a station on the map capable of collecting cargo from industries
+ * that are within a square of side (2*range+1) centered on it.
  */
 public class Station {
     private final String id;
     private final String name;
     private final Location location;
-    private final int range;            // ex: 4
+    private final int range;            // e.g., 4
     private final int capacity = 24;
-    private  List<Cargo> cargoes;
-    private  List<Building> buildings;
+    private List<Cargo> cargoes;
+    private List<Building> buildings;
 
     /**
-     * @param id       Identificador único da estação
-     * @param name     Nome para exibição
-     * @param location Posição central no grid
-     * @param range    Alcance em “células” para cada direção (x e y)
+     * @param id       Unique station identifier
+     * @param name     Display name
+     * @param location Central grid position
+     * @param range    Range in “cells” for each direction (x and y)
      */
     public Station(String id, String name, Location location, int range) {
         this.id = id;
@@ -33,7 +33,6 @@ public class Station {
         for (CargoType type : CargoType.values()) {
             this.cargoes.add(new Cargo(type, 0.0));
         }
-
     }
 
     public String getId() {
@@ -47,25 +46,25 @@ public class Station {
     public Location getLocation() {
         return location;
     }
+
     public List<Building> getBuildings() {
         return buildings;
     }
+
     public void setBuildings(List<Building> buildings) {
         this.buildings = buildings;
     }
+
     public void addBuilding(Building building) {
         this.buildings.add(building);
     }
 
-
-
-
     /**
-     * Percorre a lista de indústrias e tenta coletar carga de cada uma
-     * que esteja dentro de um quadrado de alcance definido por 'range':
-     * |dx| <= range e |dy| <= range.
+     * Iterates through the list of industries and tries to collect cargo from each one
+     * that is within a square of range defined by 'range':
+     * |dx| <= range and |dy| <= range.
      *
-     * @param industries lista de todas as indústrias do mapa
+     * @param industries list of all industries on the map
      */
     public void collectNearbyIndustries(List<Industry> industries) {
         for (Industry industry : industries) {
@@ -73,23 +72,22 @@ public class Station {
             int dx = Math.abs(location.getX() - indLoc.getX());
             int dy = Math.abs(location.getY() - indLoc.getY());
             if (dx <= range && dy <= range) {
-                // 1) gera a carga disponível
+                // 1) generates available cargo
                 Cargo produced = industry.getCargo();
                 if (produced == null || produced.getQuantity() <= 0) {
                     continue;
                 }
 
-                // 2) calcula quanto cabe na estação deste tipo
+                // 2) calculates available space in station for this cargo type
                 double spaceLeft = capacityOfType(produced.getType()) - totalOfType(produced.getType());
-                // se não cabe nada, pula
                 if (spaceLeft <= 0) {
                     continue;
                 }
 
-                // 3) quantidade a coletar é o mínimo entre produzido e espaço disponível
+                // 3) collect the minimum of what's produced and available space
                 double toCollect = Math.min(produced.getQuantity(), spaceLeft);
 
-                // 4) adiciona na estação (atualiza ou cria Cargo)
+                // 4) add to station (update or create Cargo)
                 boolean found = false;
                 for (Cargo c : cargoes) {
                     if (c.getType() == produced.getType()) {
@@ -102,14 +100,14 @@ public class Station {
                     cargoes.add(new Cargo(produced.getType(), toCollect));
                 }
 
-                // 5) remove exatamente esse 'toCollect' da indústria
+                // 5) remove collected quantity from industry
                 industry.consumeCargo(toCollect);
             }
         }
     }
 
     /**
-     * Retorna cópia defensiva da lista de cargas.
+     * Returns a defensive copy of the cargo list.
      */
     public List<Cargo> getCargoes() {
         return cargoes;
@@ -120,6 +118,7 @@ public class Station {
         return name + " @ " + location +
                 " [cargoes=" + cargoes.size() + "/" + capacity + "]";
     }
+
     private double totalOfType(CargoType type) {
         return cargoes.stream()
                 .filter(c -> c.getType() == type)
@@ -127,12 +126,11 @@ public class Station {
                 .sum();
     }
 
-    // capacidade fixa por tipo (24 unidades, por exemplo)
     private double capacityOfType(CargoType type) {
         return 24.0;
     }
-    // --- helpers de estoque ---
-    /** Adiciona quantidade ao estoque interno. */
+
+    /** Adds quantity to internal storage. */
     public void addCargo(CargoType type, double quantity) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -140,11 +138,10 @@ public class Station {
                 return;
             }
         }
-        // caso não exista (não deve acontecer), adiciona novo
         cargoes.add(new Cargo(type, quantity));
     }
 
-    /** Remove quantidade do estoque interno. */
+    /** Removes quantity from internal storage. */
     public void removeCargo(CargoType type, double quantity) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -154,7 +151,7 @@ public class Station {
         }
     }
 
-    /** Retorna quantidade disponível de um tipo de carga na estação. */
+    /** Returns available quantity of a cargo type in the station. */
     public double getCargoQuantity(CargoType type) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -164,24 +161,23 @@ public class Station {
         return 0.0;
     }
 
-    /** Zera todo o estoque da estação. */
+    /** Clears all stored cargo. */
     public void clearCargoes() {
         for (Cargo c : cargoes) {
             c.setQuantity(0.0);
         }
     }
 
-// --- coleta + distribuição ---
     /**
-     * Coleta outputs de indústrias próximas e em seguida distribui do seu estoque
-     * para os inputs de TransformingIndustry e MixedIndustry dentro do mesmo alcance.
-     * @param industries lista de todas indústrias no mapa
-     * @return eventos textuais do que foi coletado e distribuído
+     * Collects output from nearby industries and then distributes internal cargo
+     * to inputs of TransformingIndustry and MixedIndustry within range.
+     * @param industries list of all industries on the map
+     * @return textual log of what was collected and distributed
      */
     public List<String> collectAndDistribute(List<Industry> industries) {
         List<String> events = new ArrayList<>();
 
-        // 1) coleta todos os outputs disponíveis
+        // 1) collect available output
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
             int dx = Math.abs(indLoc.getX() - this.location.getX());
@@ -193,14 +189,14 @@ public class Station {
                     out.removeQuantity(qty);
                     addCargo(out.getType(), qty);
                     events.add(String.format(
-                            "Estação %s coletou %.2f de %s de %s",
+                            "Station %s collected %.2f of %s from %s",
                             name, qty, out.getType(), ind.getIndustryName()
                     ));
                 }
             }
         }
 
-        // 2) distribui para indústrias consumidoras
+        // 2) distribute to consuming industries
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
             int dx = Math.abs(indLoc.getX() - this.location.getX());
@@ -218,7 +214,7 @@ public class Station {
                             ti.setInputCargoQuantity(ti.getInputCargoQuantity() + give);
                             removeCargo(type, give);
                             events.add(String.format(
-                                    "Estação %s alimentou %.2f de %s para %s",
+                                    "Station %s delivered %.2f of %s to %s",
                                     name, give, type, ti.getIndustryName()
                             ));
                         }
@@ -236,7 +232,7 @@ public class Station {
                             mi.setInputCargoQuantity(mi.getInputCargoQuantity() + give);
                             removeCargo(type, give);
                             events.add(String.format(
-                                    "Estação %s alimentou %.2f de %s para %s",
+                                    "Station %s delivered %.2f of %s to %s",
                                     name, give, type, mi.getIndustryName()
                             ));
                         }
@@ -263,8 +259,8 @@ public class Station {
     }
 
     /**
-     * Recebe 'quantity' unidades de 'type' adicionando ao estoque interno.
-     * @throws IllegalArgumentException se quantity for negativo
+     * Receives 'quantity' units of 'type' adding to internal storage.
+     * @throws IllegalArgumentException if quantity is negative
      */
     public void unloadCargo(CargoType type, double quantity) {
         Objects.requireNonNull(type, "type cannot be null");
@@ -275,9 +271,9 @@ public class Station {
                 return;
             }
         }
-        // não deveria ocorrer, mas garante registro
         cargoes.add(new Cargo(type, quantity));
     }
+
     /**
      * Checks whether the station has an active building of the given type.
      * @param type the type of building (e.g., "TELEPHONE")
