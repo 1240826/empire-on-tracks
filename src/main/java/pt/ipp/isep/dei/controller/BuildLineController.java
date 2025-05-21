@@ -26,4 +26,10 @@ public class BuildLineController {
         map.addRailLine(line);
         return line;
     }
+    public double getStationDistance(Station start, Station end) {
+        Location startLocation = start.getLocation();
+        Location endLocation = end.getLocation();
+        double distance = Math.sqrt(Math.pow(startLocation.getX() - endLocation.getX(), 2) + Math.pow(startLocation.getY() - endLocation.getY(), 2));
+        return distance;
+    }
 }
