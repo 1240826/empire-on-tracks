@@ -18,7 +18,8 @@ public class BuildLineController {
     }
 
     public RailLine createRailLine(Station start, Station end, boolean isElectrified, boolean isDouble) {
-        RailLine line = new RailLine(start, end, isElectrified, isDouble);
+        double distance = getStationDistance(start, end);
+        RailLine line = new RailLine(start, end, isElectrified, isDouble, distance);
         if (!player.hasSufficientBudget(line.getCost())) {
             return null;
         }
