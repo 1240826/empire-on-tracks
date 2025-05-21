@@ -20,22 +20,18 @@
 
 ### Systematization ##
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+According to the taken rationale, the conceptual classes promoted to software classes are:
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+* Map
 
-Other software classes (i.e. Pure Fabrication) identified: 
 
-* CreateTaskUI  
-* CreateTaskController
+Other software classes (i.e. Pure Fabrication) identified:
+
+* CreateMapUI
+* CreateMapController
 * Repositories
-* TaskCategoryRepository
-* OrganizationRepository
-* ApplicationSession
-* UserSession
+* MapRepository
+
 
 
 ## 3.2. Sequence Diagram (SD)
