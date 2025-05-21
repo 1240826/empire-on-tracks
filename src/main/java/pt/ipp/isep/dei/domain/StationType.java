@@ -4,8 +4,8 @@ package pt.ipp.isep.dei.domain;
  * Represents different types of train stations with distinct configurations.
  */
 public enum StationType {
-    DEPOT("Depot", 1, 1, 2),
-    TERMINAL_3x3("Terminal 3x3", 3, 3, 4),
+    DEPOT("Depot 3x3", 3, 3, 2),
+    Station_4x4("Station 4x4", 4, 4, 4),
     TERMINAL_5x5("Terminal 5x5", 5, 5, 6);
 
     private final String label;
