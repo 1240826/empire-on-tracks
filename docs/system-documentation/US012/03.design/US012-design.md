@@ -3,42 +3,50 @@
 
 ### 3.1. Rationale
 
-| Interaction ID | Question: Which class is responsible for...        | Answer                 | Justification (with patterns)                                                                                                       |
-|:---------------|:---------------------------------------------------|:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| Step 1         | ... interacting with the actor?                    | CreateTaskUI           | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model.                       |
-|                | ... coordinating the US?                           | CreateTaskController   | Controller                                                                                                                          |
-|                | ... knowing the user using the system?             | UserSession            | IE: cf. A&A component documentation.                                                                                                |
-|                |                                                    | Organization           | IE: knows/has its own Employees                                                                                                     |
-|                |                                                    | Employee               | IE: knows its own data (e.g. email)                                                                                                 |
-| Step 2         | ... knowing all existing task categories to show?  | Repositories           | IE: Repositories maintains Task Categories.                                                                                         |
-|                |                                                    | TaskCategoryRepository | By applying High Cohesion (HC) + Low Coupling (LC) on class Repositories, it delegates the responsibility on TaskCategoryContainer. |
-| Step 3         | ... saving the selected category?                  | CreateTaskUI           | IE: is responsible for keeping the selected category.                                                                               |
-| Step 4         | ... requesting data?                               | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |
-| Step 5         | ... saving the inputted data?                      | CreateTaskUI           | IE: is responsible for keeping the inputted data.                                                                                   |
-| Step 6         | ... showing all data and requesting confirmation?  | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           |              
-| Step 7         | ... instantiating a new Task?                      | Organization           | Creator (Rule 1): in the DM Organization has a Task.                                                                                |
-|                | ... validating all data (local validation)?        | Task                   | IE: owns its data.                                                                                                                  | 
-|                | ... validating all data (global validation)?       | Organization           | IE: knows all its tasks.                                                                                                            | 
-|                | ... saving the created task?                       | Organization           | IE: owns all its tasks.                                                                                                             | 
-| Step 8         | ... informing operation success?                   | CreateTaskUI           | IE: is responsible for user interactions.                                                                                           | 
+| Interaction ID | Question: Which class is responsible for...                          | Answer                   | Justification (with patterns)                                                                                         |
+|:---------------|:----------------------------------------------------------------------|:-------------------------|:----------------------------------------------------------------------------------------------------------------------|
+| Step 1         | ... interacting with the actor?                                       | SimulatorUI              | Pure Fabrication: interface de utilizador não pertence ao domínio, mas é necessária para interações.                 |
+|                | ... coordinating the US?                                              | SimulatorController      | Controller: coordena a simulação, atua como intermediário entre UI e domínio.                                        |
+| Step 2         | ... loading simulation with scenario and map?                         | SimulatorController      | Controller: lógica de carregamento coordenada pelo controlador.                                                      |
+|                | ... providing access to the current scenario?                         | RepositorieScenario      | IE: centraliza todos os cenários disponíveis para a simulação.                                                       |
+| Step 3         | ... knowing the current state of the map?                             | Map                      | IE: representa o estado corrente da simulação no espaço geográfico.                                                  |
+| Step 4         | ... managing time progression in simulation steps?                    | SimulationTime           | IE: controla o tempo interno da simulação.                                                                           |
+| Step 5         | ... triggering scenario-based changes (e.g. disable train)?           | Scenario                 | IE: define as regras do cenário e os seus efeitos no jogo.                                                           |
+|                | ... deciding production logic per industry type?                      | Industry subclasses      | IE: cada subtipo sabe como produzir, em especial MixedIndustry que muda comportamento dinamicamente.                |
+| Step 6         | ... generating cargo in all industries?                               | Industry                 | IE: responsável por gerar carga com base na produção e procura.                                                      |
+| Step 7         | ... collecting cargo from nearby industries?                          | Station                  | IE: sabe o seu alcance e como recolher carga até ao limite de 24.                                                    |
+| Step 8         | ... moving trains and collecting cargo en route?                      | Train                    | IE: sabe a sua rota e como interagir com as estações.                                                                |
+| Step 9         | ... displaying updated map and feedback to player?                    | SimulatorUI              | IE: a UI é responsável por apresentar o estado atualizado ao jogador.                                                |
 
 ### Systematization ##
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+According to the taken rationale, the conceptual classes promoted to software classes are:
 
-* Organization
-* Task
-* TaskCategory
-* Employee
+* Player
+* Map
+* Station
+* Train
+* RailLine
+* Route
+* Industry
+* PrimarySectorIndustry
+* TransformingIndustry
+* MixedIndustry
+* Scenario
+* Simulation
+* City
+* Cargo
+* Locomotive
+* Carriage
+* Location
+* Period
 
-Other software classes (i.e. Pure Fabrication) identified: 
+Other software classes (i.e. Pure Fabrication) identified:
 
-* CreateTaskUI  
-* CreateTaskController
-* Repositories
-* TaskCategoryRepository
-* OrganizationRepository
-* ApplicationSession
+* SimulatorUI
+* SimulatorController
+* RepositorieScenario
+* SimulationTime
 * UserSession
 
 
@@ -48,32 +56,10 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/US006-SD-full.svg)
+![Sequence Diagram - Full](svg/US012-SD-full.svg)
 
 ### Split Diagrams
 
-The following diagram shows the same sequence of interactions between the classes involved in the realization of this user story, but it is split in partial diagrams to better illustrate the interactions between the classes.
-
-It uses Interaction Occurrence (a.k.a. Interaction Use).
-
-![Sequence Diagram - split](svg/US006-SD-split.svg)
-
-**Get Task Category List Partial SD**
-
-![Sequence Diagram - Partial - Get Task Category List](svg/US006-SD-partial-get-task-category-list.svg)
-
-**Get Task Category Object**
-
-![Sequence Diagram - Partial - Get Task Category Object](svg/US006-SD-partial-get-task-category.svg)
-
-**Get Employee**
-
-![Sequence Diagram - Partial - Get Employee](svg/US006-SD-partial-get-employee.svg)
-
-**Create Task**
-
-![Sequence Diagram - Partial - Create Task](svg/US006-SD-partial-create-task.svg)
-
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/US006-CD.svg)
+![US0012-CD.svg](svg/US0012-CD.svg)
