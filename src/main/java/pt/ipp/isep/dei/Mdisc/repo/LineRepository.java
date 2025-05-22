@@ -62,8 +62,10 @@ public class LineRepository {
                 if (onlyElectrified && !electrified) {
                     continue;
                 }
-                String fromName = p[0].split("_", 2)[1];
-                String toName   = p[1].split("_", 2)[1];
+                String fromName = p[0].substring(1); // remove type prefix
+                String toName = p[1].substring(1);   // remove type prefix
+
+
                 Station from = map.get(fromName);
                 Station to   = map.get(toName);
                 if (from != null && to != null) {
