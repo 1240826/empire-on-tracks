@@ -12,25 +12,28 @@ activate Player
 
     Player -> System : requests to assign a train to a route
     activate System
-
         System --> Player : shows list of owned trains
     deactivate System
 
     Player -> System : selects a train
     activate System
-
-        System --> Player : shows list of all stations and respective cargoes
+        System --> Player : shows list of available stations and respective cargoes
     deactivate System
 
-    Player -> System : selects stations for the route and respective cargoes to be loaded/unloaded
-    activate System
+    loop for each route point
+        Player -> System : selects a station, cargoes to load, and cargo mode (FULL/HALF/AVAILABLE)
+        activate System
+            System --> Player : confirms route point details
+        deactivate System
+    end
 
-        System --> Player : asks for confirmation
+    Player -> System : completes route definition
+    activate System
+        System --> Player : shows full route summary for confirmation
     deactivate System
 
-    Player -> System : confirms route
+    Player -> System : confirms full route
     activate System
-
         System --> Player : displays operation success message
     deactivate System
 
