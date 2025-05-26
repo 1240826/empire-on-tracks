@@ -1,0 +1,15 @@
+pt.ipp.isep.dei
+pt.ipp.isep.dei.controller
+pt.ipp.isep.dei.domain
+pt.ipp.isep.dei.example_US6
+pt.ipp.isep.dei.Mdisc
+pt.ipp.isep.dei.Mdisc.controller
+pt.ipp.isep.dei.Mdisc.domain
+pt.ipp.isep.dei.Mdisc.repo
+pt.ipp.isep.dei.Mdisc.ui
+pt.ipp.isep.dei.repository
+pt.ipp.isep.dei.ui.console
+pt.ipp.isep.dei.ui.console.authorization
+pt.ipp.isep.dei.ui.console.menu
+pt.ipp.isep.dei.ui.console.utils
+pt.ipp.isep.dei.user

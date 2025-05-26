@@ -4,7 +4,7 @@
 
 ### 1.1. User Story Description
 
-As a Player, I want to assign a selected train to a route with a valid station and the respective list of cargoes to be picked up in each station.
+As a Player, I want to assign a selected train to a route. A route is a list of Points-of-Route, each Point-of-Route is defined by: a station, a list of cargoes to be picked up.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -50,15 +50,14 @@ As a Player, I want to assign a selected train to a route with a valid station a
 >
 > **Answer:** Already answered that question, no need to manage the routes independently from trains, each train has a route.
 
-
 ### 1.3. Acceptance Criteria
 
-NA
+AC02: For each Point-of-Route I want to assign a cargo mode, that can be: FULL (the train only departs when full loaded); HALF (the train departs as soon it haves half of carriages loaded); AVAILABLE (the train departs with available cargoes in the station).
 
 ### 1.4. Found out Dependencies
 
-* There is a dependency on **US08 - Build a railway line between two stations**, as there must be railway lines connecting the stations on the route.
-* There is a dependency on **US09 - Buy a locomotive**, as there must be at least one train owned by the player.
+* There is a dependency on **US08 - Build a Railway Line**, as there must be railway lines connecting the stations on the route.
+* There is a dependency on **US09 - Buy a Locomotive**, as there must be at least one train owned by the player.
 
 ### 1.5 Input and Output Data
 
@@ -71,6 +70,7 @@ NA
     * a train (from owned trains)
     * stations for route
     * cargoes to be picked/delivered at each station in the route
+    * cargo mode (full/half/available)
 
 
 **Output Data:**

@@ -59,7 +59,26 @@ Exemplo: Escolhe correr isoladamente a simulação no mapa da cidade de Lisboa m
 ### 1.3. Acceptance Criteria
 
 * **AC1:** This simulator should provide options for start/pause.
-*  **AC2:** Limit to cargo storage
+* **AC02:** The simulator needs to model train departures. At the time of
+  departure, the time of arrival is calculated. The trains travels at the
+  maximum speed of the locomotive on double track sections and at 80%
+  of the maximum speed of the locomotive on single track sections. Each
+  carriage degrades 5% of the locomotive’s speed up to a maximum of
+  30%.
+* **AC03:** The simulator needs to model train arrivals. On arrival, the
+  amount to be received is calculated according to demand and the distance between the departure and arrival stations. The existing building
+  in the station that affect revenues from passengers need to taken into
+  account.
+* **AC04:** The simulator needs to provide a message alerting when a new
+  locomotive becomes available, accordingly to its start year of service.
+  After that it becomes possible acquire that locomotive model.
+*  **AC05:** The simulator needs to generate cargoes in the stations accordingly to the House Blocks and Industry facilities served by each
+  station. The number of cargoes depends in each industry type and in
+  the modification rates defined in the scenario.
+*  **AC06:** The simulator needs to update the demand in station every year
+  based in the deliveries.
+* **AC7:** Limit to cargo storage
+
 
 ### 1.4. Found out Dependencies
 

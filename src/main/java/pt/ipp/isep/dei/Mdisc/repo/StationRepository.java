@@ -52,11 +52,16 @@ public class StationRepository {
                 return stations;
             }
             String line = sc.nextLine();
-            for (String tok : line.split(";")) {
-                String[] p = tok.split("_", 2);
-                if (p.length == 2) {
-                    StationType type = StationType.valueOf(p[0]);
-                    stations.add(new Station(p[1], type));
+            for (String token : line.split(";")) {
+                if (token.length() >= 2) {
+                    char typeChar = token.charAt(0);
+                    String name = token.substring(1);
+                    try {
+                        StationType type = StationType.valueOf(String.valueOf(typeChar));
+                        stations.add(new Station(name, type));
+                    } catch (IllegalArgumentException e) {
+                        // Ignore unknown station type
+                    }
                 }
             }
         }

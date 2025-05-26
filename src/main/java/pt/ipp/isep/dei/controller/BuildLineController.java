@@ -18,12 +18,19 @@ public class BuildLineController {
     }
 
     public RailLine createRailLine(Station start, Station end, boolean isElectrified, boolean isDouble) {
-        RailLine line = new RailLine(start, end, isElectrified, isDouble);
+        double distance = getStationDistance(start, end);
+        RailLine line = new RailLine(start, end, isElectrified, isDouble, distance);
         if (!player.hasSufficientBudget(line.getCost())) {
             return null;
         }
         player.setBudget(player.getBudget() - line.getCost());
         map.addRailLine(line);
         return line;
+    }
+    public double getStationDistance(Station start, Station end) {
+        Location startLocation = start.getLocation();
+        Location endLocation = end.getLocation();
+        double distance = Math.sqrt(Math.pow(startLocation.getX() - endLocation.getX(), 2) + Math.pow(startLocation.getY() - endLocation.getY(), 2));
+        return distance;
     }
 }

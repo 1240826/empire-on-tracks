@@ -1,6 +1,7 @@
 package pt.ipp.isep.dei.Mdisc.ui;
 
 import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.Viewer;
 import pt.ipp.isep.dei.Mdisc.domain.Station;
@@ -14,7 +15,7 @@ public class GraphUI {
     private final Graph graph;
 
     public GraphUI(String id) {
-        graph = new SingleGraph(id);
+        graph = new MultiGraph(id);
         graph.setAttribute("ui.stylesheet",
                 "node {fill-color:orange; text-size:14;} edge {text-mode:hidden;}"
         );
@@ -29,10 +30,14 @@ public class GraphUI {
      */
     public void addStations(List<Station> stations) {
         for (Station s : stations) {
-            Node n = graph.addNode(s.getName());
-            n.setAttribute("ui.label", s.toString());
+            String id = s.getName();
+            if (graph.getNode(id) == null) {
+                Node n = graph.addNode(id);
+                n.setAttribute("ui.label", s.toString());
+            }
         }
     }
+
 
     /**
      * Adds edges between stations based on adjacency and electrification matrices.
@@ -50,19 +55,24 @@ public class GraphUI {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 if (adj[i][j] > 0) {
-                    String id = stations.get(i).getName() + "-" + stations.get(j).getName();
-                    Edge e = graph.addEdge(id,
-                            stations.get(i).getName(),
-                            stations.get(j).getName());
-                    if (electrified[i][j]) {
-                        e.setAttribute("ui.style", "fill-color:blue;");
-                    } else {
-                        e.setAttribute("ui.style", "fill-color:red;");
+                    String from = stations.get(i).getName();
+                    String to = stations.get(j).getName();
+                    String id = from + "-" + to;
+
+                    if (graph.getEdge(id) == null) {
+                        Edge e = graph.addEdge(id, from, to);
+                        if (electrified[i][j]) {
+                            e.setAttribute("ui.style", "fill-color:blue;");
+                        } else {
+                            e.setAttribute("ui.style", "fill-color:red;");
+                        }
                     }
                 }
             }
         }
     }
+
+
 
     /**
      * Displays the constructed graph in a window.

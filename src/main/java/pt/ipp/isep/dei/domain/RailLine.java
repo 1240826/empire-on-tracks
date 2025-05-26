@@ -1,19 +1,22 @@
 package pt.ipp.isep.dei.domain;
 
+import pt.ipp.isep.dei.controller.BuildLineController;
+
 public class RailLine {
     private Station start;
     private Station end;
     private boolean isElectrified;
     private boolean isDouble;
     private double cost;
-
+    private double distance;
     //Constructor for RailLine
-    public RailLine(Station start, Station end, boolean isElectrified, boolean isDouble) {
+    public RailLine(Station start, Station end, boolean isElectrified, boolean isDouble, double distance) {
         this.start = start;
         this.end = end;
         this.isElectrified = isElectrified;
         this.isDouble = isDouble;
         this.cost = calculateCost();
+        this.distance = distance;
     }
 
     //Calculates the cost of the RailLine
@@ -44,4 +47,6 @@ public class RailLine {
     public double getCost() {
         return cost;
     }
+
+    public double getDistance() { return distance; }
 }
