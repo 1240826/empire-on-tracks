@@ -7,63 +7,112 @@ import pt.ipp.isep.dei.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * Controller that links together the map, simulation clock, and scenario management,
- * coordinating simulation updates and scenario application during the simulation lifecycle.
- */
 public class SimulatorController {
     private final Map map;
-    private final Date clock;
+    private final Time clock;
     private final ScenarioRepository scenarioRepo;
     private final IndustryRepository industryRepo;
     private final LocomotiveRepository locomotiveRepo;
 
+    private final ScheduledExecutorService scheduler =
+            Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> autoStepFuture;
+
     /**
      * Constructs a SimulatorController with the required domain components.
      *
-     * @param map              The map used for the simulation.
-     * @param clock            The simulation clock.
-     * @param scenarioRepo     Repository of simulation scenarios.
-     * @param industryRepo     Repository of industries.
-     * @param locomotiveRepo   Repository of locomotives.
+     * @param map            The map used for the simulation.
+     * @param clock          The simulation clock.
+     * @param scenarioRepo   Repository of simulation scenarios.
+     * @param industryRepo   Repository of industries.
+     * @param locomotiveRepo Repository of locomotives.
      */
     public SimulatorController(Map map,
-                               Date clock,
+                               Time clock,
                                ScenarioRepository scenarioRepo,
                                IndustryRepository industryRepo,
                                LocomotiveRepository locomotiveRepo) {
-        this.map             = map;
-        this.clock           = clock;
-        this.scenarioRepo    = scenarioRepo;
-        this.industryRepo    = industryRepo;
-        this.locomotiveRepo  = locomotiveRepo;
-    }
-
-    /** Starts the auto-tick of the clock (automatic simulation progression). */
-    public void startSimulation() {
-        clock.start();
-    }
-
-    /** Pauses the auto-tick of the clock (pauses simulation progression). */
-    public void pauseSimulation() {
-        clock.stop();
+        this.map = map;
+        this.clock = clock;
+        this.scenarioRepo = scenarioRepo;
+        this.industryRepo = industryRepo;
+        this.locomotiveRepo = locomotiveRepo;
     }
 
     /**
-     * Performs a manual step: advances the simulation by one month,
-     * updates the map, and triggers scenarios for the current date.
+     * Starts automatic simulation progression at the given interval in seconds.
+     *
+     * @param tickIntervalSeconds interval between simulation steps
      */
-    public void step() {
-        clock.advanceManually();
+    public void startSimulation(long tickIntervalSeconds) {
+        if (autoStepFuture == null || autoStepFuture.isDone() || autoStepFuture.isCancelled()) {
+            autoStepFuture = scheduler.scheduleAtFixedRate(
+                    () -> {
+                        if (!clock.isFinished()) {
+                            stepWithEvents();
+                        } else {
+                            pauseSimulation();
+                        }
+                    },
+                    0,
+                    tickIntervalSeconds,
+                    TimeUnit.SECONDS
+            );
+        }
+    }
+
+    /**
+     * Pauses the automatic simulation progression.
+     */
+    public void pauseSimulation() {
+        if (autoStepFuture != null) {
+            autoStepFuture.cancel(false);
+            autoStepFuture = null;
+        }
+    }
+
+    /**
+     * Advances the simulation by one month, updates the map,
+     * performs collection/distribution, applies scenarios,
+     * and returns a list of events.
+     *
+     * @return list of event descriptions generated this step
+     */
+    public List<String> stepWithEvents() {
+        clock.advanceByMonth();
         map.update();
 
-        LocalDateTime now = clock.getDate();
-        List<Scenario> todays = scenarioRepo.getScenariosForDate(now);
-        for (Scenario sc : todays) {
-            sc.applyAll(map, map.getLocomotives());
+        List<String> events = new ArrayList<>();
+
+        // coleta e distribuição
+        for (Station st : map.getStations()) {
+            events.addAll(st.collectAndDistribute(map.getIndustries()));
         }
+
+        // cenários
+        LocalDateTime now = clock.getDate();
+        for (Scenario sc : scenarioRepo.getScenariosForDate(now)) {
+            List<String> scEvents = sc.applyAll(map, map.getLocomotives());
+            if (scEvents != null) {
+                events.addAll(scEvents);
+            }
+        }
+
+        // DEBUG: imprimir stocks
+        for (Station st : map.getStations()) {
+            System.out.println("DEBUG pós-step: estação " + st.getStationName() +
+                    " stock = " + st.getCargoes().stream()
+                    .map(c -> c.getType() + ":" + c.getQuantity())
+                    .collect(Collectors.joining(", ")));
+        }
+
+        return events;
     }
 
     public LocalDateTime getCurrentDate() {
@@ -86,42 +135,11 @@ public class SimulatorController {
         return locomotiveRepo.getAllTemplates();
     }
 
+    /**
+     * Shuts down scheduler and releases resources.
+     */
     public void shutdown() {
-        clock.shutdown();
+        pauseSimulation();
+        scheduler.shutdownNow();
     }
-
-
-    // SimulatorController.java
-    public List<String> stepWithEvents() {
-        clock.advanceManually();
-
-        // 1) produção pura
-        map.update();
-
-        List<String> events = new ArrayList<>();
-
-        // 2) coleta+distribuição (tudo num só método)
-        for (Station st : map.getStations()) {
-            events.addAll(st.collectAndDistribute(map.getIndustries()));
-        }
-
-        // 3) cenários
-        LocalDateTime now = clock.getDate();
-        for (Scenario sc : scenarioRepo.getScenariosForDate(now)) {
-            List<String> scE = sc.applyAll(map, map.getLocomotives());
-            if (scE != null) events.addAll(scE);
-        }
-
-        // DEBUG: imprime stock real das estações
-        for (Station st : map.getStations()) {
-            System.out.println("DEBUG pós-step: estação " + st.getStationName() +
-                    " stock = " + st.getCargoes().stream()
-                    .map(c -> c.getType() + ":" + c.getQuantity())
-                    .collect(Collectors.joining(", ")));
-        }
-
-        return events;
-    }
-
-
 }
