@@ -13,81 +13,125 @@ public class Station {
     private final String id;
     private final String name;
     private final Location location;
-    private final int range;            // e.g., 4
+    private int range;                  // REMOVE final
     private final int capacity = 24;
+    private final StationType type;     // ADDED
     private List<Cargo> cargoes;
     private List<Building> buildings;
 
     /**
-     * @param id       Unique station identifier
-     * @param name     Display name
-     * @param location Central grid position
-     * @param range    Range in “cells” for each direction (x and y)
+     * Legacy constructor (kept for compatibility).
      */
     public Station(String id, String name, Location location, int range) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.range = range;
+        this.type = StationType.Station_4x4;  // default type if needed
         this.cargoes = new ArrayList<>();
-        for (CargoType type : CargoType.values()) {
-            this.cargoes.add(new Cargo(type, 0.0));
+        this.buildings = new ArrayList<>();
+        for (CargoType cargoType : CargoType.values()) {
+            this.cargoes.add(new Cargo(cargoType, 0.0));
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getStationName() {
-        return name;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public List<Building> getBuildings() {
-        return buildings;
-    }
-
-    public void setBuildings(List<Building> buildings) {
-        this.buildings = buildings;
-    }
-
-    public void addBuilding(Building building) {
-        this.buildings.add(building);
-    }
-
     /**
-     * Iterates through the list of industries and tries to collect cargo from each one
-     * that is within a square of range defined by 'range':
-     * |dx| <= range and |dy| <= range.
-     *
-     * @param industries list of all industries on the map
+     * New constructor using StationType.
      */
-    public void collectNearbyIndustries(List<Industry> industries) {
+    public Station(String id, String name, Location location, StationType type) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.type = type;
+        this.range = type.getWidth();  // or adapt if range logic is separate
+        this.cargoes = new ArrayList<>();
+        this.buildings = new ArrayList<>();
+        for (CargoType cargoType : CargoType.values()) {
+            this.cargoes.add(new Cargo(cargoType, 0.0));
+        }
+    }
+
+    public String getId() { return id; }
+
+    public String getStationName() { return name; }
+
+    public Location getLocation() { return location; }
+
+    public StationType getType() { return type; }
+
+    public List<Building> getBuildings() { return buildings; }
+
+    public void setBuildings(List<Building> buildings) { this.buildings = buildings; }
+
+    public void addBuilding(Building building) { this.buildings.add(building); }
+
+    public int getRange() { return range; }  // getter if needed
+
+    // NEW: Calculate occupied cells based on anchor direction
+    public List<Location> calculateOccupiedCells(String anchorDirection) {
+        List<Location> occupied = new ArrayList<>();
+        int x = location.getX();
+        int y = location.getY();
+        int width = type.getWidth();
+        int height = type.getHeight();
+
+        int startX, startY, endX, endY;
+
+        switch (anchorDirection.toUpperCase()) {
+            case "NE":
+                startX = x - width + 1;
+                endX = x;
+                startY = y;
+                endY = y + height - 1;
+                break;
+            case "SE":
+                startX = x - width + 1;
+                endX = x;
+                startY = y - height + 1;
+                endY = y;
+                break;
+            case "NW":
+                startX = x;
+                endX = x + width - 1;
+                startY = y;
+                endY = y + height - 1;
+                break;
+            case "SW":
+                startX = x;
+                endX = x + width - 1;
+                startY = y - height + 1;
+                endY = y;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid anchor direction: " + anchorDirection);
+        }
+
+        for (int i = startX; i <= endX; i++) {
+            for (int j = startY; j <= endY; j++) {
+                occupied.add(new Location(i, j));
+            }
+        }
+
+        return occupied;
+    }
+
+    public void collectNearbyIndustries(List<Industry> industries, String anchorDirection) {
+        List<Location> occupiedCells = calculateOccupiedCells(anchorDirection);
+
         for (Industry industry : industries) {
             Location indLoc = industry.getLocation();
-            int dx = Math.abs(location.getX() - indLoc.getX());
-            int dy = Math.abs(location.getY() - indLoc.getY());
-            if (dx <= range && dy <= range) {
-                // 1) generates available cargo
+            boolean isInside = occupiedCells.stream()
+                    .anyMatch(cell -> cell.getX() == indLoc.getX() && cell.getY() == indLoc.getY());
+
+            if (isInside) {
                 Cargo produced = industry.getCargo();
-                if (produced == null || produced.getQuantity() <= 0) {
-                    continue;
-                }
+                if (produced == null || produced.getQuantity() <= 0) continue;
 
-                // 2) calculates available space in station for this cargo type
                 double spaceLeft = capacityOfType(produced.getType()) - totalOfType(produced.getType());
-                if (spaceLeft <= 0) {
-                    continue;
-                }
+                if (spaceLeft <= 0) continue;
 
-                // 3) collect the minimum of what's produced and available space
                 double toCollect = Math.min(produced.getQuantity(), spaceLeft);
 
-                // 4) add to station (update or create Cargo)
                 boolean found = false;
                 for (Cargo c : cargoes) {
                     if (c.getType() == produced.getType()) {
@@ -100,18 +144,12 @@ public class Station {
                     cargoes.add(new Cargo(produced.getType(), toCollect));
                 }
 
-                // 5) remove collected quantity from industry
                 industry.consumeCargo(toCollect);
             }
         }
     }
 
-    /**
-     * Returns a defensive copy of the cargo list.
-     */
-    public List<Cargo> getCargoes() {
-        return cargoes;
-    }
+    public List<Cargo> getCargoes() { return cargoes; }
 
     @Override
     public String toString() {
@@ -130,7 +168,6 @@ public class Station {
         return 24.0;
     }
 
-    /** Adds quantity to internal storage. */
     public void addCargo(CargoType type, double quantity) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -141,7 +178,6 @@ public class Station {
         cargoes.add(new Cargo(type, quantity));
     }
 
-    /** Removes quantity from internal storage. */
     public void removeCargo(CargoType type, double quantity) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -151,7 +187,6 @@ public class Station {
         }
     }
 
-    /** Returns available quantity of a cargo type in the station. */
     public double getCargoQuantity(CargoType type) {
         for (Cargo c : cargoes) {
             if (c.getType() == type) {
@@ -161,23 +196,15 @@ public class Station {
         return 0.0;
     }
 
-    /** Clears all stored cargo. */
     public void clearCargoes() {
         for (Cargo c : cargoes) {
             c.setQuantity(0.0);
         }
     }
 
-    /**
-     * Collects output from nearby industries and then distributes internal cargo
-     * to inputs of TransformingIndustry and MixedIndustry within range.
-     * @param industries list of all industries on the map
-     * @return textual log of what was collected and distributed
-     */
     public List<String> collectAndDistribute(List<Industry> industries) {
         List<String> events = new ArrayList<>();
 
-        // 1) collect available output
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
             int dx = Math.abs(indLoc.getX() - this.location.getX());
@@ -196,13 +223,11 @@ public class Station {
             }
         }
 
-        // 2) distribute to consuming industries
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
             int dx = Math.abs(indLoc.getX() - this.location.getX());
             int dy = Math.abs(indLoc.getY() - this.location.getY());
             if (dx <= range && dy <= range) {
-                // TransformingIndustry
                 if (ind instanceof TransformingIndustry) {
                     TransformingIndustry ti = (TransformingIndustry) ind;
                     CargoType type = ti.getInputCargoType();
@@ -220,7 +245,6 @@ public class Station {
                         }
                     }
                 }
-                // MixedIndustry
                 else if (ind instanceof MixedIndustry) {
                     MixedIndustry mi = (MixedIndustry) ind;
                     CargoType type = mi.getInputCargoType();
@@ -258,10 +282,6 @@ public class Station {
         return 0.0;
     }
 
-    /**
-     * Receives 'quantity' units of 'type' adding to internal storage.
-     * @throws IllegalArgumentException if quantity is negative
-     */
     public void unloadCargo(CargoType type, double quantity) {
         Objects.requireNonNull(type, "type cannot be null");
         if (quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
@@ -274,33 +294,18 @@ public class Station {
         cargoes.add(new Cargo(type, quantity));
     }
 
-    /**
-     * Checks whether the station has an active building of the given type.
-     * @param type the type of building (e.g., "TELEPHONE")
-     * @return true if present and active, false otherwise
-     */
     public boolean hasBuilding(String type) {
         if (buildings == null) return false;
         return buildings.stream()
                 .anyMatch(b -> b.getType().equalsIgnoreCase(type) && b.isActive());
     }
 
-    /**
-     * Removes all buildings of the given type, regardless of their state.
-     * Used for replacing buildings like TELEGRAPH with TELEPHONE.
-     * @param type the type of building to remove
-     */
     public void removeBuilding(String type) {
         if (buildings != null) {
             buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
         }
     }
 
-    /**
-     * Reactivates an existing building of the given type if it is inactive.
-     * Optional helper in case inactive buildings are supported.
-     * @param type the type of building to activate
-     */
     public void activateBuilding(String type) {
         if (buildings != null) {
             buildings.stream()
@@ -310,3 +315,4 @@ public class Station {
         }
     }
 }
+
