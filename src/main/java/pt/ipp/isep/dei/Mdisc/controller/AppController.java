@@ -104,7 +104,7 @@ public class AppController {
             String nameFmt = "%" + w + "s";
             String numFmt  = "%" + w + "d";
 
-            try (PrintWriter out = new PrintWriter("matrix.txt")) {
+            try (PrintWriter out = new PrintWriter("C:\\Users\\fabio\\IdeaProjects\\sem2-pi-24.25-g031-repo\\src\\main\\java\\pt\\ipp\\isep\\dei\\Mdisc\\files\\matrix.txt")) {
                 out.printf(nameFmt, "");
                 for (Station s : stations) out.printf(nameFmt, s.toString());
                 out.println();
@@ -186,7 +186,7 @@ public class AppController {
                 }
             }
 
-            try (PrintWriter out = new PrintWriter("closure.txt")) {
+            try (PrintWriter out = new PrintWriter("C:\\Users\\fabio\\IdeaProjects\\sem2-pi-24.25-g031-repo\\src\\main\\java\\pt\\ipp\\isep\\dei\\Mdisc\\files\\closure.txt")) {
                 out.printf("%4s", "");
                 for (int i = 0; i < n; i++) out.printf("%4d", i);
                 out.println();

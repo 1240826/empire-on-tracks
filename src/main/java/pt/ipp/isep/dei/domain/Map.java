@@ -163,6 +163,7 @@ public class Map {
     public boolean addCity(City city) {
         int x = city.getCenterX(), y = city.getCenterY();
         if (!isEmpty(x, y)) {
+            System.out.println("Overbuilding");
             return false;
         }
         city.assignHouseBlocksAutomatic();

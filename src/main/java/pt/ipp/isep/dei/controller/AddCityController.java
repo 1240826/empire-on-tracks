@@ -89,7 +89,7 @@ public class AddCityController {
     /**
      * Saves the newly created city to the map.
      */
-    public void confirmCityCreation() {
-        map.addCity(city);
+    public boolean confirmCityCreation() {
+        return map.addCity(city);
     }
 }

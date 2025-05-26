@@ -121,8 +121,11 @@ public class AddCityUI implements Runnable {
         System.out.print("\nConfirm creation? (yes/no): ");
         String confirm = sc.nextLine().trim().toLowerCase();
         if (confirm.equals("yes")) {
-            controller.confirmCityCreation();
-            System.out.println("City created successfully!");
+            boolean success = controller.confirmCityCreation();
+            if (success) {
+                System.out.println("City created successfully!");
+            }
+            // Não imprime nada se houver overbuilding
         } else {
             System.out.println("Operation cancelled.");
         }
