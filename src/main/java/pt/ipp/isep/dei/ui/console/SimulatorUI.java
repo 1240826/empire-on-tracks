@@ -159,7 +159,7 @@ public class SimulatorUI implements Runnable {
         List<MenuItem> options = new ArrayList<>();
 
         options.add(new MenuItem("Start automatic simulation", () -> {
-            controller.startSimulation(20);
+            controller.startSimulation(40);
             System.out.println("Automatic simulation started.");
         }));
 
