@@ -7,42 +7,21 @@ import pt.ipp.isep.dei.domain.Train;
 import pt.ipp.isep.dei.domain.Route;
 import pt.ipp.isep.dei.domain.Station;
 import pt.ipp.isep.dei.domain.CargoType;
+import pt.ipp.isep.dei.domain.CargoMode;
 
 /**
  * Console-based UI for assigning a route to a player's train.
- *
- * Guides the user through the process of selecting a train, choosing stations and cargo types,
- * and assigning a route to the chosen train.
  */
 public class AssignTrainToRouteUI implements Runnable {
     private AssignTrainToRouteController controller;
     private final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Constructs the UI with the specified controller.
-     *
-     * @param controller The controller responsible for the route assignment logic.
-     */
     public AssignTrainToRouteUI(AssignTrainToRouteController controller) {
         this.controller = controller;
     }
 
-    public AssignTrainToRouteUI() {
+    public AssignTrainToRouteUI() {}
 
-    }
-
-    /**
-     * Starts the interactive assignment flow.
-     * <p>
-     * Steps:
-     * <ol>
-     *   <li>Display owned trains and prompt the user to select one.</li>
-     *   <li>Show available stations and cargo types.</li>
-     *   <li>Prompt the user for a route assignment input in a specified format.</li>
-     *   <li>Attempt to parse and assign the route to the selected train.</li>
-     *   <li>Display success or error messages based on the outcome.</li>
-     * </ol>
-     */
     public void start() {
         List<Train> trains = controller.getOwnedTrains();
         if (trains.isEmpty()) {
@@ -70,8 +49,15 @@ public class AssignTrainToRouteUI implements Runnable {
         for (CargoType c : controller.getAvailableCargoTypes()) {
             System.out.println(" - " + c.name());
         }
+        System.out.println("Available cargo modes:");
+        for (CargoMode mode : CargoMode.values()) {
+            System.out.println(" - " + mode.name());
+        }
 
-        System.out.println("Enter your assignment (e.g., Station A, Steel, Station B, Iron):");
+        System.out.println("\nEnter your assignment in the following format:");
+        System.out.println("Station, Cargo, CargoMode, Station, Cargo, CargoMode, ...");
+        System.out.println("Example: Lisbon, IRON, FULL, Lisbon, MAIL, FULL, Porto, PASSENGERS, HALF");
+        System.out.print("Input: ");
         String input = scanner.nextLine();
 
         Route route = controller.parseRouteFromInput(input);
@@ -88,13 +74,8 @@ public class AssignTrainToRouteUI implements Runnable {
         }
     }
 
-   /**
-     * Entry‐point for Runnable dispatch.
-     */
-
     @Override
     public void run() {
         start();
     }
 }
-

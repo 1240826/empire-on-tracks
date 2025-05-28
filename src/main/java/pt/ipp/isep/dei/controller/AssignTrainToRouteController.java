@@ -1,4 +1,3 @@
-// File: pt/ipp/isep/dei/controller/AssignTrainToRouteController.java
 package pt.ipp.isep.dei.controller;
 
 import pt.ipp.isep.dei.domain.Player;
@@ -6,6 +5,8 @@ import pt.ipp.isep.dei.domain.Station;
 import pt.ipp.isep.dei.domain.CargoType;
 import pt.ipp.isep.dei.domain.Route;
 import pt.ipp.isep.dei.domain.Train;
+import pt.ipp.isep.dei.domain.PointOfRoute;
+import pt.ipp.isep.dei.domain.CargoMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,44 +43,31 @@ public class AssignTrainToRouteController {
     }
 
     /**
-     * Represents a stop: station + cargo type.
+     * Gets available cargo types for a specific station.
+     * Only cargoes that can be produced/picked up at this station should be returned.
+     * This method should be implemented based on station's production capabilities.
      */
-    public static class StationCargo {
-        private final Station station;
-        private final CargoType cargoType;
-
-        public StationCargo(Station station, CargoType cargoType) {
-            this.station = Objects.requireNonNull(station);
-            this.cargoType = Objects.requireNonNull(cargoType);
-        }
-
-        public Station getStation() {
-            return station;
-        }
-
-        public CargoType getCargoType() {
-            return cargoType;
-        }
-
-        @Override
-        public String toString() {
-            return station.getStationName() + " (" + cargoType + ")";
-        }
+    public List<CargoType> getAvailableCargoTypesForStation(Station station) {
+        // TODO: Implement based on station's cargo production capabilities
+        // For now, return all available cargo types (placeholder implementation)
+        return availableCargoTypes;
     }
 
     /**
      * Builds a Route from user input.
-     * Example: "Central, COAL, Porto, STEEL, Industrial, FOOD"
+     * New format: "Central, COAL, FULL, Porto, STEEL, HALF, Industrial, FOOD, AVAILABLE"
+     * Each Point-of-Route: station, cargo, cargoMode
      */
     public Route parseRouteFromInput(String input) {
         if (input == null || input.isBlank()) return null;
         String[] parts = input.split(",");
-        if (parts.length % 2 != 0) return null;
+        if (parts.length % 3 != 0) return null; // Must be groups of 3
 
-        List<StationCargo> routeList = new ArrayList<>();
-        for (int i = 0; i < parts.length; i += 2) {
+        List<PointOfRoute> routeList = new ArrayList<>();
+        for (int i = 0; i < parts.length; i += 3) {
             String stationName = parts[i].trim();
-            String cargoName   = parts[i + 1].trim();
+            String cargoName = parts[i + 1].trim();
+            String cargoModeName = parts[i + 2].trim();
 
             Station station = availableStations.stream()
                     .filter(s -> s.getStationName().equalsIgnoreCase(stationName))
@@ -91,7 +79,20 @@ public class AssignTrainToRouteController {
                     .findFirst().orElse(null);
             if (ct == null) return null;
 
-            routeList.add(new StationCargo(station, ct));
+            CargoMode cargoMode;
+            try {
+                cargoMode = CargoMode.valueOf(cargoModeName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return null; // Invalid cargo mode
+            }
+
+            // Validate cargo is available at this station
+            List<CargoType> availableAtStation = getAvailableCargoTypesForStation(station);
+            if (!availableAtStation.contains(ct)) {
+                return null;
+            }
+
+            routeList.add(new PointOfRoute(station, ct, cargoMode));
         }
 
         try {

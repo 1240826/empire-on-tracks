@@ -1,4 +1,3 @@
-// PlayerMenuUI.java
 package pt.ipp.isep.dei.ui.console.menu;
 
 import pt.ipp.isep.dei.controller.AssignTrainToRouteController;
@@ -78,7 +77,7 @@ public class PlayerMenuUI implements Runnable {
         );
 
         // 6. Cria player e controller de atribuição de comboios
-        Player player = new Player("Alice", "20AAArt", 50000);
+        Player player = new Player("Alice", "20AAArt", 5000000);
         AssignTrainToRouteController routeCtrl = new AssignTrainToRouteController(
                 player,
                 selectedMap.getStations(),
