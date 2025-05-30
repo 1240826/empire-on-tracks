@@ -2,3 +2,4 @@
 ![user_manual_table_of_contents_page.png](user_manual_table_of_contents_page.png)
 ![user_manual_glossary_page.png](user_manual_glossary_page.png)
 ![user_manual_introduction_page.png](user_manual_introduction_page.png)
+[User Manual.pdf](User%20Manual.pdf)
