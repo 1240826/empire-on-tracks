@@ -55,8 +55,9 @@ public class AssignTrainToRouteUI implements Runnable {
         }
 
         System.out.println("\nEnter your assignment in the following format:");
-        System.out.println("Station, Cargo, CargoMode, Station, Cargo, CargoMode, ...");
-        System.out.println("Example: Lisbon, IRON, FULL, Lisbon, MAIL, FULL, Porto, PASSENGERS, HALF");
+        System.out.println("Station, Cargo1+Cargo2+..., CargoMode, Station, Cargo1+Cargo2+..., CargoMode, ...");
+        System.out.println("You can select one or more cargo types per station by separating them with '+'.");
+        System.out.println("Example: Lisbon, IRON+MAIL, FULL, Porto, PASSENGERS, HALF");
         System.out.print("Input: ");
         String input = scanner.nextLine();
 

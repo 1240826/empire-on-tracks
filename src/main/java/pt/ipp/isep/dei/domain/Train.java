@@ -1,6 +1,7 @@
 // File: pt/ipp.isep.dei.domain/Train.java
 package pt.ipp.isep.dei.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +14,7 @@ public class Train {
     private Locomotive locomotive;
     private List<Carriage> carriages;
     private List<String> currentCargoes;
-    private Route route;
-    private int currentStopIndex = 0;
+    private Route assignedRoute;
 
     /**
      * Constructs a Train with the specified name, locomotive, carriages, and current cargoes.
@@ -67,8 +67,17 @@ public class Train {
      * @param route the route to assign (cannot be null)
      */
     public void assignRoute(Route route) {
-        this.route = Objects.requireNonNull(route);
-        this.currentStopIndex = 0;
+        this.assignedRoute = Objects.requireNonNull(route);
+        List<Carriage> newCarriages = new ArrayList<>();
+
+        for (PointOfRoute por : route.getPointsOfRoute()) {
+            for (CargoType cargoType : por.getCargoes()) {
+                newCarriages.add(new Carriage(cargoType));
+            }
+        }
+        this.carriages = newCarriages;
+
+        int currentStopIndex = 0;
     }
 
     /**
@@ -76,8 +85,8 @@ public class Train {
      *
      * @return the assigned route, or null if none
      */
-    public Route getRoute() {
-        return route;
+    public Route getAssignedRoute() {
+        return assignedRoute;
     }
 
     /**
@@ -91,7 +100,7 @@ public class Train {
         return String.format("Train[name=%s, loco=%s, route=%s]",
                 name,
                 locomotive.getType(),
-                route != null ? route.toString() : "none");
+                assignedRoute != null ? assignedRoute.toString() : "none");
     }
 
 }

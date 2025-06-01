@@ -67,7 +67,7 @@ public class SimulatorUI implements Runnable {
                 System.out.printf("[%s] loco=%s route=%s load=%s%n",
                         t.getName(),
                         t.getLocomotiveType(),
-                        t.getRoute() != null ? t.getRoute().toString() : "none",
+                        t.getAssignedRoute() != null ? t.getAssignedRoute().toString() : "none",
                         t.getCurrentCargoes()
                 )
         );
@@ -88,7 +88,7 @@ public class SimulatorUI implements Runnable {
                 System.out.printf("[%d] %s (route: %s)%n",
                         i,
                         t.getName(),
-                        t.getRoute() != null ? t.getRoute().toString() : "none"
+                        t.getAssignedRoute() != null ? t.getAssignedRoute().toString() : "none"
                 );
             }
         }

@@ -1,16 +1,11 @@
 package pt.ipp.isep.dei.controller;
 
-import pt.ipp.isep.dei.domain.Player;
-import pt.ipp.isep.dei.domain.Station;
-import pt.ipp.isep.dei.domain.CargoType;
-import pt.ipp.isep.dei.domain.Route;
-import pt.ipp.isep.dei.domain.Train;
-import pt.ipp.isep.dei.domain.PointOfRoute;
-import pt.ipp.isep.dei.domain.CargoMode;
+import pt.ipp.isep.dei.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Controller used to assign a route to a player's train.
@@ -45,13 +40,15 @@ public class AssignTrainToRouteController {
     /**
      * Gets available cargo types for a specific station.
      * Only cargoes that can be produced/picked up at this station should be returned.
-     * This method should be implemented based on station's production capabilities.
      */
+
     public List<CargoType> getAvailableCargoTypesForStation(Station station) {
-        // TODO: Implement based on station's cargo production capabilities
-        // For now, return all available cargo types (placeholder implementation)
-        return availableCargoTypes;
+        return station.getCargoes().stream()
+                .map(Cargo::getType)
+                .distinct()
+                .collect(Collectors.toList());
     }
+
 
     /**
      * Builds a Route from user input.
@@ -66,7 +63,7 @@ public class AssignTrainToRouteController {
         List<PointOfRoute> routeList = new ArrayList<>();
         for (int i = 0; i < parts.length; i += 3) {
             String stationName = parts[i].trim();
-            String cargoName = parts[i + 1].trim();
+            String cargoNames = parts[i + 1].trim();
             String cargoModeName = parts[i + 2].trim();
 
             Station station = availableStations.stream()
@@ -74,10 +71,21 @@ public class AssignTrainToRouteController {
                     .findFirst().orElse(null);
             if (station == null) return null;
 
-            CargoType ct = availableCargoTypes.stream()
-                    .filter(c -> c.name().equalsIgnoreCase(cargoName))
-                    .findFirst().orElse(null);
-            if (ct == null) return null;
+            String[] cargoArray = cargoNames.split("\\+");
+            List<CargoType> cargoes = new ArrayList<>();
+            for (String cargoStr : cargoArray) {
+                CargoType ct = availableCargoTypes.stream()
+                        .filter(c -> c.name().equalsIgnoreCase(cargoStr.trim()))
+                        .findFirst().orElse(null);
+                if (ct == null) return null; // invalid cargo
+                // Validate cargo is available at this station
+                List<CargoType> availableAtStation = getAvailableCargoTypesForStation(station);
+                if (!availableAtStation.contains(ct)) {
+                    return null; // cargo not available at this station
+                }
+                cargoes.add(ct);
+            }
+            if (cargoes.isEmpty()) return null;
 
             CargoMode cargoMode;
             try {
@@ -86,13 +94,7 @@ public class AssignTrainToRouteController {
                 return null; // Invalid cargo mode
             }
 
-            // Validate cargo is available at this station
-            List<CargoType> availableAtStation = getAvailableCargoTypesForStation(station);
-            if (!availableAtStation.contains(ct)) {
-                return null;
-            }
-
-            routeList.add(new PointOfRoute(station, ct, cargoMode));
+            routeList.add(new PointOfRoute(station, cargoes, cargoMode));
         }
 
         try {
