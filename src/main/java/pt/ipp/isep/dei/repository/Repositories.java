@@ -13,6 +13,7 @@ public class Repositories {
     private final MapRepository repositoryMap;
     private final IndustryRepository industryRepository;
     private LocomotiveCatalog locomotiveCatalog = new LocomotiveCatalog();
+    private final ScenarioRepository scenarioRepository = new ScenarioRepository();
 
     /**
      * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
@@ -58,4 +59,7 @@ public class Repositories {
         return locomotiveCatalog;
     }
 
+    public ScenarioRepository getScenarioRepository() {
+        return scenarioRepository;
+    }
 }

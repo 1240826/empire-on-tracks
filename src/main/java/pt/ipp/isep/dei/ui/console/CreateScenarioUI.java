@@ -1,178 +1,279 @@
 package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.CreateScenarioController;
-import pt.ipp.isep.dei.domain.Locomotive;
-import pt.ipp.isep.dei.domain.CargoType;
+import pt.ipp.isep.dei.domain.*;
+import pt.ipp.isep.dei.repository.IndustryRepository;
+import pt.ipp.isep.dei.repository.MapRepository;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * Console-based user interface for the "Create Scenario" use case.
- * <p>
- * Guides an editor through defining a new scenario.
- * <p>
- * This UI handles user interaction in the following order:
- * <ol>
- *   <li>Collect scenario period ticks (start and end).</li>
- *   <li>Select and add locomotive templates, specifying availability for each.</li>
- *   <li>Select cargo types, assign multiple behaviors for each.</li>
- *   <li>Set the industry production frequency (percentage).</li>
- *   <li>Confirm scenario creation and display the outcome.</li>
- * </ol>
- */
+
 public class CreateScenarioUI implements Runnable {
     private final CreateScenarioController controller = new CreateScenarioController();
     private final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Runs the interactive scenario creation flow, prompting the user step-by-step
-     * and invoking corresponding controller methods.
-     */
     public void start() {
         System.out.println("--- Create Scenario ---");
 
-        // 1) Scenario period
-        int periodStart, periodEnd;
-        while (true) {
+        System.out.print("Enter a name for the scenario: ");
+        String scenarioName = scanner.nextLine().trim();
+        int startYear = 0, endYear = 0;
+        boolean validInput = false;
+
+        while (!validInput) {
             try {
-                System.out.print("Enter scenario period start (int tick): ");
-                periodStart = Integer.parseInt(scanner.nextLine().trim());
-                System.out.print("Enter scenario period end (int tick): ");
-                periodEnd = Integer.parseInt(scanner.nextLine().trim());
-                controller.startCreateScenario(LocalDateTime.now(), periodStart, periodEnd);
+                // Prompt for start year
+                System.out.print("Enter the start year: ");
+                startYear = Integer.parseInt(scanner.nextLine().trim());
+
+                // Check if the start year is valid
+                if (startYear < 1804) {
+                    System.out.println("Start year must be later than 1804, the year the first locomotive appeared. Please try again.");
+                    continue;
+                }
+
+                // Prompt for end year
+                System.out.print("Enter the end year: ");
+                endYear = Integer.parseInt(scanner.nextLine().trim());
+
+                // Check if the end year is valid
+                if (endYear < startYear) {
+                    System.out.println("End year must be greater or equal to the start year. Please try again.");
+                    continue;
+                }
+
+                // If input is valid, break the loop
+                validInput = true;
+
+                controller.startCreateScenario(scenarioName,startYear, endYear);
                 break;
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error: " + e.getMessage());
-                System.out.println("Please enter a valid period where start <= end.\n");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number.");
             }
         }
 
-        // 2) Locomotive selection and availability
+        showMainMenu();
+    }
+
+    private void showMainMenu() {
+        while (true) {
+            System.out.println();
+            System.out.println("Define Scenario restrictions:");
+            System.out.println("----------------------------");
+            System.out.println("1 - Available Locomotives");
+            System.out.println("2 - Set Production Rate");
+            System.out.println("3 - Define Mixed Industries Behavior");
+            System.out.println("0 - Exit");
+            System.out.println("----------------------------");
+            System.out.print("Choose an option: ");
+            String option = scanner.nextLine().trim();
+
+            switch (option) {
+                case "1":
+                    showAvailableLocomotivesMenu();
+                    break;
+                case "2":
+                    setProductionRate();
+                    break;
+                case "3":
+                    mixedIndustryMenu();
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Invalid option. Try again.\n");
+            }
+        }
+    }
+
+    private void showAvailableLocomotivesMenu() {
+        while (true) {
+            System.out.println("Do you want to add or remove a locomotive from the scenario?");
+            System.out.println("1 - Add");
+            System.out.println("2 - Remove");
+            System.out.println("0 - Exit");
+            System.out.print("Choose an option: ");
+            String subOption = scanner.nextLine().trim();
+
+            switch (subOption) {
+                case "1":
+                    addLocomotive();
+                    break;
+                case "2":
+                    removeLocomotive();
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Invalid option. Try again.\n");
+            }
+        }
+    }
+
+    private void addLocomotive() {
         List<Locomotive> templates = controller.getAllLocomotiveTemplates();
-        System.out.println("Available locomotive templates:");
+        System.out.println("------ Available Locomotives ------");
         for (int i = 0; i < templates.size(); i++) {
             System.out.printf("[%d] %s%n", i, templates.get(i));
         }
-        System.out.print("How many locomotive types to add? ");
-        int locoCount = Integer.parseInt(scanner.nextLine().trim());
-        Set<Integer> chosen = new HashSet<>();
-        for (int i = 0; i < locoCount; i++) {
-            int idx;
-            while (true) {
-                System.out.print("Enter template index to add: ");
-                idx = Integer.parseInt(scanner.nextLine().trim());
-                if (idx < 0 || idx >= templates.size()) {
-                    System.out.println("Invalid index. Choose a valid template number.");
-                } else if (!chosen.add(idx)) {
-                    System.out.println("Template already chosen. Pick a different one.");
-                } else {
-                    break;
-                }
-            }
-            controller.addLocomotiveByTemplate(idx);
-            System.out.printf("Locomotive %d added.%n", idx);
-            int availStart, availEnd;
-            int locoStart = templates.get(idx).getStartYear();
-            System.out.printf("  Note: this locomotive is available from tick %d.%n", locoStart);
-            while (true) {
-                System.out.print("  Enter availability start tick: ");
-                availStart = Integer.parseInt(scanner.nextLine().trim());
-                System.out.print("  Enter availability end tick:   ");
-                availEnd = Integer.parseInt(scanner.nextLine().trim());
-                if (availStart < locoStart) {
-                    System.out.printf("Error: availability start (%d) must be >= locomotive start year (%d).%n", availStart, locoStart);
-                    continue;
-                }
-                if (availEnd > periodEnd) {
-                    System.out.printf("Error: availability end (%d) must be <= scenario end tick (%d).%n", availEnd, periodEnd);
-                    continue;
-                }
-                if (availStart > availEnd) {
-                    System.out.println("Error: start tick must be <= end tick.");
-                    continue;
-                }
-                try {
-                    controller.setLocomotiveAvailability(i, availStart, availEnd);
-                    System.out.println("Availability set.\n");
-                    break;
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Error: " + e.getMessage());
-                }
-            }
-        }
 
-        // 3) Cargo selection and behaviors
-        CargoType[] cargoTypes = CargoType.values();
-        System.out.println("Available cargo types:");
-        for (int i = 0; i < cargoTypes.length; i++) {
-            System.out.printf("[%d] %s%n", i, cargoTypes[i]);
-        }
-        System.out.print("How many cargo types to add? ");
-        int cargoCount = Integer.parseInt(scanner.nextLine().trim());
-        for (int i = 0; i < cargoCount; i++) {
-            System.out.print("Enter cargo type index to add: ");
-            int cidx = Integer.parseInt(scanner.nextLine().trim());
-            CargoType ct = cargoTypes[cidx];
-            controller.addCargoType(ct);
-            System.out.printf("Cargo %s added.%n", ct);
-            String[] options = {"import", "export", "transform"};
-            System.out.print("  How many behaviors to assign? ");
-            int behCount = Integer.parseInt(scanner.nextLine().trim());
-            Set<String> chosenBehaviors = new HashSet<>();
-            for (int b = 0; b < behCount; b++) {
-                while (true) {
-                    System.out.print("    Enter behavior: ");
-                    String behavior = scanner.nextLine().trim().toLowerCase();
-                    boolean valid = false;
-                    for (String opt : options) {
-                        if (opt.equals(behavior)) { valid = true; break; }
-                    }
-                    if (!valid) {
-                        System.out.print("      Invalid. Choose from import/export/transform: ");
-                        continue;
-                    }
-                    if (!chosenBehaviors.add(behavior)) {
-                        System.out.println("      Behavior already assigned.");
-                        continue;
-                    }
-                    controller.setCargoBehavior(ct, behavior);
-                    break;
-                }
-            }
-            System.out.println();
-        }
+        System.out.print("Enter index of locomotive to add: ");
+        int index = Integer.parseInt(scanner.nextLine().trim());
 
-        // 4) Industry production frequency
-        int freq;
-        while (true) {
-            System.out.print("Enter industry production frequency (0-100): ");
-            try {
-                freq = Integer.parseInt(scanner.nextLine().trim());
-                controller.setIndustryProductionFrequency(freq);
-                break;
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }
-
-        // 5) Confirmation and persistence
-        System.out.print("Confirm scenario creation? (y/n): ");
-        String confirm = scanner.nextLine().trim().toLowerCase();
-        if ("y".equals(confirm) || "yes".equals(confirm)) {
-            boolean ok = controller.confirmScenarioCreation();
-            if (ok) {
-                System.out.println("Scenario created successfully!");
-            } else {
-                System.out.println("Failed to create scenario.");
-            }
-        } else {
-            System.out.println("Scenario creation cancelled.");
+        try {
+            controller.addLocomotiveByTemplate(index);
+            System.out.println("Locomotive added to catalog.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
+
+    private void removeLocomotive() {
+        List<Locomotive> catalogLocos = controller.getCatalogLocomotives();
+        if (catalogLocos.isEmpty()) {
+            System.out.println("No locomotives in catalog to remove.");
+            return;
+        }
+
+        System.out.println("Locomotives in Catalog:");
+        for (int i = 0; i < catalogLocos.size(); i++) {
+            System.out.printf("[%d] %s%n", i, catalogLocos.get(i));
+        }
+
+        System.out.print("Enter index of locomotive to remove: ");
+        int index = Integer.parseInt(scanner.nextLine().trim());
+
+        try {
+            controller.removeLocomotiveFromCatalog(index);
+            System.out.println("Locomotive removed from catalog.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void mixedIndustryMenu() {
+        IndustryRepository industryRepo = IndustryRepository.getInstance();
+        List<Industry> industries = industryRepo.getListOfIndustry();
+
+        List<MixedIndustry> mixedIndustries = industries.stream()
+                .filter(industry -> industry instanceof MixedIndustry)
+                .map(industry -> (MixedIndustry) industry)
+                .collect(Collectors.toList());
+
+        if (mixedIndustries.isEmpty()) {
+            System.out.println("No Mixed Industries available.");
+            return;
+        }
+
+        System.out.println("------ Mixed Industries ------");
+        for (int i = 0; i < mixedIndustries.size(); i++) {
+            System.out.printf("%d - %s%n", i + 1, mixedIndustries.get(i).getIndustryName());
+        }
+
+        System.out.print("Choose a Mixed Industry to configure (0 to exit): ");
+        int industryChoice = Integer.parseInt(scanner.nextLine().trim()) - 1;
+
+        if (industryChoice == -1) {
+            return;  // Exit the menu
+        }
+
+        if (industryChoice < 0 || industryChoice >= mixedIndustries.size()) {
+            System.out.println("Invalid selection. Returning to main menu.");
+            return;
+        }
+
+        MixedIndustry selectedIndustry = mixedIndustries.get(industryChoice);
+
+        // Menu de opções: Import, Export, Transform
+        System.out.println("Select an action for " + selectedIndustry.getIndustryName());
+        System.out.println("1 - Import");
+        System.out.println("2 - Export");
+        System.out.println("3 - Transform");
+        System.out.println("0 - Exit");
+
+        System.out.print("Enter your choice: ");
+        int actionChoice = Integer.parseInt(scanner.nextLine().trim());
+
+        switch (actionChoice) {
+            case 1: // Import
+                handleImport(selectedIndustry);
+                break;
+            case 2: // Export
+                handleExport(selectedIndustry);
+                break;
+            case 3: // Transform
+                handleTransform(selectedIndustry);
+                break;
+            case 0: // Exit
+                return;
+            default:
+                System.out.println("Invalid option. Returning to main menu.");
+        }
+    }
+
+    private void handleImport(MixedIndustry industry) {
+        // Para importar, demand é 0 e o cargo final é o output cargo
+        industry.setDemand(0);
+        industry.setProduction(0);  // Não há produção quando é importado
+        industry.setOutputCargo(industry.getOutputCargoType());  // Cargo final
+        System.out.println("Import setup complete for " + industry.getIndustryName());
+    }
+
+    private void handleExport(MixedIndustry industry) {
+        // Para exportar, produção é 0 e a demanda é o cargo necessário
+        industry.setProduction(0);  // Não há produção quando é exportado
+        // Set demand to a required cargo amount (example based on your logic)
+        industry.setDemand(industry.getProduction());
+        System.out.println("Export setup complete for " + industry.getIndustryName());
+    }
+
+    private void handleTransform(MixedIndustry industry) {
+        // Para transformar, manter a produção, demanda e o cargo final
+        System.out.println("Transformation setup complete for " + industry.getIndustryName());
+    }
+
+
+    private void setProductionRate() {
+        // Obtém a lista de todas as indústrias do repositório
+        IndustryRepository industryRepo = IndustryRepository.getInstance();
+        List<Industry> industries = industryRepo.getListOfIndustry(); // Lista das indústrias
+
+        System.out.println("------ Available Industries ------");
+        for (int i = 0; i < industries.size(); i++) {
+            System.out.printf("%d - %s%n", i + 1, industries.get(i).getIndustryName());
+        }
+
+        // Escolher uma indústria
+        System.out.print("Choose an industry to set production rate: ");
+        int industryIndex = Integer.parseInt(scanner.nextLine().trim()) - 1;
+
+        // Verificar se o índice é válido
+        if (industryIndex < 0 || industryIndex >= industries.size()) {
+            System.out.println("Invalid choice. Returning to main menu.");
+            return;
+        }
+
+        Industry selectedIndustry = industries.get(industryIndex);
+
+        // Exibir a produção atual da indústria
+        System.out.println("Current Production Rate for " + selectedIndustry.getIndustryName() + ": " + selectedIndustry.getProduction() + " units");
+
+        // Perguntar ao usuário o percentual de alteração na produção
+        System.out.print("Enter percentage change for production rate (e.g., +20, -10): ");
+        double percentageChange = Double.parseDouble(scanner.nextLine().trim());
+
+        // Criar o evento para aplicar a alteração
+        ChangeIndustryProductionRateEvent event = new ChangeIndustryProductionRateEvent(industryIndex, percentageChange);
+        MapRepository mapRepo = new MapRepository();
+        Map map = mapRepo.getCurrentMap();
+        // Aplicar o evento no mapa
+        event.apply(map, null);
+
+        System.out.println("Production rate for " + selectedIndustry.getIndustryName() + " has been updated.");
+    }
+
     /**
      * Entry‐point for Runnable dispatch.
      */

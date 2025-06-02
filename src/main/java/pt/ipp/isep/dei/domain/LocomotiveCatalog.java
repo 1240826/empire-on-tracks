@@ -16,5 +16,9 @@ public class LocomotiveCatalog {
         // In future: filter based on scenario
         return LocomotiveRepository.getInstance().getAllTemplates();
     }
+
+    public List<Locomotive> getAllLocomotives() {
+        return allLocomotives;
+    }
 }
 

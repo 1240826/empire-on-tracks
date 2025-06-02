@@ -1,6 +1,5 @@
 package pt.ipp.isep.dei.domain;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,12 +9,10 @@ import java.util.Objects;
  * and configured resources such as locomotives, cargos, and industry production settings.
  */
 public class Scenario {
-    // Date when the scenario should be executed
-    private LocalDateTime triggerDate;
-
     // Configured resources for this scenario
     private final List<Locomotive> locomotives = new ArrayList<>();
     private final List<Cargo> cargos = new ArrayList<>();
+    private final String name;
 
     // Time period over which the scenario runs
     private Period period;
@@ -23,34 +20,16 @@ public class Scenario {
     // Industry production frequency (percentage)
     private int industryProductionFrequency;
 
-    /**
-     * Constructs a new Scenario with the specified trigger date.
-     *
-     * @param triggerDate the date and time when the scenario is triggered
-     * @throws NullPointerException if triggerDate is null
-     */
-    public Scenario(LocalDateTime triggerDate) {
-        this.triggerDate = Objects.requireNonNull(triggerDate, "triggerDate must not be null");
+
+    public Scenario(String name, Period period) {
+        Objects.requireNonNull(period, "period must not be null");
+        this.name = name;
     }
 
-    /**
-     * Returns the trigger date of this scenario.
-     *
-     * @return the trigger date
-     */
-    public LocalDateTime getTriggerDate() {
-        return triggerDate;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * Updates the trigger date for this scenario.
-     *
-     * @param triggerDate the new trigger date
-     * @throws NullPointerException if triggerDate is null
-     */
-    public void setTriggerDate(LocalDateTime triggerDate) {
-        this.triggerDate = Objects.requireNonNull(triggerDate, "triggerDate must not be null");
-    }
 
     /**
      * Sets the time period for the scenario execution.
@@ -59,7 +38,21 @@ public class Scenario {
      * @throws NullPointerException if period is null
      */
     public void setPeriod(Period period) {
-        this.period = Objects.requireNonNull(period, "period must not be null");
+        Objects.requireNonNull(period, "period must not be null");
+
+        Integer earliestLocoYear = getEarliestLocomotiveStartYear();
+        if (earliestLocoYear != null && period.getStartDate() < earliestLocoYear) {
+            throw new IllegalArgumentException("Scenario start year must be >= " + earliestLocoYear);
+        }
+
+        this.period = period;
+    }
+
+    private Integer getEarliestLocomotiveStartYear() {
+        return locomotives.stream()
+                .map(Locomotive::getStartYear)
+                .min(Integer::compareTo)
+                .orElse(null);
     }
 
     /**

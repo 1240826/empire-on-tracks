@@ -23,6 +23,7 @@ public class Player extends User {
     /** The list of trains owned by the player. */
     private final List<Train> ownedTrains = new ArrayList<>();
 
+    private Scenario selectedScenario;
     /**
      * Constructs a new Player with the given username, password and initial budget.
      *
@@ -136,5 +137,13 @@ public class Player extends User {
             return true;
         }
         return false;
+    }
+
+    public Scenario getSelectedScenario() {
+        return selectedScenario;
+    }
+
+    public void setSelectedScenario(Scenario selectedScenario) {
+        this.selectedScenario = selectedScenario;
     }
 }

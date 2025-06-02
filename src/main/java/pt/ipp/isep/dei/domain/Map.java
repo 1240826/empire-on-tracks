@@ -30,6 +30,10 @@ public class Map {
     /** Collection of locomotives on the map. */
     private final List<Locomotive> locomotives = new ArrayList<>();
 
+
+    /** Optional scenario for applying dynamic events to the map. */
+    private Scenario scenario;
+
     /**
      * Default constructor.
      * <p>
@@ -303,11 +307,11 @@ public class Map {
     /**
      * Updates only the stations by collecting from nearby industries.
      */
-    public void updateStations() {
-        for (Station st : stations) {
-            st.collectNearbyIndustries(industries);
-        }
-    }
+    //public void updateStations() {
+        //for (Station st : stations) {
+           // st.collectNearbyIndustries(industries);
+        //}
+    //}
 
     // --- Locomotives ---
 

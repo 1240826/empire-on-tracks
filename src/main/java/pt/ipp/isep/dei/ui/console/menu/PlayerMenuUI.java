@@ -68,7 +68,7 @@ public class PlayerMenuUI implements Runnable {
         LocalDateTime end   = start.plusMonths(20);
 
         // 4. Inicializa repositório de cenários
-        scenarioRepo.addInitialScenario(start, new Scenario(start));
+        //scenarioRepo.addScenario(start, new Scenario(start));
 
         // 5. Cria o relógio e o simulador
         Time clock = new Time(start, end);

@@ -6,6 +6,7 @@ import pt.ipp.isep.dei.controller.BuyLocomotiveController;
 import pt.ipp.isep.dei.controller.SimulatorController;
 import pt.ipp.isep.dei.domain.*;
 import pt.ipp.isep.dei.repository.Repositories;
+import pt.ipp.isep.dei.repository.ScenarioRepository;
 import pt.ipp.isep.dei.ui.console.menu.MenuItem;
 import pt.ipp.isep.dei.ui.console.utils.Utils;
 
@@ -181,6 +182,7 @@ public class SimulatorUI implements Runnable {
 
         options.add(new MenuItem("Show simulation status", this::showStatus));
         options.add(new MenuItem("Edit simulation (UC5–UC12)", this::showEditSubmenu));
+        options.add(new MenuItem("Select a Scenario", this::selectScenario));
         options.add(new MenuItem("Help", this::printHelp));
         options.add(new MenuItem("Exit", controller::pauseSimulation));
 
@@ -201,5 +203,34 @@ public class SimulatorUI implements Runnable {
         System.out.println("  - Status: show simulation status");
         System.out.println("  - Edit: open UC5–UC12 menu");
         System.out.println("  - Exit: quit simulation");
+    }
+
+    private void selectScenario() {
+        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository(); // ou onde o guardas
+        List<Scenario> scenarios = repo.getScenarios();
+
+        if (scenarios.isEmpty()) {
+            System.out.println("No scenarios available.");
+            return;
+        }
+
+        System.out.println("Available Scenarios:");
+        for (int i = 0; i < scenarios.size(); i++) {
+            System.out.printf("[%d] %s%n", i, scenarios.get(i).getName());
+        }
+
+        System.out.print("Enter scenario index: ");
+        try {
+            int index = Integer.parseInt(new Scanner(System.in).nextLine().trim());
+            if (index >= 0 && index < scenarios.size()) {
+                Scenario selected = scenarios.get(index);
+                player.setSelectedScenario(selected);
+                System.out.println("Scenario \"" + selected.getName() + "\" selected.");
+            } else {
+                System.out.println("Invalid index.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
     }
 }

@@ -97,7 +97,7 @@ public class SimulatorController {
 
         // cenários
         LocalDateTime now = clock.getDate();
-        for (Scenario sc : scenarioRepo.getScenariosForDate(now)) {
+        for (Scenario sc : scenarioRepo.getScenarios()) {
             List<String> scEvents = sc.applyAll(map, map.getLocomotives());
             if (scEvents != null) {
                 events.addAll(scEvents);

@@ -1,9 +1,5 @@
 package pt.ipp.isep.dei.domain;
 
-import pt.ipp.isep.dei.repository.IndustryRepository;
-import pt.ipp.isep.dei.repository.LocomotiveRepository;
-import pt.ipp.isep.dei.repository.ScenarioRepository;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +7,7 @@ import java.util.Objects;
  * Event that adjusts the production rate of an industry template,
  * applying a percentage increment or decrement to the current production rate.
  */
-public class ChangeIndustryPoductionRateEven implements ScenarioEvent {
+public class ChangeIndustryProductionRateEvent implements ScenarioEvent {
     private final int industryIndex;
     private final double percentageChange;
 
@@ -21,7 +17,7 @@ public class ChangeIndustryPoductionRateEven implements ScenarioEvent {
      * @param industryIndex    the index of the industry in the IndustryRepository
      * @param percentageChange the percentage change to apply (e.g., 20 for +20%, -10 for -10%)
      */
-    public ChangeIndustryPoductionRateEven(int industryIndex, double percentageChange) {
+    public ChangeIndustryProductionRateEvent(int industryIndex, double percentageChange) {
         this.industryIndex    = industryIndex;
         this.percentageChange = percentageChange;
     }
