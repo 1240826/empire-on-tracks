@@ -1,5 +1,6 @@
 package pt.ipp.isep.dei.repository;
 
+import pt.ipp.isep.dei.domain.Period;
 import pt.ipp.isep.dei.domain.Scenario;
 
 import java.time.LocalDateTime;
@@ -22,8 +23,11 @@ public class ScenarioRepository {
         return null; // ou lança uma exceção se quiseres sinalizar erro
     }
 
-
     public List<Scenario> getScenarios() {
         return scenarios;
+    }
+    public void addExampleScenario() {
+        Scenario scenario = new Scenario("europa", new Period(1900,1910));
+        addScenario(scenario);
     }
 }

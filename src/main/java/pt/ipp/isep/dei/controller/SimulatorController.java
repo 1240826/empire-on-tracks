@@ -19,6 +19,7 @@ public class SimulatorController {
     private final ScenarioRepository scenarioRepo;
     private final IndustryRepository industryRepo;
     private final LocomotiveRepository locomotiveRepo;
+    private Scenario selectedScenario;
 
     private final ScheduledExecutorService scheduler =
             Executors.newSingleThreadScheduledExecutor();
@@ -95,18 +96,20 @@ public class SimulatorController {
             events.addAll(st.collectAndDistribute(map.getIndustries()));
         }
 
-        // cenários
-        LocalDateTime now = clock.getDate();
-        for (Scenario sc : scenarioRepo.getScenarios()) {
-            List<String> scEvents = sc.applyAll(map, map.getLocomotives());
+        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository();
+        repo.addExampleScenario();
+        Scenario selected = getSelectedScenario();
+        if (selected != null) {
+            List<String> scEvents = selected.applyAll(map, map.getLocomotives());
             if (scEvents != null) {
                 events.addAll(scEvents);
             }
         }
 
+
         // DEBUG: imprimir stocks
         for (Station st : map.getStations()) {
-            System.out.println("DEBUG pós-step: estação " + st.getStationName() +
+            System.out.println("DEBUG: station " + st.getStationName() +
                     " stock = " + st.getCargoes().stream()
                     .map(c -> c.getType() + ":" + c.getQuantity())
                     .collect(Collectors.joining(", ")));
@@ -133,6 +136,14 @@ public class SimulatorController {
 
     public List<Locomotive> getLocomotiveTemplates() {
         return locomotiveRepo.getAllTemplates();
+    }
+
+    public void setSelectedScenario(Scenario scenario) {
+        this.selectedScenario = scenario;
+    }
+
+    public Scenario getSelectedScenario() {
+        return selectedScenario;
     }
 
     /**

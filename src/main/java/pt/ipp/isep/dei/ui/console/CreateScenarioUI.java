@@ -53,8 +53,15 @@ public class CreateScenarioUI implements Runnable {
                 System.out.println("Invalid number.");
             }
         }
-
         showMainMenu();
+        System.out.print("Confirm scenario creation? (Y/N): ");
+        String input = scanner.nextLine().trim();
+        if (input.equalsIgnoreCase("Y")) {
+            controller.confirmScenarioCreation();
+            System.out.println("Scenario saved successfully.");
+        } else {
+            System.out.println("Scenario discarded.");
+        }
     }
 
     private void showMainMenu() {

@@ -206,7 +206,7 @@ public class SimulatorUI implements Runnable {
     }
 
     private void selectScenario() {
-        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository(); // ou onde o guardas
+        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository();
         List<Scenario> scenarios = repo.getScenarios();
 
         if (scenarios.isEmpty()) {
