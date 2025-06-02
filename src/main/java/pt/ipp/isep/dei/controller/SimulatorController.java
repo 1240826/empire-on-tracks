@@ -37,7 +37,8 @@ public class SimulatorController {
                                Time clock,
                                ScenarioRepository scenarioRepo,
                                IndustryRepository industryRepo,
-                               LocomotiveRepository locomotiveRepo) {
+                               LocomotiveRepository locomotiveRepo,
+    Player player) {
         this.map = map;
         this.clock = clock;
         this.scenarioRepo = scenarioRepo;
