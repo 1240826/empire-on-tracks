@@ -83,15 +83,6 @@ public class Scenario {
         return new ArrayList<>(locomotives);
     }
 
-    /**
-     * Adds a cargo type to this scenario's configuration.
-     *
-     * @param cargo the cargo to add
-     * @throws NullPointerException if cargo is null
-     */
-    public void addCargo(Cargo cargo) {
-        cargos.add(Objects.requireNonNull(cargo, "cargo must not be null"));
-    }
 
     /**
      * Returns an immutable list of configured cargos.
@@ -120,9 +111,6 @@ public class Scenario {
      *
      * @return production frequency percentage
      */
-    public int getIndustryProductionFrequency() {
-        return industryProductionFrequency;
-    }
 
     /**
      * Applies all resources of this scenario to the provided map.

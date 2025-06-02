@@ -71,14 +71,15 @@ public class PlayerMenuUI implements Runnable {
         // 2. Dependências
         IndustryRepository indRepo = IndustryRepository.getInstance();
         LocomotiveRepository locoRepo = LocomotiveRepository.getInstance();
-        ScenarioRepository scenarioRepo = new ScenarioRepository();
 
         // 3. Datas de início e fim
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         LocalDateTime end   = start.plusMonths(20);
 
         // 4. Inicializa repositório de cenários
-        //scenarioRepo.addScenario(start, new Scenario(start));
+        ScenarioRepository scenarioRepo = Repositories.getInstance().getScenarioRepository();
+        List<Scenario> scenarios = scenarioRepo.getScenarios();
+
 
         // 5. Cria o relógio e o simulador
         Time clock = new Time(start, end);
