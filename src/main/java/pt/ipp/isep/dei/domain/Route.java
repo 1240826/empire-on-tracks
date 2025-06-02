@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Represents a route as an ordered sequence of Points-of-Route (station, cargo, cargoMode).
+ * Represents a route as an ordered sequence of Points-of-Route (station, cargoes, cargoMode).
  * The route must have at least two stops (Points-of-Route).
  * The route is circular by default.
  */
@@ -17,52 +17,74 @@ public class Route {
     /**
      * Constructs a route with the given list of Points-of-Route.
      * @param pointsOfRoute list of PointOfRoute, must have size >= 2
-     * @throws IllegalArgumentException if stops is null or has fewer than 2 elements
+     * @throws IllegalArgumentException if pointsOfRoute is null or has fewer than 2 elements
      */
     public Route(List<PointOfRoute> pointsOfRoute) {
-        Objects.requireNonNull(pointsOfRoute, "stops cannot be null");
+        Objects.requireNonNull(pointsOfRoute, "pointsOfRoute cannot be null");
         if (pointsOfRoute.size() < 2) {
-            throw new IllegalArgumentException("The route must have at least initial and final Points-of-Route");
+            throw new IllegalArgumentException("The route must have at least two Points-of-Route.");
         }
         this.pointsOfRoute = List.copyOf(pointsOfRoute);
     }
 
-    
-    /** First stop (PointOfRoute). */
+    /**
+     * Returns the first Point-of-Route in this route.
+     * @return initial PointOfRoute
+     */
     public PointOfRoute getInitialStop() {
         return pointsOfRoute.get(0);
     }
 
-    /** Last stop (PointOfRoute). */
+    /**
+     * Returns the last Point-of-Route in this route.
+     * @return final PointOfRoute
+     */
     public PointOfRoute getFinalStop() {
         return pointsOfRoute.get(pointsOfRoute.size() - 1);
     }
 
-    /** Sequence of cargo types transported, in the order of the stops. */
-    public List<CargoType> getCargoTypes() {
+    /**
+     * Returns a list of all cargo types to be picked up in this route,
+     * in the order of stops (may contain duplicates).
+     * @return list of cargo types (flattened)
+     */
+    public List<CargoType> getCargoes() {
         return pointsOfRoute.stream()
                 .flatMap(por -> por.getCargoes().stream())
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    /** Sequence of stations visited, in the order of the stops. */
+    /**
+     * Returns a list of all stations visited in this route,
+     * in the order of stops (may contain duplicates).
+     * @return list of stations
+     */
     public List<Station> getStations() {
         return pointsOfRoute.stream()
                 .map(PointOfRoute::getStation)
                 .collect(Collectors.toUnmodifiableList());
     }
+
+    /**
+     * Returns an unmodifiable list of the Points-of-Route in this route.
+     * @return unmodifiable list of Points-of-Route
+     */
     public List<PointOfRoute> getPointsOfRoute() {
-        return pointsOfRoute;
+        return Collections.unmodifiableList(pointsOfRoute);
     }
 
-    /** Returns the number of stops in the route (equals number of PointOfRoute). */
+    /**
+     * Returns the number of stops (Points-of-Route) in this route.
+     * @return number of stops
+     */
     public int getNumberOfStops() {
         return pointsOfRoute.size();
     }
 
     /**
-     * Returns a List<Integer> where each entry is the number of cargo types
-     * to be picked up at each stop (i.e., number of carriages needed per stop).
+     * Returns a list where each entry is the number of cargo types to be picked up at each stop,
+     * i.e., number of carriages needed per stop.
+     * @return list of cargo counts per stop
      */
     public List<Integer> getCarriageCountsPerStop() {
         List<Integer> result = new ArrayList<>();
@@ -72,6 +94,10 @@ public class Route {
         return result;
     }
 
+    /**
+     * Returns a string representation of the route as a sequence of Points-of-Route.
+     * @return string representation
+     */
     @Override
     public String toString() {
         return pointsOfRoute.stream()
