@@ -17,19 +17,19 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Controller principal que expõe funcionalidades para:
- *  1) Exportar matriz de adjacência
- *  2) Check reachability A→B and save closure
- *  3) Display full network graph (cores + layout espaçado)
- *  4) Find maintenance route
+ * The main controller exposing functionalities to:
+ *  1) Export the adjacency matrix
+ *  2) Check reachability A→B and save the transitive closure
+ *  3) Display the full network graph (colours + spaced layout)
+ *  4) Find a maintenance route
  *
- * O construtor recebe:
- *   • stationsCsvPath (path para CSV de estações)
- *   • linesCsvPath    (path para CSV de linhas)
- *   • onlyElectrified  (true para comboio elétrico; false para comboio a diesel/steam)
+ * The constructor requires:
+ *   • stationsCsvPath (path to the CSV of stations)
+ *   • linesCsvPath    (path to the CSV of lines)
+ *   • onlyElectrified (true for electric train; false for diesel/steam train)
  *
- * O tipo de comboio (ELECTRIC ou DIESEL) fica “pré-fixado” a partir de onlyElectrified,
- * de modo a não re-perguntar dentro do menu.
+ * The train type (ELECTRIC or DIESEL) is determined from onlyElectrified,
+ * so that it does not need to be re-asked in the menu.
  */
 public class AppController {
     private final RailwayGraph graph;
@@ -44,21 +44,21 @@ public class AppController {
         this.graph             = new RailwayGraph();
 
         try {
-            // 1) Carrega estações apenas para validar que o ficheiro existe
+            // 1) Load stations purely to validate that the file exists
             StationRepository stationRepo = new StationRepository(stationsCsvPath);
             stationRepo.loadAll();
 
-            // 2) Carrega linhas no grafo, filtrando por electrificação
+            // 2) Load lines into the graph, filtering by electrification
             LineRepository lineRepo = new LineRepository(linesCsvPath, onlyElectrified);
             lineRepo.loadAll(graph);
         } catch (Exception e) {
-            System.err.println("Erro ao carregar ficheiros: " + e.getMessage());
+            System.err.println("Error loading files: " + e.getMessage());
         }
     }
 
     /**
-     * Abre o menu principal (1 a 4 e 0 para sair).
-     * Reutiliza defaultTrainType em vez de perguntar de novo.
+     * Opens the main menu (options 1 to 4, and 0 to exit).
+     * Reuses defaultTrainType instead of asking again.
      */
     public void startInteractive() {
         Scanner sc = new Scanner(System.in);
@@ -75,7 +75,7 @@ public class AppController {
             System.out.println(" 0) Exit");
             System.out.print("Select an option: ");
             choice = sc.nextInt();
-            sc.nextLine(); // consumir newline
+            sc.nextLine(); // consume newline
 
             switch (choice) {
                 case 1:
@@ -101,19 +101,23 @@ public class AppController {
         sc.close();
     }
 
-    /** Opção 1: exporta a matriz de adjacência para "matrix.txt". */
+    /**
+     * Option 1: Exports the adjacency matrix to "matrix.txt".
+     */
     private void exportMatrix() {
         graph.exportAdjacencyMatrix();
     }
 
     /**
-     * Opção 2: Verifica conectividade A→B exibindo lista de estações,
-     * grava a fechadura transitiva em "closure.txt" e pergunta índices.
+     * Option 2: Checks connectivity A→B by displaying the list of stations,
+     * writes the transitive closure to "closure.txt", and asks for indices.
+     *
+     * @param sc the Scanner instance for reading user input
      */
     private void checkReachability(Scanner sc) {
         System.out.println("\n--- Connectivity Check (US13) ---");
 
-        // 1) Obter a lista ordenada (D→S→T e depois por número)
+        // 1) Obtain the ordered list (by D→S→T and then by number)
         List<Station> stations = graph.getSortedStations();
         int n = stations.size();
         System.out.println("Stations:");
@@ -121,7 +125,7 @@ public class AppController {
             System.out.printf("%2d) %s%n", i, stations.get(i).getName());
         }
 
-        // 2) Construir matriz booleana inicial r[i][j]
+        // 2) Build the initial boolean matrix r[i][j]
         boolean[][] r = new boolean[n][n];
         Map<Station, Integer> index = new HashMap<>();
         for (int i = 0; i < n; i++) {
@@ -140,7 +144,7 @@ public class AppController {
             r[i][i] = true;
         }
 
-        // 3) Warshall (fechadura transitiva)
+        // 3) Warshall's algorithm (transitive closure)
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 if (!r[i][k]) continue;
@@ -150,7 +154,7 @@ public class AppController {
             }
         }
 
-        // 4) Determinar largura de coluna com base no maior nome de estação
+        // 4) Determine column width based on the longest station name
         int maxNameLen = stations.stream()
                 .mapToInt(s -> s.getName().length())
                 .max()
@@ -159,16 +163,16 @@ public class AppController {
         String nameFmt = "%" + w + "s";
         String numFmt  = "%" + w + "d";
 
-        // 5) Gravar em "closure.txt", incluindo nomes nas linhas/colunas
+        // 5) Write to "closure.txt", including names in rows/columns
         try (PrintWriter out = new PrintWriter("closure.txt")) {
-            // 5.1) Cabeçalho: célula vazia + nomes das estações
+            // 5.1) Header: empty cell + station names
             out.printf(nameFmt, "");
             for (Station s : stations) {
                 out.printf(nameFmt, s.getName());
             }
             out.println();
 
-            // 5.2) Para cada linha i: nome da estação + valores 0/1
+            // 5.2) For each row i: station name + 0/1 values
             for (int i = 0; i < n; i++) {
                 out.printf(nameFmt, stations.get(i).getName());
                 for (int j = 0; j < n; j++) {
@@ -181,7 +185,7 @@ public class AppController {
             System.err.println("Error writing closure.txt: " + e.getMessage());
         }
 
-        // 6) Perguntar índices de origem e destino
+        // 6) Ask for origin and destination indices
         System.out.print("Origin (index): ");
         int src = sc.nextInt();
         System.out.print("Destination (index): ");
@@ -193,7 +197,7 @@ public class AppController {
             return;
         }
 
-        // 7) Exibir resultado
+        // 7) Display the result
         if (r[src][dst]) {
             System.out.printf("✅ Path exists between %s and %s.%n",
                     stations.get(src).getName(),
@@ -206,59 +210,59 @@ public class AppController {
     }
 
     /**
-     * Opção 3: Exibe o grafo completo, colorindo arestas electrificadas em azul
-     * e não-electrificadas em vermelho, usando layout SpringBox para espalhar.
+     * Option 3: Displays the complete graph, colouring electrified edges in blue
+     * and non-electrified edges in red, using the SpringBox layout for spacing.
      */
     private void displayGraph() {
-        // 1) Criar MultiGraph (permite arestas paralelas)
+        // 1) Create a MultiGraph (allows parallel edges)
         MultiGraph gs = new MultiGraph("Railway");
 
-        // 2) Definir stylesheet (cores e rótulos)
+        // 2) Define the stylesheet (colours and labels)
         String styleSheet =
                 "node {                                   \n" +
-                        "    fill-color: gray;                    \n" +
-                        "    size: 20px;                          \n" +
-                        "    text-size: 14;                       \n" +
-                        "    text-alignment: under;               \n" +
-                        "    text-color: black;                   \n" +
-                        "}                                        \n" +
-                        "edge.electrified {                       \n" +
-                        "    fill-color: blue;                    \n" +
-                        "    size: 3px;                           \n" +
-                        "}                                        \n" +
-                        "edge.non {                               \n" +
-                        "    fill-color: red;                     \n" +
-                        "    size: 3px;                           \n" +
-                        "}                                        \n";
+                        "    fill-color: grey;                  \n" +
+                        "    size: 20px;                        \n" +
+                        "    text-size: 14;                     \n" +
+                        "    text-alignment: under;             \n" +
+                        "    text-color: black;                 \n" +
+                        "}                                       \n" +
+                        "edge.electrified {                      \n" +
+                        "    fill-color: blue;                  \n" +
+                        "    size: 3px;                         \n" +
+                        "}                                       \n" +
+                        "edge.non {                              \n" +
+                        "    fill-color: red;                   \n" +
+                        "    size: 3px;                         \n" +
+                        "}                                       \n";
         gs.setAttribute("ui.stylesheet", styleSheet);
 
-        // 3) Ativar qualidade e anti-aliasing
+        // 3) Enable quality and anti-aliasing
         gs.setAttribute("ui.quality");
         gs.setAttribute("ui.antialias");
 
-        // 4) Ajustar parâmetros do SpringBox para espalhar mais os nós
+        // 4) Adjust SpringBox parameters to spread nodes further
         gs.setAttribute("springbox.idealLength", 200);
         gs.setAttribute("springbox.force", 0.8);
         gs.setAttribute("springbox.quality", 1.0);
 
-        // 5) Adicionar nós e arestas ao grafo
+        // 5) Add nodes and edges to the graph
         int edgeCounter = 0;
         for (Line l : graph.getAllLines()) {
             String nameA = l.getA().getName();
             String nameB = l.getB().getName();
 
-            // 5.1) Criar nó A se ainda não existir
+            // 5.1) Create node A if it does not yet exist
             if (gs.getNode(nameA) == null) {
                 Node nA = gs.addNode(nameA);
                 nA.setAttribute("ui.label", nameA);
             }
-            // 5.2) Criar nó B se ainda não existir
+            // 5.2) Create node B if it does not yet exist
             if (gs.getNode(nameB) == null) {
                 Node nB = gs.addNode(nameB);
                 nB.setAttribute("ui.label", nameB);
             }
 
-            // 5.3) Criar aresta única (mesmo par pode ter várias paralelas)
+            // 5.3) Create a unique edge (same pair may have multiple parallels)
             String edgeId = nameA + "_" + nameB + "_" + (edgeCounter++);
             Edge e = gs.addEdge(edgeId, nameA, nameB);
             if (l.isElectrified()) {
@@ -268,13 +272,13 @@ public class AppController {
             }
         }
 
-        // 6) Exibir grafo e deixar SpringBox rodar (true = layout dinâmico)
+        // 6) Display the graph and let SpringBox run (true = dynamic layout)
         gs.display(true);
     }
 
     /**
-     * Opção 4: Find maintenance route usando apenas o filtro definido em onlyElectrified.
-     * Não faz nova pergunta – já sabemos se é só electrificadas ou não.
+     * Option 4: Finds a maintenance route using only the filter defined by onlyElectrified.
+     * Does not ask again—electrification preference is already known.
      */
     private void findMaintenanceRoute() {
         String route = graph.buildMaintenanceRoute(onlyElectrified);

@@ -8,48 +8,59 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * Repositório responsável por carregar as linhas (edges) num RailwayGraph.
- * Espera um ficheiro CSV onde cada linha tem o formato:
+ * Repository responsible for loading lines (edges) into a {@link RailwayGraph}.
+ * Expects a CSV file where each record has the format:
  *   stationA;stationB;electrifiedFlag;distance
  *
- * Em vez de devolver List<Line>, aqui vamos “injetar” diretamente no RailwayGraph.
+ * Instead of returning a {@code List<Line>}, this repository injects edges directly
+ * into the provided {@link RailwayGraph}.
  */
 public class LineRepository {
     private final String linesFile;
     private final boolean onlyElectrified;
 
+    /**
+     * Constructs a new LineRepository.
+     *
+     * @param linesFile        the path to the CSV file containing line definitions; must not be null
+     * @param onlyElectrified  if {@code true}, only electrified lines will be loaded; if {@code false}, all lines will be loaded
+     * @throws NullPointerException if {@code linesFile} is null
+     */
     public LineRepository(String linesFile, boolean onlyElectrified) {
         this.linesFile = Objects.requireNonNull(linesFile, "linesFile must not be null");
         this.onlyElectrified = onlyElectrified;
     }
 
     /**
-     * Lê cada linha do CSV e, para cada registo válido, invoca graph.addLine(...).
-     * @param graph o RailwayGraph onde as arestas serão criadas
-     * @throws FileNotFoundException se não encontrar linesFile
+     * Reads each line from the CSV file and, for each valid record, invokes {@code graph.addLine(...)}.
+     * Lines that are malformed or whose distance cannot be parsed as a number are ignored.
+     * If {@code onlyElectrified} is {@code true}, non-electrified lines are skipped.
+     *
+     * @param graph the {@link RailwayGraph} into which edges will be added
+     * @throws FileNotFoundException if the CSV file {@code linesFile} cannot be found
      */
     public void loadAll(RailwayGraph graph) throws FileNotFoundException {
         try (Scanner sc = new Scanner(new File(linesFile))) {
             while (sc.hasNextLine()) {
                 String[] p = sc.nextLine().split(";");
                 if (p.length < 4) {
-                    continue; // ignora linhas malformadas
+                    continue; // ignore malformed lines
                 }
-                // --- extrair dados
-                String rawA = p[0].trim();   // ex: "D8" ou "S_8"
-                String rawB = p[1].trim();   // ex: "D7" ou "D_7"
+                // --- extract data
+                String rawA = p[0].trim();   // e.g. "D8" or "S_8"
+                String rawB = p[1].trim();   // e.g. "D7" or "D_7"
                 boolean electrified = p[2].trim().equals("1");
                 double distance;
                 try {
                     distance = Double.parseDouble(p[3].trim());
                 } catch (NumberFormatException e) {
-                    continue; // ignora se a distância não for número
+                    continue; // ignore if distance is not a valid number
                 }
-                // --- se for apenas electrificadas e esta não for, ignora
+                // --- if only electrified lines are required and this is not, skip
                 if (onlyElectrified && !electrified) {
                     continue;
                 }
-                // --- adicionar ao grafo
+                // --- add the line to the graph
                 graph.addLine(rawA, rawB, electrified, distance);
             }
         }
