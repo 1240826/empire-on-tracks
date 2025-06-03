@@ -7,22 +7,20 @@ import java.util.Objects;
 
 /**
  * Represents a station on the map capable of collecting cargo from industries
- * that are within a square of side (2*range+1) centered on it.
+ * that are within a square of side (2*range+1) centered on it or by occupied cells.
  */
 public class Station {
     private final String id;
     private final String name;
     private final Location location;
-    private int range;                  // REMOVE final
-    private final int capacity = 24;
-    private final StationType type;     // ADDED
+    private int range;
+    private final int capacity = 240;
+    private final StationType type;
     private List<Cargo> cargoes;
     private List<Building> buildings;
-    private String orientation="Center";
+    private String orientation = "Center";
 
-    /**
-     * Legacy constructor (kept for compatibility).
-     */
+    // Legacy constructor (kept for compatibility)
     public Station(String id, String name, Location location, int range) {
         this.id = id;
         this.name = name;
@@ -36,9 +34,7 @@ public class Station {
         }
     }
 
-    /**
-     * New constructor using StationType.
-     */
+    // New constructor using StationType.
     public Station(String id, String name, Location location, StationType type, String orientation) {
         this.id = id;
         this.name = name;
@@ -54,24 +50,16 @@ public class Station {
     }
 
     public String getId() { return id; }
-
     public String getStationName() { return name; }
-
     public Location getLocation() { return location; }
-
     public StationType getType() { return type; }
-
     public List<Building> getBuildings() { return buildings; }
-
     public void setBuildings(List<Building> buildings) { this.buildings = buildings; }
-
     public void addBuilding(Building building) { this.buildings.add(building); }
+    public int getRange() { return range; }
 
-    public int getRange() { return range; }  // getter if needed
-
-    // NEW: Calculate occupied cells based on anchor direction
+    // Calculate occupied cells based on anchor direction
     public List<Location> calculateOccupiedCells() {
-
         List<Location> occupied = new ArrayList<>();
         int x = location.getX();
         int y = location.getY();
@@ -114,12 +102,10 @@ public class Station {
                 occupied.add(new Location(i, j));
             }
         }
-
         return occupied;
     }
 
     public void collectNearbyIndustries(List<Industry> industries) {
-
         List<Location> occupiedCells = calculateOccupiedCells();
 
         for (Industry industry : industries) {
@@ -206,32 +192,41 @@ public class Station {
         }
     }
 
+    // --------- NOVA VERSÃO CORRIGIDA --------------
     public List<String> collectAndDistribute(List<Industry> industries) {
         List<String> events = new ArrayList<>();
+        List<Location> occupiedCells = calculateOccupiedCells();
 
+        // 1. Coletar carga das indústrias nas células ocupadas (respeita limite de 24)
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
-            int dx = Math.abs(indLoc.getX() - this.location.getX());
-            int dy = Math.abs(indLoc.getY() - this.location.getY());
-            if (dx <= range && dy <= range) {
+            boolean isInside = occupiedCells.stream()
+                    .anyMatch(cell -> cell.getX() == indLoc.getX() && cell.getY() == indLoc.getY());
+            if (isInside) {
                 Cargo out = ind.getCargo();
                 double qty = out.getQuantity();
                 if (qty > 0) {
-                    out.removeQuantity(qty);
-                    addCargo(out.getType(), qty);
+                    double already = getCargoQuantity(out.getType());
+                    double spaceLeft = 24.0 - already;
+                    if (spaceLeft <= 0) continue;
+                    double toCollect = Math.min(spaceLeft, qty);
+
+                    out.removeQuantity(toCollect);
+                    addCargo(out.getType(), toCollect);
                     events.add(String.format(
                             "Station %s collected %.2f of %s from %s",
-                            name, qty, out.getType(), ind.getIndustryName()
+                            name, toCollect, out.getType(), ind.getIndustryName()
                     ));
                 }
             }
         }
 
+        // 2. Distribuir carga para indústrias nas células ocupadas (Transforming/Mixed)
         for (Industry ind : industries) {
             Location indLoc = ind.getLocation();
-            int dx = Math.abs(indLoc.getX() - this.location.getX());
-            int dy = Math.abs(indLoc.getY() - this.location.getY());
-            if (dx <= range && dy <= range) {
+            boolean isInside = occupiedCells.stream()
+                    .anyMatch(cell -> cell.getX() == indLoc.getX() && cell.getY() == indLoc.getY());
+            if (isInside) {
                 if (ind instanceof TransformingIndustry) {
                     TransformingIndustry ti = (TransformingIndustry) ind;
                     CargoType type = ti.getInputCargoType();
@@ -248,8 +243,7 @@ public class Station {
                             ));
                         }
                     }
-                }
-                else if (ind instanceof MixedIndustry) {
+                } else if (ind instanceof MixedIndustry) {
                     MixedIndustry mi = (MixedIndustry) ind;
                     CargoType type = mi.getInputCargoType();
                     double needed = mi.getDemand() - mi.getInputCargoQuantity();
@@ -268,7 +262,6 @@ public class Station {
                 }
             }
         }
-
         return events;
     }
 
@@ -319,4 +312,3 @@ public class Station {
         }
     }
 }
-
