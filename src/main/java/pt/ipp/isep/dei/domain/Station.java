@@ -93,7 +93,10 @@ public class Station {
                 endY = y;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid anchor direction: " + this.orientation);
+                startX = x;
+                endX = x;
+                startY = y;
+                endY = y;
         }
 
         for (int i = startX; i <= endX; i++) {
@@ -176,21 +179,7 @@ public class Station {
         }
     }
 
-    public int collectCargoOfType(CargoType ctype, Train train) {
-        for (Cargo c : cargoes) {
-            if (c.getType() == ctype && c.getQuantity() > 0) {
-                int available = (int) c.getQuantity(); // Cast to int if working with int carriages
-                int capacity = train.getAvailableCapacityFor(ctype);
-                int toLoad = Math.min(available, capacity);
-                if (toLoad > 0) {
-                    c.removeQuantity(toLoad);
-                    train.loadCargo(ctype, toLoad);
-                    return toLoad;
-                }
-            }
-        }
-        return 0;
-    }
+
 
     public double getCargoQuantity(CargoType type) {
         for (Cargo c : cargoes) {
@@ -325,5 +314,37 @@ public class Station {
                     .findFirst()
                     .ifPresent(b -> b.isActive());
         }
+    }
+
+    // [ADDED/IMPROVED] Unload cargo to station (adds to cargo stock)
+    public void unloadCargo(CargoType type, int quantity) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.addQuantity(quantity);
+                return;
+            }
+        }
+        cargoes.add(new Cargo(type, quantity));
+    }
+
+    // [ADDED/IMPROVED] Load cargo from station into train carriages
+    public int collectCargoOfType(CargoType ctype, Train train) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == ctype && c.getQuantity() > 0) {
+                int available = (int) c.getQuantity();
+                int totalLoaded = 0;
+                for (Carriage carr : train.getCarriages()) {
+                    if (carr.getCargoType() == ctype && carr.getAvailableCapacity() > 0 && available > 0) {
+                        int loaded = carr.loadCargo(available);
+                        c.removeQuantity(loaded);
+                        totalLoaded += loaded;
+                        available -= loaded;
+                        if (available <= 0) break;
+                    }
+                }
+                return totalLoaded;
+            }
+        }
+        return 0;
     }
 }
