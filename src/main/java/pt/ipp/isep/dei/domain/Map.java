@@ -307,11 +307,11 @@ public class Map {
     /**
      * Updates only the stations by collecting from nearby industries.
      */
-    //public void updateStations() {
-        //for (Station st : stations) {
-           // st.collectNearbyIndustries(industries);
-        //}
-    //}
+    public void updateStations() {
+        for (Station st : stations) {
+           st.collectNearbyIndustries(industries);
+        }
+    }
 
     // --- Locomotives ---
 

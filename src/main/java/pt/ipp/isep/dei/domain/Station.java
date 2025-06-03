@@ -18,6 +18,7 @@ public class Station {
     private final StationType type;     // ADDED
     private List<Cargo> cargoes;
     private List<Building> buildings;
+    private String orientation="Center";
 
     /**
      * Legacy constructor (kept for compatibility).
@@ -38,7 +39,7 @@ public class Station {
     /**
      * New constructor using StationType.
      */
-    public Station(String id, String name, Location location, StationType type) {
+    public Station(String id, String name, Location location, StationType type, String orientation) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -46,6 +47,7 @@ public class Station {
         this.range = type.getWidth();  // or adapt if range logic is separate
         this.cargoes = new ArrayList<>();
         this.buildings = new ArrayList<>();
+        this.orientation = orientation;
         for (CargoType cargoType : CargoType.values()) {
             this.cargoes.add(new Cargo(cargoType, 0.0));
         }
@@ -68,7 +70,8 @@ public class Station {
     public int getRange() { return range; }  // getter if needed
 
     // NEW: Calculate occupied cells based on anchor direction
-    public List<Location> calculateOccupiedCells(String anchorDirection) {
+    public List<Location> calculateOccupiedCells() {
+
         List<Location> occupied = new ArrayList<>();
         int x = location.getX();
         int y = location.getY();
@@ -77,7 +80,7 @@ public class Station {
 
         int startX, startY, endX, endY;
 
-        switch (anchorDirection.toUpperCase()) {
+        switch (this.orientation.toUpperCase()) {
             case "NE":
                 startX = x - width + 1;
                 endX = x;
@@ -103,7 +106,7 @@ public class Station {
                 endY = y;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid anchor direction: " + anchorDirection);
+                throw new IllegalArgumentException("Invalid anchor direction: " + this.orientation);
         }
 
         for (int i = startX; i <= endX; i++) {
@@ -115,8 +118,9 @@ public class Station {
         return occupied;
     }
 
-    public void collectNearbyIndustries(List<Industry> industries, String anchorDirection) {
-        List<Location> occupiedCells = calculateOccupiedCells(anchorDirection);
+    public void collectNearbyIndustries(List<Industry> industries) {
+
+        List<Location> occupiedCells = calculateOccupiedCells();
 
         for (Industry industry : industries) {
             Location indLoc = industry.getLocation();

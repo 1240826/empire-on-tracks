@@ -40,8 +40,28 @@ public class BuildStationUI implements Runnable {
             System.out.println("Invalid selection.");
             return;
         }
+        String Orientation = "Center";
 
-        boolean result = controller.buildStation(name, x, y, types[selected]);
+        if (types[selected]==StationType.Station_4x4) {
+            System.out.println("Orientation.");
+            System.out.println("1-NE\n2-SE\n3-SW\n4-NW");
+            x = Integer.parseInt(String.valueOf(scanner.nextInt()));
+            switch (x){
+                case 1:Orientation = "NE";
+                break;
+                case 2:Orientation = "SE";
+                break;
+                case 3:Orientation = "SW";
+                break;
+                case 4:Orientation = "NW";
+                break;
+                default:
+                    System.out.println("Invalid selection.");
+                    return;
+            }
+        };
+
+        boolean result = controller.buildStation(name, x, y, types[selected], Orientation);
         System.out.println(result ? "Station built successfully!" : "Error: Failed to build station (area may be occupied).");
     }
 }
