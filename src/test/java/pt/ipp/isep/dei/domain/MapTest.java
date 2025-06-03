@@ -11,7 +11,8 @@ class MapTest {
     @Test
     void addStation() {
         Map map = new Map("Test", 5, 5);
-        Station s = new Station("Central", "CENTRAL", new Location(2, 2), 3);
+        Station s = new Station("Central", "CENTRAL", new Location(2, 2), StationType.TERMINAL_5x5);
+
         map.addStation(s);
         assertTrue(map.getStations().contains(s));
     }
@@ -19,7 +20,7 @@ class MapTest {
     @Test
     void getStations() {
         Map map = new Map("Test", 5, 5);
-        Station s = new Station("A", "A", new Location(1, 1), 2);
+        Station s = new Station("A", "A", new Location(1, 1), StationType.DEPOT);
         map.addStation(s);
         List<Station> result = map.getStations();
         assertEquals(1, result.size());
@@ -29,8 +30,8 @@ class MapTest {
     @Test
     void getAllNamesStation() {
         Map map = new Map("Test", 5, 5);
-        map.addStation(new Station("Lisboa", "LSB", new Location(1, 1), 2));
-        map.addStation(new Station("Porto", "PRT", new Location(2, 2), 2));
+        map.addStation(new Station("Lisboa", "LSB", new Location(1, 1), StationType.DEPOT));
+        map.addStation(new Station("Porto", "PRT", new Location(2, 2), StationType.DEPOT));
         List<String> names = map.getAllNamesStation();
         assertTrue(names.contains("LSB"));
         assertTrue(names.contains("PRT"));

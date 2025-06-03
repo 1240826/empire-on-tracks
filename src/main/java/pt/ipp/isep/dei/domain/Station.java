@@ -2,43 +2,38 @@
 package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a station on the map capable of collecting cargo from industries
- * that are within a square of side (2*range+1) centered on it.
+ * Station entity – supports three footprints (Depot 3×3, Terminal 5×5, Station 4×4).
+ * Now includes <code>collectAndDistribute</code> (with event strings) so the
+ * existing <code>SimulatorController</code> continues to work unchanged.
  */
 public class Station {
-    private final String id;
-    private final String name;
+
+    /*──────────────────── Identity & footprint ───────────────────*/
+    private final String   id;
+    private final String   name;
     private final Location location;
-    private int range;                  // REMOVE final
-    private final int capacity = 24;
-    private final StationType type;     // ADDED
-    private List<Cargo> cargoes;
-    private List<Building> buildings;
+    private final StationType type;
+    /** "CENTER" for Depot / Terminal, otherwise NE / NW / SE / SW. */
+    private  String   anchorDirection="Center";
 
-    /**
-     * Legacy constructor (kept for compatibility).
-     */
-    public Station(String id, String name, Location location, int range) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.range = range;
-        this.type = StationType.Station_4x4;  // default type if needed
-        this.cargoes = new ArrayList<>();
-        this.buildings = new ArrayList<>();
-        for (CargoType cargoType : CargoType.values()) {
-            this.cargoes.add(new Cargo(cargoType, 0.0));
-        }
+    /*──────────────────────── Stock & buildings ──────────────────*/
+    private final int capacity = 24;                 // per cargo type
+    private  List<Cargo> cargoes   = new ArrayList<>();
+    private       List<Building> buildings = new ArrayList<>();
+
+    /*───────────────────── Legacy square‑radius ──────────────────*/
+    private int range;                               // kept only for backward calls
+
+    /*────────────────────────── Constructors ─────────────────────*/
+    public Station(String id, String name, Location loc, StationType type) {
+        this(id, name, loc, type, "CENTER");
     }
-
-    /**
-     * New constructor using StationType.
-     */
-    public Station(String id, String name, Location location, StationType type) {
+    public Station(String id, String name, Location location, StationType type, String orientation) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -46,29 +41,22 @@ public class Station {
         this.range = type.getWidth();  // or adapt if range logic is separate
         this.cargoes = new ArrayList<>();
         this.buildings = new ArrayList<>();
+        this.anchorDirection = orientation;
         for (CargoType cargoType : CargoType.values()) {
             this.cargoes.add(new Cargo(cargoType, 0.0));
         }
     }
 
-    public String getId() { return id; }
+    /*──────────────────────────── Getters ────────────────────────*/
+    public String getId()            { return id; }
+    public String getStationName()   { return name; }
+    public Location getLocation()    { return location; }
+    public StationType getType()     { return type; }
+    public List<Cargo> getCargoes()  { return Collections.unmodifiableList(cargoes); }
 
-    public String getStationName() { return name; }
+    /*───────────────── Footprint helper (occupied cells) ─────────*/
+    public List<Location> calculateOccupiedCells() {
 
-    public Location getLocation() { return location; }
-
-    public StationType getType() { return type; }
-
-    public List<Building> getBuildings() { return buildings; }
-
-    public void setBuildings(List<Building> buildings) { this.buildings = buildings; }
-
-    public void addBuilding(Building building) { this.buildings.add(building); }
-
-    public int getRange() { return range; }  // getter if needed
-
-    // NEW: Calculate occupied cells based on anchor direction
-    public List<Location> calculateOccupiedCells(String anchorDirection) {
         List<Location> occupied = new ArrayList<>();
         int x = location.getX();
         int y = location.getY();
@@ -77,7 +65,7 @@ public class Station {
 
         int startX, startY, endX, endY;
 
-        switch (anchorDirection.toUpperCase()) {
+        switch (this.anchorDirection.toUpperCase()) {
             case "NE":
                 startX = x - width + 1;
                 endX = x;
@@ -103,7 +91,7 @@ public class Station {
                 endY = y;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid anchor direction: " + anchorDirection);
+                throw new IllegalArgumentException("Invalid anchor direction: " + this.anchorDirection);
         }
 
         for (int i = startX; i <= endX; i++) {
@@ -114,9 +102,107 @@ public class Station {
 
         return occupied;
     }
+    /**
+     * Returns the list of occupied cells (alias for calculateOccupiedCells, for backward compatibility).
+     */
+    public List<Location> footprint() {
+        return calculateOccupiedCells();
+    }
 
-    public void collectNearbyIndustries(List<Industry> industries, String anchorDirection) {
-        List<Location> occupiedCells = calculateOccupiedCells(anchorDirection);
+    /*──────────────── collectAndDistribute (used by Simulator) ──*/
+    public List<String> collectAndDistribute(List<Industry> industries) {
+        List<String> events = new ArrayList<>();
+        List<Location> area = footprint();
+
+        /* 1) Collect cargo produced inside footprint */
+        for (Industry ind : industries) {
+            if (!area.contains(ind.getLocation())) continue;
+            Cargo produced = ind.getCargo();
+            if (produced == null || produced.getQuantity() <= 0) continue;
+            double free = capacity - getCargoQuantity(produced.getType());
+            if (free <= 0) continue;
+            double take = Math.min(produced.getQuantity(), free);
+            addCargoInternal(produced.getType(), take);
+            ind.consumeCargo(take);
+            events.add(String.format("Station %s collected %.2f of %s from %s",
+                    name, take, produced.getType(), ind.getIndustryName()));
+        }
+
+        /* 2) Deliver to industries that need input */
+        for (Industry ind : industries) {
+            if (!area.contains(ind.getLocation())) continue;
+
+            if (ind instanceof TransformingIndustry ti) {
+                CargoType type = ti.getInputCargoType();
+                double need = ti.getDemand() - ti.getInputCargoQuantity();
+                if (need > 0) {
+                    double give = Math.min(need, getCargoQuantity(type));
+                    if (give > 0) {
+                        ti.setInputCargoQuantity(ti.getInputCargoQuantity() + give);
+                        removeCargoInternal(type, give);
+                        events.add(String.format("Station %s delivered %.2f of %s to %s",
+                                name, give, type, ti.getIndustryName()));
+                    }
+                }
+            } else if (ind instanceof MixedIndustry mi) {
+                CargoType type = mi.getInputCargoType();
+                double need = mi.getDemand() - mi.getInputCargoQuantity();
+                if (need > 0) {
+                    double give = Math.min(need, getCargoQuantity(type));
+                    if (give > 0) {
+                        mi.setInputCargoQuantity(mi.getInputCargoQuantity() + give);
+                        removeCargoInternal(type, give);
+                        events.add(String.format("Station %s delivered %.2f of %s to %s",
+                                name, give, type, mi.getIndustryName()));
+                    }
+                }
+            }
+        }
+        return events;
+    }
+
+    /*────────────────── Loco ⇄ Station I/O (API) ────────────────*/
+    public double loadCargo(CargoType type, double requested) {
+        if (requested <= 0) return 0;
+        double avail = getCargoQuantity(type);
+        double take  = Math.min(avail, requested);
+        removeCargoInternal(type, take);
+        return take;
+    }
+    public void unloadCargo(CargoType type, double qty) {
+        if (qty > 0) addCargoInternal(type, qty);
+    }
+
+    /*─────────────────── Small helpers (cargo) ──────────────────*/
+    private void addCargoInternal(CargoType t, double q) {
+        cargoes.stream()
+                .filter(c -> c.getType() == t)
+                .findFirst()
+                .ifPresentOrElse(c -> c.addQuantity(q), () -> cargoes.add(new Cargo(t, q)));
+    }
+    private void removeCargoInternal(CargoType t, double q) {
+        cargoes.stream()
+                .filter(c -> c.getType() == t)
+                .findFirst()
+                .ifPresent(c -> c.removeQuantity(q));
+    }
+    public double getCargoQuantity(CargoType t) {
+        return cargoes.stream()
+                .filter(c -> c.getType() == t)
+                .mapToDouble(Cargo::getQuantity)
+                .findFirst().orElse(0);
+    }
+    private double capacityOfType(CargoType type) {
+        return 24.0;
+    }
+    private double totalOfType(CargoType type) {
+        return cargoes.stream()
+                .filter(c -> c.getType() == type)
+                .mapToDouble(Cargo::getQuantity).sum();
+}
+    public void collectNearbyIndustries(List<Industry> industries) {
+
+        List<Location> occupiedCells = calculateOccupiedCells();
 
         for (Industry industry : industries) {
             Location indLoc = industry.getLocation();
@@ -149,170 +235,33 @@ public class Station {
         }
     }
 
-    public List<Cargo> getCargoes() { return cargoes; }
 
-    @Override
-    public String toString() {
-        return name + " @ " + location +
-                " [cargoes=" + cargoes.size() + "/" + capacity + "]";
-    }
 
-    private double totalOfType(CargoType type) {
-        return cargoes.stream()
-                .filter(c -> c.getType() == type)
-                .mapToDouble(Cargo::getQuantity)
-                .sum();
-    }
-
-    private double capacityOfType(CargoType type) {
-        return 24.0;
-    }
-
-    public void addCargo(CargoType type, double quantity) {
-        for (Cargo c : cargoes) {
-            if (c.getType() == type) {
-                c.addQuantity(quantity);
-                return;
-            }
-        }
-        cargoes.add(new Cargo(type, quantity));
-    }
-
-    public void removeCargo(CargoType type, double quantity) {
-        for (Cargo c : cargoes) {
-            if (c.getType() == type) {
-                c.removeQuantity(quantity);
-                return;
-            }
-        }
-    }
-
-    public double getCargoQuantity(CargoType type) {
-        for (Cargo c : cargoes) {
-            if (c.getType() == type) {
-                return c.getQuantity();
-            }
-        }
-        return 0.0;
-    }
-
-    public void clearCargoes() {
-        for (Cargo c : cargoes) {
-            c.setQuantity(0.0);
-        }
-    }
-
-    public List<String> collectAndDistribute(List<Industry> industries) {
-        List<String> events = new ArrayList<>();
-
-        for (Industry ind : industries) {
-            Location indLoc = ind.getLocation();
-            int dx = Math.abs(indLoc.getX() - this.location.getX());
-            int dy = Math.abs(indLoc.getY() - this.location.getY());
-            if (dx <= range && dy <= range) {
-                Cargo out = ind.getCargo();
-                double qty = out.getQuantity();
-                if (qty > 0) {
-                    out.removeQuantity(qty);
-                    addCargo(out.getType(), qty);
-                    events.add(String.format(
-                            "Station %s collected %.2f of %s from %s",
-                            name, qty, out.getType(), ind.getIndustryName()
-                    ));
-                }
-            }
-        }
-
-        for (Industry ind : industries) {
-            Location indLoc = ind.getLocation();
-            int dx = Math.abs(indLoc.getX() - this.location.getX());
-            int dy = Math.abs(indLoc.getY() - this.location.getY());
-            if (dx <= range && dy <= range) {
-                if (ind instanceof TransformingIndustry) {
-                    TransformingIndustry ti = (TransformingIndustry) ind;
-                    CargoType type = ti.getInputCargoType();
-                    double needed = ti.getDemand() - ti.getInputCargoQuantity();
-                    if (needed > 0) {
-                        double avail = getCargoQuantity(type);
-                        double give = Math.min(needed, avail);
-                        if (give > 0) {
-                            ti.setInputCargoQuantity(ti.getInputCargoQuantity() + give);
-                            removeCargo(type, give);
-                            events.add(String.format(
-                                    "Station %s delivered %.2f of %s to %s",
-                                    name, give, type, ti.getIndustryName()
-                            ));
-                        }
-                    }
-                }
-                else if (ind instanceof MixedIndustry) {
-                    MixedIndustry mi = (MixedIndustry) ind;
-                    CargoType type = mi.getInputCargoType();
-                    double needed = mi.getDemand() - mi.getInputCargoQuantity();
-                    if (needed > 0) {
-                        double avail = getCargoQuantity(type);
-                        double give = Math.min(needed, avail);
-                        if (give > 0) {
-                            mi.setInputCargoQuantity(mi.getInputCargoQuantity() + give);
-                            removeCargo(type, give);
-                            events.add(String.format(
-                                    "Station %s delivered %.2f of %s to %s",
-                                    name, give, type, mi.getIndustryName()
-                            ));
-                        }
-                    }
-                }
-            }
-        }
-
-        return events;
-    }
-
-    public double loadCargo(CargoType type, double requested) {
-        Objects.requireNonNull(type, "type cannot be null");
-        if (requested <= 0) return 0.0;
-        for (Cargo c : cargoes) {
-            if (c.getType() == type) {
-                double available = c.getQuantity();
-                double taken = Math.min(available, requested);
-                c.removeQuantity(taken);
-                return taken;
-            }
-        }
-        return 0.0;
-    }
-
-    public void unloadCargo(CargoType type, double quantity) {
-        Objects.requireNonNull(type, "type cannot be null");
-        if (quantity < 0) throw new IllegalArgumentException("quantity cannot be negative");
-        for (Cargo c : cargoes) {
-            if (c.getType() == type) {
-                c.addQuantity(quantity);
-                return;
-            }
-        }
-        cargoes.add(new Cargo(type, quantity));
+    /*──────────────────── Debug toString ───────────────────────*/
+    @Override public String toString() {
+        return name + "@" + location + " cargo:" + cargoes.size();
     }
 
     public boolean hasBuilding(String type) {
-        if (buildings == null) return false;
-        return buildings.stream()
-                .anyMatch(b -> b.getType().equalsIgnoreCase(type) && b.isActive());
+        return false;
+    }
+    public void addBuilding(Building building) {
+        buildings.add(building);
     }
 
     public void removeBuilding(String type) {
-        if (buildings != null) {
-            buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
-        }
+        buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
     }
 
-    public void activateBuilding(String type) {
-        if (buildings != null) {
-            buildings.stream()
-                    .filter(b -> b.getType().equalsIgnoreCase(type) && !b.isActive())
-                    .findFirst()
-                    .ifPresent(b -> b.isActive());
-        }
+
+
+    public List<Building> getBuildings() {
+        return Collections.unmodifiableList(buildings);
+    }
+
+    public void setBuildings(List<Building> buildings) {
+        this.buildings = buildings;
     }
 }
+
 
