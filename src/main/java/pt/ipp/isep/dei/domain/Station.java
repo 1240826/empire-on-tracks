@@ -1,4 +1,3 @@
-// Station.java
 package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
@@ -175,6 +174,22 @@ public class Station {
                 return;
             }
         }
+    }
+
+    public int collectCargoOfType(CargoType ctype, Train train) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == ctype && c.getQuantity() > 0) {
+                int available = (int) c.getQuantity(); // Cast to int if working with int carriages
+                int capacity = train.getAvailableCapacityFor(ctype);
+                int toLoad = Math.min(available, capacity);
+                if (toLoad > 0) {
+                    c.removeQuantity(toLoad);
+                    train.loadCargo(ctype, toLoad);
+                    return toLoad;
+                }
+            }
+        }
+        return 0;
     }
 
     public double getCargoQuantity(CargoType type) {
