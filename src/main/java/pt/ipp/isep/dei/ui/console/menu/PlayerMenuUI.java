@@ -93,6 +93,7 @@ public class PlayerMenuUI implements Runnable {
 
         AssignTrainToRouteController routeCtrl = new AssignTrainToRouteController(
                 player,
+                selectedMap,
                 selectedMap.getStations(),
                 List.of(CargoType.values())
         );
