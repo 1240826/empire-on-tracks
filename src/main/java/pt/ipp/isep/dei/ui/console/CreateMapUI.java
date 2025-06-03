@@ -38,7 +38,6 @@ public class CreateMapUI implements Runnable {
      * </p>
      */
     public void create() {
-        repositoryMap.saveMap(new Map());
         int width;
         int height;
         Scanner sc = new Scanner(System.in);
