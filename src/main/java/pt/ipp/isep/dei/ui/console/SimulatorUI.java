@@ -95,7 +95,7 @@ public class SimulatorUI implements Runnable {
         }
     }
 
-    private void setRoute() {
+    /* private void setRoute() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Train index: ");
         int idx = Integer.parseInt(scanner.nextLine().trim());
@@ -111,7 +111,7 @@ public class SimulatorUI implements Runnable {
         } else {
             System.out.println("Failed to assign route.");
         }
-    }
+    } */
 
     private void showEditSubmenu() {
         List<MenuItem> editOptions = new ArrayList<>();
@@ -142,7 +142,8 @@ public class SimulatorUI implements Runnable {
         editOptions.add(new MenuItem("UC7 – List all Stations", new StationListUI()));
         editOptions.add(new MenuItem("UC8 – Build a Railway Line", new BuildLineUI(new BuildLineController(player, Repositories.getInstance().getMapRepository().getCurrentMap()))));
         editOptions.add(new MenuItem("UC9 – Buy a Locomotive", new BuyLocomotiveUI(new BuyLocomotiveController(player))));
-        editOptions.add(new MenuItem("UC10 – Assign a Train to a Route", this::setRoute));
+        editOptions.add(new MenuItem("UC10 – Assign a Train to a Route", () -> {
+            new AssignTrainToRouteUI(assignCtrl).run(); }));
         editOptions.add(new MenuItem("UC11 – List all Trains", this::listTrains));
         editOptions.add(new MenuItem("UC12 – Operate Simulation", this::showStatus));
 
@@ -206,7 +207,7 @@ public class SimulatorUI implements Runnable {
     }
 
     private void selectScenario() {
-        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository(); // ou onde o guardas
+        ScenarioRepository repo = Repositories.getInstance().getScenarioRepository();
         List<Scenario> scenarios = repo.getScenarios();
 
         if (scenarios.isEmpty()) {

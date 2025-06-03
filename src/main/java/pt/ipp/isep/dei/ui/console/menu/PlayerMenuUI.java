@@ -7,13 +7,11 @@ import pt.ipp.isep.dei.domain.Player;
 import pt.ipp.isep.dei.domain.Scenario;
 import pt.ipp.isep.dei.domain.CargoType;
 import pt.ipp.isep.dei.domain.Map;
-import pt.ipp.isep.dei.repository.MapRepository;
-import pt.ipp.isep.dei.repository.IndustryRepository;
-import pt.ipp.isep.dei.repository.LocomotiveRepository;
-import pt.ipp.isep.dei.repository.ScenarioRepository;
-import pt.ipp.isep.dei.repository.Repositories;
+import pt.ipp.isep.dei.repository.*;
 import pt.ipp.isep.dei.ui.console.SimulatorUI;
 import pt.ipp.isep.dei.ui.console.utils.Utils;
+import pt.ipp.isep.dei.user.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,18 @@ public class PlayerMenuUI implements Runnable {
     }
 
     private void selectMapAndLaunchSimulator() {
+        User currentUser = ApplicationSession.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            System.out.println("No user is currently logged in. Please log in first.");
+            return;
+        }
+
+// Now create your Player using the currently logged‐in User’s username/password:
+        Player player = new Player(
+                currentUser.getUsername(),
+                currentUser.getPassword(),
+                5_000_000
+        );
         // 1. Escolhe o mapa
         MapRepository mapRepo = Repositories.getInstance().getMapRepository();
         List<Map> maps = mapRepo.getAllMaps();
@@ -61,31 +71,35 @@ public class PlayerMenuUI implements Runnable {
         // 2. Dependências
         IndustryRepository indRepo = IndustryRepository.getInstance();
         LocomotiveRepository locoRepo = LocomotiveRepository.getInstance();
-        ScenarioRepository scenarioRepo = new ScenarioRepository();
 
         // 3. Datas de início e fim
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         LocalDateTime end   = start.plusMonths(20);
 
         // 4. Inicializa repositório de cenários
-        //scenarioRepo.addScenario(start, new Scenario(start));
+        ScenarioRepository scenarioRepo = Repositories.getInstance().getScenarioRepository();
+        List<Scenario> scenarios = scenarioRepo.getScenarios();
+
 
         // 5. Cria o relógio e o simulador
         Time clock = new Time(start, end);
+
+
+
+
         SimulatorController simCtrl = new SimulatorController(
-                selectedMap, clock, scenarioRepo, indRepo, locoRepo
+                selectedMap, clock, scenarioRepo, indRepo, locoRepo,player
         );
 
-        // 6. Cria player e controller de atribuição de comboios
-        Player player = new Player("Alice", "20AAArt", 5000000);
         AssignTrainToRouteController routeCtrl = new AssignTrainToRouteController(
                 player,
+                selectedMap,
                 selectedMap.getStations(),
                 List.of(CargoType.values())
         );
 
         // 7. Inicia simulação automática a cada 10 segundos
-        simCtrl.startSimulation(10L);
+        simCtrl.startSimulation(30L);
 
         // 8. Lança a UI de simulação
         new SimulatorUI(simCtrl, player, routeCtrl).run();

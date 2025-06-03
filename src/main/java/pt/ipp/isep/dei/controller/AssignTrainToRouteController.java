@@ -1,47 +1,60 @@
 package pt.ipp.isep.dei.controller;
 
 import pt.ipp.isep.dei.domain.*;
+import pt.ipp.isep.dei.domain.Map;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Controller used to assign a route to a player's train.
+ * Now includes a method to find all stations reachable from a given station
+ * (using BFS over the Map's railLines).
  */
 public class AssignTrainToRouteController {
 
     private final Player player;
+    private final Map map;                      // Reference to the simulation map (domain.Map)
     private final List<Station> availableStations;
     private final List<CargoType> availableCargoTypes;
+    private List<PointOfRoute> currentRoute = new ArrayList<>();
 
-    public AssignTrainToRouteController(Player player,
-                                        List<Station> availableStations,
-                                        List<CargoType> availableCargoTypes) {
-        this.player = Objects.requireNonNull(player);
-        this.availableStations = Objects.requireNonNull(availableStations);
-        this.availableCargoTypes = Objects.requireNonNull(availableCargoTypes);
+    /**
+     * @param player              the current player
+     * @param map                 the Map object (so we can inspect its railLines)
+     * @param availableStations   all stations the player can choose from
+     * @param availableCargoTypes all cargo types the player can choose from
+     */
+    public AssignTrainToRouteController(
+            Player player,
+            Map map,
+            List<Station> availableStations,
+            List<CargoType> availableCargoTypes) {
+
+        this.player = Objects.requireNonNull(player, "player cannot be null");
+        this.map = Objects.requireNonNull(map, "map cannot be null");
+        this.availableStations = Objects.requireNonNull(availableStations, "availableStations cannot be null");
+        this.availableCargoTypes = Objects.requireNonNull(availableCargoTypes, "availableCargoTypes cannot be null");
     }
 
-    /** Returns the player's trains. */
+    /** Returns the player's owned trains. */
     public List<Train> getOwnedTrains() {
         return player.getOwnedTrains();
     }
 
+    /** Returns all stations the player is allowed to pick from. */
     public List<Station> getAvailableStations() {
         return availableStations;
     }
 
+    /** Returns all cargo types the player is allowed to pick from. */
     public List<CargoType> getAvailableCargoTypes() {
         return availableCargoTypes;
     }
 
     /**
-     * Gets available cargo types for a specific station.
-     * Only cargoes that can be produced/picked up at this station should be returned.
+     * Gets the distinct cargo types that this station currently supplies.
      */
-
     public List<CargoType> getAvailableCargoTypesForStation(Station station) {
         return station.getCargoes().stream()
                 .map(Cargo::getType)
@@ -49,69 +62,80 @@ public class AssignTrainToRouteController {
                 .collect(Collectors.toList());
     }
 
+    /** Start a new, empty route in progress. */
+    public void startNewRoute() {
+        currentRoute.clear();
+    }
 
-    /**
-     * Builds a Route from user input.
-     * New format: "Central, COAL, FULL, Porto, STEEL, HALF, Industrial, FOOD, AVAILABLE"
-     * Each Point-of-Route: station, cargo, cargoMode
-     */
-    public Route parseRouteFromInput(String input) {
-        if (input == null || input.isBlank()) return null;
-        String[] parts = input.split(",");
-        if (parts.length % 3 != 0) return null; // Must be groups of 3
+    /** Add a point of route (stop) to the current route in progress. */
+    public void addPointOfRoute(Station station, List<CargoType> cargoes, CargoMode mode) {
+        currentRoute.add(new PointOfRoute(station, cargoes, mode));
+    }
 
-        List<PointOfRoute> routeList = new ArrayList<>();
-        for (int i = 0; i < parts.length; i += 3) {
-            String stationName = parts[i].trim();
-            String cargoNames = parts[i + 1].trim();
-            String cargoModeName = parts[i + 2].trim();
-
-            Station station = availableStations.stream()
-                    .filter(s -> s.getStationName().equalsIgnoreCase(stationName))
-                    .findFirst().orElse(null);
-            if (station == null) return null;
-
-            String[] cargoArray = cargoNames.split("\\+");
-            List<CargoType> cargoes = new ArrayList<>();
-            for (String cargoStr : cargoArray) {
-                CargoType ct = availableCargoTypes.stream()
-                        .filter(c -> c.name().equalsIgnoreCase(cargoStr.trim()))
-                        .findFirst().orElse(null);
-                if (ct == null) return null; // invalid cargo
-                // Validate cargo is available at this station
-                List<CargoType> availableAtStation = getAvailableCargoTypesForStation(station);
-                if (!availableAtStation.contains(ct)) {
-                    return null; // cargo not available at this station
-                }
-                cargoes.add(ct);
-            }
-            if (cargoes.isEmpty()) return null;
-
-            CargoMode cargoMode;
-            try {
-                cargoMode = CargoMode.valueOf(cargoModeName.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return null; // Invalid cargo mode
-            }
-
-            routeList.add(new PointOfRoute(station, cargoes, cargoMode));
-        }
-
-        try {
-            return new Route(routeList);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    /** Returns an immutable copy of the current route in progress. */
+    public List<PointOfRoute> getCurrentRoute() {
+        return List.copyOf(currentRoute);
     }
 
     /**
-     * Assigns the route to the train at the specified index.
+     * Validate and assign the route in progress to the given train.
+     * @return false if fewer than 2 points have been added; true otherwise.
      */
-    public boolean assignRouteToTrain(int index, Route route) {
-        if (route == null) return false;
-        List<Train> trains = player.getOwnedTrains();
-        if (index < 0 || index >= trains.size()) return false;
-        trains.get(index).assignRoute(route);
+    public boolean validateAndAssignRoute(Train train) {
+        if (currentRoute.size() < 2) {
+            return false;
+        }
+        Route route = new Route(currentRoute);
+        train.assignRoute(route);
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────────────────
+    //           ◈ NEW: Find all stations reachable from a given start station (using BFS) ◈
+    // ────────────────────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Returns a list of all stations reachable (via one or more railLines) from the given startStation.
+     * Uses a breadth-first search (BFS) over the Map's railLines graph.
+     * Does NOT include startStation itself in the returned list.
+     *
+     * @param startStation the station from which to begin the search
+     * @return all distinct reachable stations, excluding the startStation
+     */
+    public List<Station> getAllReachableStations(Station startStation) {
+        // 1) Build an adjacency list from each RailLine (treating lines as undirected edges)
+        java.util.Map<Station, List<Station>> adjacency = new java.util.HashMap<>();
+        for (RailLine line : map.getRailLines()) {
+            Station s1 = line.getStart();
+            Station s2 = line.getEnd();
+
+            adjacency.computeIfAbsent(s1, k -> new ArrayList<>()).add(s2);
+            adjacency.computeIfAbsent(s2, k -> new ArrayList<>()).add(s1);
+        }
+
+        // 2) BFS initialization
+        Set<Station> visited = new HashSet<>();
+        Queue<Station> queue = new LinkedList<>();
+
+        visited.add(startStation);
+        queue.add(startStation);
+
+        List<Station> reachable = new ArrayList<>();
+
+        // 3) Perform BFS
+        while (!queue.isEmpty()) {
+            Station current = queue.poll();
+            List<Station> neighbors = adjacency.getOrDefault(current, Collections.emptyList());
+
+            for (Station neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                    reachable.add(neighbor);
+                }
+            }
+        }
+
+        return reachable;
     }
 }

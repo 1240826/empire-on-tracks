@@ -10,7 +10,7 @@ import java.util.List;
  * rail lines, cities, and locomotives on a 2D grid.
  * <p>
  * Provides methods to add and retrieve elements, validate coordinates,
- * update state, and collect events during simulation steps.
+ * compute shortest-path distances, update state, and collect events during simulation steps.
  * </p>
  */
 public class Map {
@@ -31,7 +31,6 @@ public class Map {
 
     /** Collection of locomotives on the map. */
     private final List<Locomotive> locomotives = new ArrayList<>();
-
 
     /** Optional scenario for applying dynamic events to the map. */
     private Scenario scenario;
@@ -286,6 +285,64 @@ public class Map {
         }
     }
 
+    // --- Distance Calculation ---
+
+    /**
+     * Computes the shortest total distance (in km) between two stations, using Dijkstra's algorithm.
+     * Considers all possible paths (direct or with intermediate stations) over existing rail lines.
+     * <p>
+     * If no route exists, returns {@link Double#POSITIVE_INFINITY}.
+     * </p>
+     *
+     * @param stationA Starting station
+     * @param stationB Destination station
+     * @return shortest distance (in km), or POSITIVE_INFINITY if unreachable
+     */
+    public double getShortestDistance(Station stationA, Station stationB) {
+        // Use full-qualified names to avoid confusion with this class "Map"
+        java.util.Map<Station, java.util.List<RailLine>> adjLines = new java.util.HashMap<>();
+        for (RailLine line : this.railLines) {
+            Station s1 = line.getStart();
+            Station s2 = line.getEnd();
+            adjLines.computeIfAbsent(s1, k -> new java.util.ArrayList<>()).add(line);
+            adjLines.computeIfAbsent(s2, k -> new java.util.ArrayList<>()).add(line);
+        }
+
+        java.util.Map<Station, Double> dist = new java.util.HashMap<>();
+        java.util.Set<Station> visited = new java.util.HashSet<>();
+        for (Station s : this.stations) {
+            dist.put(s, Double.POSITIVE_INFINITY);
+        }
+        dist.put(stationA, 0.0);
+
+        java.util.PriorityQueue<Station> pq = new java.util.PriorityQueue<>(java.util.Comparator.comparing(dist::get));
+        pq.add(stationA);
+
+        while (!pq.isEmpty()) {
+            Station cur = pq.poll();
+            if (visited.contains(cur)) continue;
+            visited.add(cur);
+
+            if (cur.equals(stationB)) {
+                return dist.get(cur);
+            }
+
+            java.util.List<RailLine> neighbors = adjLines.getOrDefault(cur, java.util.Collections.emptyList());
+            for (RailLine line : neighbors) {
+                Station nbr = (line.getStart().equals(cur)) ? line.getEnd() : line.getStart();
+                if (visited.contains(nbr)) continue;
+
+                double newDist = dist.get(cur) + line.getDistance();
+                if (newDist < dist.get(nbr)) {
+                    dist.put(nbr, newDist);
+                    pq.add(nbr);
+                }
+            }
+        }
+
+        return Double.POSITIVE_INFINITY;
+    }
+
     // --- State Updates ---
 
     /**
@@ -293,18 +350,13 @@ public class Map {
      * <ol>
      *   <li>Industries produce or transform cargo.</li>
      *   <li>Stations collect cargo from nearby industries.</li>
-     *   <li>Locomotives move and interact with stations (e.g., loading/unloading).</li>
      * </ol>
      */
-    // Map.java
     public void update() {
-        // 1) produção
         for (Industry ind : industries) {
             ind.produceCargo();
         }
-
     }
-
 
     /**
      * Updates only the stations by collecting from nearby industries.
@@ -354,17 +406,4 @@ public class Map {
     public void setName(String name) {
         this.name = name;
     }
-
-    /**
-     * Performs a simulation update step with event logging:
-     * <ol>
-     *   <li>Industries produce cargo.</li>
-     *   <li>Stations collect and distribute cargo, returning event messages.</li>
-     *   <li>Locomotives with defined routes collect, move, and unload cargo,
-     *       generating event messages for each action.</li>
-     * </ol>
-     *
-     * @return a {@code List<String>} describing actions that occurred during the update
-     */
-
 }

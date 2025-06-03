@@ -33,7 +33,6 @@ public class CreateScenarioController {
         Period period = new Period(periodStart, periodEnd);
         this.scenario = new Scenario(name, period);
         this.scenario.setPeriod(period);
-        scenarioRepo.addScenario(this.scenario);
     }
 
 
@@ -59,8 +58,6 @@ public class CreateScenarioController {
         }
         list.remove(index);
     }
-
-
 
     public boolean confirmScenarioCreation() {
         scenarioRepo.addScenario(scenario);
