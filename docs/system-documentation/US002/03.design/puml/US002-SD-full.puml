@@ -12,15 +12,17 @@ participant ":ValueValidator" as Validator
 participant ":Map" as Map
 participant ":Industry" as Industry
 participant "Repository" as Rep
-participant "Repository\n Repository" as Repo
-participant "IndustryRepository \n: IndustryRepository" as Repository
+participant "repository\n :Repository" as Repo
+participant "industryRepository \n: IndustryRepository" as Repository
+participant ":Location" as Location
 
 activate Editor
 
 Editor -> UI : Ask to add an industry
 activate UI
-UI --> Controller**: startAddIndustryController()
+UI --> Controller**: startAddIndustryController(Repository,Map)
 activate Controller
+Controller-->Validator**:createValueValidator()
 
 
 UI --> Editor : Ask for the XY position
@@ -37,17 +39,14 @@ Validator->Validator:isPositiveInteger(X)
 Validator->Validator:isPositiveInteger(Y)
 Validator-->Controller:valid/invalid
 deactivate Validator
-alt Invalid
-Controller-->UI: displayError(invalid coordinates)
-else valid
+
+
+
 Controller->Map:validatePosition(X,Y)
 activate Map
 Map->Map:isEmpty(X,Y)
-Map-->Controller:true/false
+Map-->Controller:true
 deactivate Map
-alt false
-Controller-->UI: displayError(occupied place)
-else true
 Controller->Rep:getinstance()
 activate Rep
 Rep-->Controller:instance
@@ -66,15 +65,13 @@ UI-->Editor:Show the different types \nof industry and ask one option.
 deactivate UI
 Editor->UI:Select one option.
 activate UI
-UI->Controller: addIndustry(option)
+UI-->Controller: createIndustry(option)
 activate Controller
-Controller->Map: addIndustry(option,x,y)
+Controller-->Location**:createLocation(x,y)
+Controller-->Map: createIndustry(option,Location)
 activate Map
-Map->Location:createLocation(x,y)
-activate Location
-Location-->Map:Location
-deactivate Location
 Map-->Industry**:createIndustry(option,Location)
+Map-->Controller:Industry
 deactivate Map
 
 Controller-->UI: display(success)
@@ -84,8 +81,8 @@ UI-->Editor:Confirm the creation of this industry.
 deactivate UI
 
 
-end
-end
+
+
 
 
 deactivate Editor
