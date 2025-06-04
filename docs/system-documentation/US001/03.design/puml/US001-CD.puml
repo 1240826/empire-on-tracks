@@ -30,7 +30,7 @@ class Repositories {
 class MapRepository {
   +getMapNames()
   +saveMap(Map)
-  +createMap(name:String,width:int,height:int)
+  +createMap(namewidth,height)
 
 }
 
