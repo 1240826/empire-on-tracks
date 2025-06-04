@@ -11,50 +11,25 @@ public class Carriage {
     private int currentLoad;
     private static final int DEFAULT_CAPACITY = 100;
 
-
-    /**
-     * Creates a carriage for a specific cargo type.
-     * Package-private constructor - only Train can create carriages.
-     */
     Carriage(CargoType cargoType, int capacity) {
         this.cargoType = Objects.requireNonNull(cargoType, "Cargo type cannot be null");
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("Capacity must be positive");
-        }
+        if (capacity <= 0) throw new IllegalArgumentException("Capacity must be positive");
         this.capacity = capacity;
         this.currentLoad = 0;
     }
 
-    // Create carriage with default capacity
     Carriage (CargoType cargoType) {
         this.cargoType = Objects.requireNonNull(cargoType, "Cargo type cannot be null");
         this.capacity = DEFAULT_CAPACITY;
         this.currentLoad = 0;
     }
 
-    public CargoType getCargoType() {
-        return cargoType;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public int getCurrentLoad() {
-        return currentLoad;
-    }
-
-    public int getAvailableCapacity() {
-        return capacity - currentLoad;
-    }
-
-    public boolean isFull() {
-        return currentLoad >= capacity;
-    }
-
-    public boolean isHalfFull() {
-        return currentLoad >= capacity / 2;
-    }
+    public CargoType getCargoType() { return cargoType; }
+    public int getCapacity() { return capacity; }
+    public int getCurrentLoad() { return currentLoad; }
+    public int getAvailableCapacity() { return capacity - currentLoad; }
+    public boolean isFull() { return currentLoad >= capacity; }
+    public boolean isHalfFull() { return currentLoad >= capacity / 2; }
 
     /**
      * Load cargo into this carriage.
@@ -62,9 +37,7 @@ public class Carriage {
      * @return actual amount loaded (may be less if carriage becomes full)
      */
     public int loadCargo(int amount) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount cannot be negative");
-        }
+        if (amount < 0) throw new IllegalArgumentException("Amount cannot be negative");
         int actualLoad = Math.min(amount, getAvailableCapacity());
         currentLoad += actualLoad;
         return actualLoad;
@@ -78,6 +51,11 @@ public class Carriage {
         int unloaded = currentLoad;
         currentLoad = 0;
         return unloaded;
+    }
+
+    // [ADDED] Helper to completely empty carriage
+    public void unloadAll() {
+        this.currentLoad = 0;
     }
 
     @Override
