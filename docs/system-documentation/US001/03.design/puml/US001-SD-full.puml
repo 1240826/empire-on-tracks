@@ -17,10 +17,12 @@ participant ":Map" as Map
 
 activate Employee
 
-    Employee -> UI : ask to "Create a Map"
+    Employee -> UI : ask to "Create a Map with size and name"
     activate UI
 
-            UI --> Controller** : startController()
+            UI --> Controller** : create()
+            activate Controller
+            Controller-->Validator**:createValueValidator()
 
 
 
@@ -43,14 +45,14 @@ activate Employee
 
             Validator -> Validator : isPositiveInteger(width)
             Validator -> Validator : isPositiveInteger(height)
-            Validator -> Controller : validationResult(valid or error)
+            Validator --> Controller : valid
             deactivate Validator
 
-            alt If width/length are invalid
-                Controller --> UI : displayError("Invalid width or heigth")
 
 
-            else If width/length are valid
+
+
+
 
             Controller->Rep: getInstance()
             activate Rep
@@ -70,12 +72,13 @@ activate Employee
 
 
                 Controller -> Controller : validateMapName(name)
-                Controller-->Controller:valid/invalid
+                Controller-->Controller:valid
+                Controller-->UI:displays(name and size)
 
                 deactivate Controller
 
-                alt If name is valid
-                    UI --> Employee : asks for confirmation to create map
+
+                    UI --> Employee :validates name and size confirmation
 
 
                     Employee -> UI : confirms map creation
@@ -84,23 +87,25 @@ activate Employee
                     UI -> Controller: createMap()
                     activate Controller
 
-                    Controller->Map**:createMap(Name,whidht,height)
+                    Controller->Repository:createMap(Name,whidht,height)
+                    activate Repository
 
-
-
-
-
-                            Controller -> Repository : saveMap()
+                            Repository-->Map : createMap(Name,whidht,height)
+                            Repository->Repository:saveMap(Map)
+                            Repository-->Repository:true
+                            Repository-->Controller:Map
                         deactivate Repository
 
 
+
                     Controller --> UI : displaySuccess("Map created successfully")
-                else If name is invalid
-                    Controller -> UI : displayError("Invalid name")
-                end
-            end
+
+
+
+
 
         deactivate Controller
+        UI-->Employee:displays operation success
     deactivate UI
 
 @enduml
