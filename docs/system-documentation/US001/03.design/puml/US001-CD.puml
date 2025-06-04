@@ -30,7 +30,7 @@ class Repositories {
 class MapRepository {
   +getMapNames()
   +saveMap(Map)
-  +createMap(namewidth,height)
+  +createMap(name,width,height)
 
 }
 
@@ -38,6 +38,7 @@ class Map {
   -name:String
   -width:int
   -height:int
+  +Map(name,width,height)
 }
 
 CreateMapUI .> CreateMapController     : uses
