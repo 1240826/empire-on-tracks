@@ -62,3 +62,4 @@ public class PointOfRoute {
         return Objects.hash(station, cargoes, cargoMode);
     }
 }
+

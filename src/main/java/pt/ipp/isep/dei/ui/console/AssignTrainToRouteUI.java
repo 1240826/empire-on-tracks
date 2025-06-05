@@ -10,6 +10,8 @@ import java.util.Scanner;
 /**
  * Console-based UI for assigning a route to a player's train,
  * using a step-by-step interactive process.
+ *
+ * Now suggests only reachable stations (via BFS) after the first stop.
  */
 public class AssignTrainToRouteUI implements Runnable {
     private final AssignTrainToRouteController controller;
@@ -42,19 +44,38 @@ public class AssignTrainToRouteUI implements Runnable {
 
         boolean addMore = true;
         while (addMore) {
-            // 2. Select Station
-            List<Station> stations = controller.getAvailableStations();
-            System.out.println("\nAvailable stations:");
-            for (int i = 0; i < stations.size(); i++) {
-                System.out.printf("[%d] %s\n", i + 1, stations.get(i).getStationName());
+            List<Station> selectableStations;
+
+            // ────────────────────────────────────────────────────────────────────
+            // If this is the first stop, allow any available station.
+            if (controller.getCurrentRoute().isEmpty()) {
+                selectableStations = controller.getAvailableStations();
+                System.out.println("\nAvailable stations:");
+            }
+            // Otherwise, perform BFS from the last-station to suggest reachable ones.
+            else {
+                Station lastStation = controller.getCurrentRoute()
+                        .get(controller.getCurrentRoute().size() - 1)
+                        .getStation();
+                selectableStations = controller.getAllReachableStations(lastStation);
+                if (selectableStations.isEmpty()) {
+                    System.out.println("\nNo connected stations available from "
+                            + lastStation.getStationName() + ". Ending route selection.");
+                    break;
+                }
+                System.out.println("\nConnected stations to " + lastStation.getStationName() + ":");
+            }
+            // Print the selectable stations for this iteration:
+            for (int i = 0; i < selectableStations.size(); i++) {
+                System.out.printf("[%d] %s\n", i + 1, selectableStations.get(i).getStationName());
             }
             System.out.print("Select a station (by number): ");
             int stationChoice = readIntInput();
-            if (stationChoice < 1 || stationChoice > stations.size()) {
+            if (stationChoice < 1 || stationChoice > selectableStations.size()) {
                 System.out.println("Invalid choice. Try again.");
                 continue;
             }
-            Station station = stations.get(stationChoice - 1);
+            Station station = selectableStations.get(stationChoice - 1);
 
             // 3. Select Cargoes
             List<CargoType> availableCargoes = controller.getAvailableCargoTypesForStation(station);
@@ -105,7 +126,9 @@ public class AssignTrainToRouteUI implements Runnable {
             CargoMode cargoMode = CargoMode.values()[modeChoice - 1];
 
             // 5. Confirm & Add POR
-            System.out.println("Add stop: " + station.getStationName() + " | Cargoes: " + cargoes + " | Mode: " + cargoMode);
+            System.out.println("Add stop: " + station.getStationName()
+                    + " | Cargoes: " + cargoes
+                    + " | Mode: " + cargoMode);
             System.out.print("Confirm this stop? (y/n): ");
             String confirm = scanner.nextLine().trim();
             if (!confirm.equalsIgnoreCase("y")) continue;
@@ -147,3 +170,4 @@ public class AssignTrainToRouteUI implements Runnable {
         start();
     }
 }
+

@@ -11,20 +11,16 @@ public class BuildStationController {
         this.map = Objects.requireNonNull(map);
     }
 
-    public boolean buildStation(String name, int x, int y, StationType type) {
+    public boolean buildStation(String name, int x, int y, StationType type, String Orientarion) {
         if (name == null || name.isBlank()) return false;
 
         // Verifica se a área definida pelo tipo está livre
         int width = type.getWidth();
         int height = type.getHeight();
-        for (int dy = 0; dy < height; dy++) {
-            for (int dx = 0; dx < width; dx++) {
-                if (!map.isEmpty(x + dx, y + dy)) return false;
-            }
-        }
+
 
         Location location = new Location(x, y);
-        Station station = new Station("ST" + map.getStations().size(), name, location, type.getNumTracks());
+        Station station = new Station("ST" + map.getStations().size(), name, location, type, Orientarion);
         map.addStation(station);
         return true;
     }
