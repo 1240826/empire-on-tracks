@@ -8,71 +8,85 @@ autonumber
 actor "Editor" as Editor
 participant ":AddIndustryUI" as UI
 participant ":AddIndustryController" as Controller
-participant ":ValueValidator" as Validator
+
 participant ":Map" as Map
 participant ":Industry" as Industry
-participant "Repository" as Rep
-participant "repository\n :Repository" as Repo
-participant "industryRepository \n: IndustryRepository" as Repository
+participant ":IndustryType" as Type
+
+participant "Repositories" as Rep
+participant "Repositories\n Repository" as Repos
+participant "MapRepository \n: MapRepository" as Repository
+
 participant ":Location" as Location
 
 activate Editor
 
 Editor -> UI : Ask to add an industry
 activate UI
-UI --> Controller**: startAddIndustryController(Repository,Map)
+UI --> Controller**: createAddIndustryController(Map)
 activate Controller
-Controller-->Validator**:createValueValidator()
 
 
-UI --> Editor : Ask for the XY position
+
+UI --> Editor : Ask for the X,Y position
 deactivate UI
 
-Editor -> UI : Gives X,Y
+Editor -> UI : Gives positionX,positionY
 activate UI
-UI -> Controller : submitCoordinates(X, Y)
 
+
+
+
+activate UI
+UI->UI:isPositiveInteger(positionX)
+UI->UI:isPositiveInteger(positionY)
+UI-->UI:valid
+deactivate UI
+UI -> Controller : submitCoordinates(position X,positionY)
 activate Controller
-Controller->Validator:ValidateCoordinates(x,y)
-activate Validator
-Validator->Validator:isPositiveInteger(X)
-Validator->Validator:isPositiveInteger(Y)
-Validator-->Controller:valid/invalid
-deactivate Validator
 
 
 
-Controller->Map:validatePosition(X,Y)
+
+Controller->Map:validatePosition(positionX, positionY)
 activate Map
-Map->Map:isEmpty(X,Y)
+Map->Map:isEmpty(positionX,positionY)
 Map-->Controller:true
 deactivate Map
-Controller->Rep:getinstance()
-activate Rep
-Rep-->Controller:instance
-deactivate Rep
-Controller ->Repo:getindustryRepository()
-activate Repo
-Repo-->Controller:industryRepository
-deactivate Repo
-Controller->Repository:getListOfIndustry
-activate Repository
-Repository-->Controller:ListOfIndustry
-deactivate Repository
+Controller->Type:getListOfIndustry
+activate Type
+Type-->Controller:ListOfIndustry
+deactivate Type
 Controller-->UI: display(ListOfIndustry)
 deactivate Controller
-UI-->Editor:Show the different types \nof industry and ask one option.
+UI-->Editor:Show the different types \nof industry and ask to select
 deactivate UI
-Editor->UI:Select one option.
+Editor->UI:Select one Industry.
 activate UI
-UI-->Controller: createIndustry(option)
+UI-->Controller: createIndustry(IndustryType,x,y)
 activate Controller
 Controller-->Location**:createLocation(x,y)
-Controller-->Map: createIndustry(option,Location)
+Controller-->Map: createIndustry(IndustryType,Location)
 activate Map
-Map-->Industry**:createIndustry(option,Location)
-Map-->Controller:Industry
+Map-->Industry**:createIndustry(IndustryType,Location)
+Map-->Controller:Map
 deactivate Map
+
+            Controller->Rep: getInstance()
+            activate Rep
+
+            Rep-->Controller:repositories
+            deactivate Rep
+            Controller->Repos:getMapRepository
+            activate Repos
+            Repos--> Controller:MapRepository
+            deactivate Repos
+
+            Controller->Repository:saveMap(Map)
+            activate Repository
+            Repository-->Controller:true
+            deactivate Repository
+
 
 Controller-->UI: display(success)
 deactivate Controller
