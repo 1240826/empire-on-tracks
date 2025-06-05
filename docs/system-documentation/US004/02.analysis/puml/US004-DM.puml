@@ -9,52 +9,100 @@ left to right direction
 hide circle
 hide methods
 
-'title Domain Model
-
 class Editor {
+}
+
+class Player {
+
 }
 
 class Map {
     name
 }
-
-class Size {
+class Size{
     length
     width
 }
 
-class Scenario {
-    industryProductionRate
-     behaviorOfMixedIndustries
-     availableTrains
+class Industry {
+    production
+}
+class PrimarySectorIndustry{
+    type
+}
+class TransformingIndustry{
+    type
+    demand
+}
+class MixedIndustry{
+    type
 }
 
+
+class Scenario {
+    industryProductionRate
+    behaviorOfMixedIndustries
+    availableTrains
+}
 class Period {
     start
     end
 }
 
+class Location{
+    positionX
+    positionY
+}
+
+class Station {
+capacity
+    name
+
+}
+
+
 class Cargo {
     type
     quantity
+
 }
 
 class Locomotive {
     plateNumber
-        powerSource
-        acceleration
-        buyCost
-        startYear
-        fuelCost
-        maintenanceCost
+    powerSource
+    acceleration
+    buyCost
+    startYear
+    fuelCost
+    maintenanceCost
 }
 
+
 Editor "1" -down- "1..*" Map : creates >
-Editor "1" -- "*" Scenario : creates >
-Map "1" -down- "1" Size : has >
-Scenario "1" -down- "1" Period : has >
+Editor "1" --- "*" Scenario : creates >
+
+
+Player "1" - "1" Scenario : start/pause >
+
+Map "1" - "1" Size : has >
+
+Industry <|-down- PrimarySectorIndustry
+Industry <|-down- TransformingIndustry
+Industry <|-down- MixedIndustry
+PrimarySectorIndustry <|-down- MixedIndustry
+TransformingIndustry <|-down- MixedIndustry
+
+Industry "1" - "1" Location : has >
+Industry "1..*" -- "1..*" Station : loads/unloads >
+Industry "1" -- "1..*" Cargo : produces >
+
+Scenario "1" -- "1" Period : has >
+Scenario "*" -- "1..*" MixedIndustry : changes Class >
+Scenario "*" -- "1..*" Industry : changes Production >
+Scenario "*" - "1" Map : uses >
 Scenario "1" - "1..*" Locomotive : restricts locomotion types >
 Scenario "1" - "1..*" Cargo : restricts cargo types >
-Scenario "*" -down- "1" Map : uses >
+
+
 
 @enduml
