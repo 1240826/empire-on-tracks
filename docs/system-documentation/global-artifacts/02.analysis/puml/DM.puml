@@ -11,7 +11,7 @@ class Editor {
 }
 
 class Player {
-budget
+
 }
 
 class Map {
@@ -65,6 +65,7 @@ capacity
 }
 
 class StationType{
+    type
    range
    cost
 }
@@ -79,7 +80,7 @@ isEletrified
 isDouble
 }
 class Building{
-
+    name
 }
 class Route{
     starts
@@ -88,6 +89,7 @@ class Route{
 
 class Simulation{
 isRunning
+budget
 }
 
 class Cargo {
@@ -111,8 +113,6 @@ class Carriage{
     capacity
     }
 
-
-
 Editor "1" -down- "1..*" Map : creates >
 Editor "1" --- "*" Scenario : creates >
 Editor "1" -right- "*" City : adds >
@@ -122,18 +122,20 @@ Player "1" -- "1..*" Station : buys >
 Player "1" -- "1" Map : places elements >
 Player "1" - "1..*" Train : buys >
 Player "1" - "1..*" RailLine : builds >
-Player "1"-"*" Building: buys >
-Player "1"-"1" Scenario :start/pause >
-
+Player "1" - "*" Building : buys >
+Player "1" - "1" Scenario : start/pause >
 
 Map "1" - "1" Size : has >
 Map "1" -- "*" Industry : contains >
-Map "1" -- "*" City : contains >
+Map "1" - "*" City : contains >
 Map "1" -- "*" RailLine : contains >
 
-Industry "1..*" <|-down- "1..*" PrimarySectorIndustry : can be >
-Industry "1..*" <|-down- "1..*" TransformingIndustry : can be >
-Industry "*" <|-down-- "1..*" MixedIndustry : can be >
+Industry <|-down- PrimarySectorIndustry
+Industry <|-down- TransformingIndustry
+Industry <|-down- MixedIndustry
+PrimarySectorIndustry <|-down- MixedIndustry
+TransformingIndustry <|-down- MixedIndustry
+
 Industry "1" - "1" Location : has >
 Industry "1..*" -- "1..*" Station : loads/unloads >
 Industry "1" -- "1..*" Cargo : produces >
@@ -142,33 +144,24 @@ Scenario "1" -- "1" Period : has >
 Scenario "*" -- "1..*" MixedIndustry : changes Class >
 Scenario "*" -- "1..*" Industry : changes Production >
 Scenario "*" - "1" Map : uses >
-Scenario "*" - "1..*" Train : restricts >
-Scenario "*" - "1..*" Train : Station >
 Scenario "1" - "1..*" Locomotive : restricts locomotion types >
 Scenario "1" - "1..*" Cargo : restricts cargo types >
 
-
-MixedIndustry "*" <|-down- "*" PrimarySectorIndustry : transforms >
-MixedIndustry "*" <|-down- "*" TransformingIndustry : transforms >
-
 Station "1" -- "1" Location : has >
-Station "1" - "1" RailLine : connects <
-Station "1" -- "*" Building : upgrades <
+Station "2..*" - "1" RailLine : connects <
+Station "1" --- "*" Building : upgrades <
 Station "1..*" -- "1..*" Train : loads/unloads <
 Station "1..*" --- "1..*" City : loads/unloads >
 Station "1" -- "1..*" Cargo : is assigned to <
-Station "1"<|--"1" StationType:could be >
-
+Station "1" -- "1" StationType : could be >
 
 Train "1" -- "1..*" RailLine : uses >
 Train "1" -- "1..*" Route : follows >
 Train "1" -- "1" Locomotive : is composed of >
 Train "1" -- "*" Carriage : is composed of >
 
-
-
 Route "1" -- "1..*" RailLine : uses >
-Route "1" -- "2*" Station : connects >
+Route "1" -- "2..*" Station : connects >
 
 City "1" -- "1..*" HouseBlock : contains >
 City "1" -- "1" Location : bears >
@@ -177,6 +170,8 @@ Simulation "1" -- "1..*" Industry : starts/pauses >
 Simulation "1" --- "1" Map : starts/pauses >
 Simulation "1" -- "1..*" City : starts/pauses >
 
-Location "1"--"1"HouseBlock: have <
+Location "1" -- "1" HouseBlock : have <
+
+
 @enduml
 
