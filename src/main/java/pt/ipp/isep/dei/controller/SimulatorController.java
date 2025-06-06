@@ -108,10 +108,23 @@ public class SimulatorController {
                             .getPointsOfRoute()
                             .get(train.getCurrentStopIndex())
                             .getStation();
-                    // Pick up cargo assigned for this stop
+
+                    // === 1. DESCARREGAR ===
+                    for (Carriage carriage : train.getCarriages()) {
+                        CargoType cargoType = carriage.getCargoType();
+                        int amountToUnload = carriage.getCurrentLoad();
+                        if (amountToUnload > 0) {
+                            arrived.unloadCargo(cargoType, amountToUnload);
+                            carriage.unloadCargo();
+                            events.add("Train '" + train.getName() + "' delivered "
+                                    + amountToUnload + " of " + cargoType
+                                    + " at station '" + arrived.getStationName() + "'");
+                        }
+                    }
+
+                    // === 2. CARREGAR ===
                     for (CargoType ctype : train.getAssignedCargoTypesForCurrentStop()) {
-                        // (Assuming you have a method like collectCargoOfType on Station)
-                        int collectedQty = arrived.collectCargoOfType(ctype, train); // You may need to implement this!
+                        int collectedQty = arrived.collectCargoOfType(ctype, train);
                         if (collectedQty > 0) {
                             events.add("Train '" + train.getName() + "' collected "
                                     + collectedQty + " of " + ctype

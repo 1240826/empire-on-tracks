@@ -5,30 +5,23 @@ skinparam packageStyle rectangle
 
 ' --- Classes ---
 class AddIndustryUI {
-
 }
 
 class AddIndustryController {
-  + startAddIndustryController(): void
-  + submitCoordinates(x: int, y: int): void
-  + addIndustry(option: IndustryType): void
+  + createAddIndustryController(Map)
+  + submitCoordinates(x, y)
+  + createIndustry(option)
 }
 
 class ValueValidator {
-  + validateCoordinates(x: int, y: int): boolean
-  + isPositiveInteger(value: int): boolean
+  + validateCoordinates(x, y)
+  + isPositiveInteger(value)
 }
 
 class Map {
   + isEmpty(x: int, y: int): boolean
   + validatePosition(x: int, y: int): boolean
-  + addIndustry(option: IndustryType, x: int, y: int): void
-}
-
-class CoordinateDTO {
-  - x: int
-  - y: int
-  + CoordinateDTO(x: int, y: int)
+  + addIndustry(option, Location): void
 }
 
 class Repositories {
@@ -38,7 +31,7 @@ class Repositories {
 }
 
 class IndustryRepository {
-  + getListOfIndustry(): List<IndustryType>
+  + getListOfIndustry(): List<Industry>
 }
 
 class Industry {
@@ -48,23 +41,25 @@ class Industry {
 }
 
 class Location {
-  - coordinate: CoordinateDTO
+  - posicionX: int
+  - posicionY: int
   + createLocation(x: int, y: int): Location
 }
 
-
-
-
-
 ' --- Relationships ---
-AddIndustryUI --> AddIndustryController : uses
-AddIndustryController ..> ValueValidator : validateCoordinates
-AddIndustryController ..> Map            : addIndustry, validatePosition
-AddIndustryController ..> Repositories   : getInstance
-Repositories --> IndustryRepository      : provides
-AddIndustryController ..> IndustryRepository : retrieve types
-Map *-- Industry : contains
-Industry --> Location : at
-Location --> CoordinateDTO : wraps
+AddIndustryUI --> AddIndustryController
+AddIndustryController --> ValueValidator
+AddIndustryController --> Map
+AddIndustryController ..> Repositories
+AddIndustryController ..> IndustryRepository
+Repositories --> IndustryRepository
+
+' AGGREGATION: IndustryRepository contains Industry
+IndustryRepository "1" o-- "*" Industry
+
+' AGGREGATION: Map contains Industry (could be composition if Map is exclusive owner)
+Map "1" o-- "*" Industry
+
+Industry --> Location
 
 @enduml

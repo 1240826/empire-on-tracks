@@ -84,6 +84,7 @@ database integrity, resource limits, operating system._
 * **Mandatory standards/patterns**
   * "(ii) adopt recognized coding standards (e.g., CamelCase);"
   * "(iii) use Javadoc to generate useful documentation for Java code."
+  * "The application’s graphical interface is to be developed in JavaFX 11 covering the functionalities related with the Player."
 
 * **Database integrity** 
    * "The application ought to employ object serialization to guarantee the persistence of the data in two successive runs."

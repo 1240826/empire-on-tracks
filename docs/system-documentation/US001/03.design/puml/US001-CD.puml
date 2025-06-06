@@ -5,48 +5,51 @@ skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
 class CreateMapUI {
-  +askMapInfo():MapDTO
-  +confirmCreation():boolean
-  +showMessage(msg:String):void
+
 }
 
 class CreateMapController {
-  +startController():void
-  +createMap(name:String,width:int,height:int):void
-  +saveMap(map:Map):void
-  +display(msg:String):void
+  +createMapController()
+  +createMap(name,width,height)
+  +display(msg)
 }
 
-class MapValidator {
-  +isPositiveInteger(value:int):boolean
-  +validateWidthHeight(width:int,height:int):boolean
+class ValueValidator {
+  +createValueValidator()
+  +isPositiveInteger(value:int)
+  +validateWidthHeight(width,height)
 }
 
 class Repositories {
-  -instance:Repositories
+
   -Repositories()
-  +getInstance():Repositories
-  +getMapRepository():MapRepository
+  +getInstance()
+  +getMapRepository()
 }
 
 class MapRepository {
-  +getMapNames():List<String>
-  +saveMap(map:Map):void
+  +getMapNames()
+  +saveMap(Map)
+  +createMap(name,width,height)
+
 }
 
 class Map {
   -name:String
   -width:int
   -height:int
-  +Map(name:String,width:int,height:int)
+  +Map(name,width,height)
 }
 
 CreateMapUI .> CreateMapController     : uses
-CreateMapController ..> MapValidator
+
 CreateMapController ..> MapRepository
-CreateMapController .> Repositories
-CreateMapController ..> Map
+CreateMapController ..> Repositories
+
+CreateMapController --> ValueValidator
 
 Repositories -->  MapRepository    : provides
-MapRepository --* Map             : stores
+MapRepository -->"*" Map             : stores
+
+Repositories -> "1" Repositories : instance
 @enduml

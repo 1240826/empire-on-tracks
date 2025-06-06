@@ -7,69 +7,55 @@ autonumber
 
 actor "Editor" as Editor
 participant ":AddCityUI"            as UI
-participant ":AddCityController"    as Controller
+participant ":AddCityController"    as CTRL
 participant "Repositories"          as REPOS
 participant "repositories\n:Repositories" as REPOS_SINGLETON
-participant "mapRepository\n:MapRepository" as MAP_REPO
 participant ":Map"                  as Map
-participant ":City"                 as City
+participant ":city\nCity"                 as City
 participant ":HouseBlock"           as HouseBlock
 participant ":Location"             as Location
+participant "mapRepository\n:MapRepository" as MAP_REPO
 
 activate Editor
 
-Editor -> UI : asks to add a city
-activate UI
+    Editor -> UI : asks to add a city
+    activate UI
+        UI --> CTRL** : create()
 
-    UI -> Controller : startCreateCity()
-    activate Controller
+    activate CTRL
 
-        Controller -> REPOS : getInstance()
-        activate REPOS
-            REPOS --> Controller : repositories
-        deactivate REPOS
 
-        Controller -> REPOS_SINGLETON : getMapRepository()
-        activate REPOS_SINGLETON
-            REPOS_SINGLETON --> Controller : mapRepository
-        deactivate REPOS_SINGLETON
 
-        Controller -> MAP_REPO : getCurrentMap()
-        activate MAP_REPO
-            MAP_REPO --> Controller : currentMap
-        deactivate MAP_REPO
 
-        Controller --> UI : requests city details\n(name, positionX, positionY, number of house blocks)
-    deactivate Controller
 UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
 deactivate UI
 Editor -> UI : types city details
 activate UI
 
-    UI -> Controller : submitCityDetails(name, positionX, positionY, houseBlocks)
-    activate Controller
+    UI -> CTRL : submitCityDetails(name, positionX, positionY, houseBlocks)
+    activate CTRL
 
-        Controller -> City : createCity(name, positionX, positionY, houseBlocks)
+        CTRL -> Map : isCityNameDuplicate(name)
+          activate Map
+          Map --> CTRL : true
+          deactivate Map
+
+
+        CTRL -> City** : createCity(name, positionX, positionY, houseBlocks)
         activate City
             City -> City : validateName()
             City -> City : validateHouseBlocks()
-             City --> Controller : city
+             City --> CTRL : city
         deactivate City
-        deactivate Controller
+        deactivate CTRL
 
-        Controller -> Map : isCityNameDuplicate(name)
-        activate Controller
-        activate Map
-            Map --> Controller : true / false
-        deactivate Map
-        deactivate Controller
 
-        alt name duplicated
-            Controller --> UI : warn("City name is already in use")
-            activate Controller
+        opt name duplicated
+            CTRL --> UI : warn("City name is already in use")
+            activate CTRL
         end
-            Controller --> UI : requests assignment method\n(manual or automatic)
-    deactivate Controller
+            CTRL --> UI : requests assignment method\n(manual or automatic)
+    deactivate CTRL
 
 
 UI --> Editor : requests to select house block assignment method (manual or automatic)
@@ -78,57 +64,57 @@ Editor -> UI : selects assignment method "automatic" or "manual"
 activate UI
 
     alt method = "automatic"
-        UI -> Controller : selectedAssignmentMethod("automatic")
-        activate Controller
+        UI -> CTRL : selectedAssignmentMethod("automatic")
+        activate CTRL
 
-            Controller -> City : getCityCenter()
+            CTRL -> City : getCityCenter()
             activate City
-                City --> Controller : center
+                City --> CTRL : center
             deactivate City
 
-            loop houseBlocks times
-                Controller -> Location : computeBlockPosition(center)
+            loop for each houseblock
+                CTRL -> Location : computeBlockPosition(center)
                 activate Location
-                    Location --> Controller : position
+                    Location --> CTRL : position
                 deactivate Location
 
-                Controller -> HouseBlock : createAt(position)
+                CTRL -> HouseBlock : createAt(position)
                 activate HouseBlock
-                    HouseBlock --> Controller : houseBlock
+                    HouseBlock --> CTRL : houseBlock
                 deactivate HouseBlock
 
-                Controller -> City : addHouseBlock(houseBlock)
+                CTRL -> City : addHouseBlock(houseBlock)
                 activate City
-                City --> Controller : houseBlocks
+                City --> CTRL : houseBlocks
                 deactivate City
             end
             deactivate City
-        deactivate Controller
+        deactivate CTRL
 
     else method = "manual"
         UI --> Editor : request positions of house blocks
         deactivate UI
         Editor -> UI : submits positionX, positionY
         activate UI
-        UI -> Controller : selectedAssignmentMethod("manual", positions)
-        activate Controller
+        UI -> CTRL : selectedAssignmentMethod("manual", positions)
+        activate CTRL
 
-            Controller -> Map : validateCoordinates(positions)
+            CTRL -> Map : validateCoordinates(positions)
             activate Map
-                Map --> Controller : valid / invalid
+                Map --> CTRL : true
             deactivate Map
 
             alt positions valid
-                Controller -> City : assignHouseBlocksManually(positions)
+                CTRL -> City : assignHouseBlocksManually(positions)
                 activate City
-                City --> Controller : houseBlocks
+                City --> CTRL : houseBlocks
                 deactivate City
-            else
-                Controller --> UI : warn("Coordinates out of bounds")
+            else positions invalid
+                CTRL --> UI : warn("Coordinates out of bounds")
             end
     end
-    Controller --> UI: city details
-            deactivate Controller
+    CTRL --> UI: city details
+            deactivate CTRL
 
     UI --> Editor : shows all data (city details) and requests confirmation
 deactivate UI
@@ -136,31 +122,19 @@ deactivate UI
 Editor -> UI : confirms data
 activate UI
 
-    UI -> Controller : confirmCityCreation()
-    activate Controller
+    UI -> CTRL : confirmCityCreation()
+    activate CTRL
 
-        Controller -> REPOS : getInstance()
-        activate REPOS
-            REPOS --> Controller : repositories
-        deactivate REPOS
-
-        Controller -> REPOS_SINGLETON : getMapRepository()
-        activate REPOS_SINGLETON
-            REPOS_SINGLETON --> Controller : mapRepository
-        deactivate REPOS_SINGLETON
-
-        Controller -> MAP_REPO : getCurrentMap()
-        activate MAP_REPO
-            MAP_REPO --> Controller : currentMap
-        deactivate MAP_REPO
-
-        Controller -> Map : addCity(city)
+        CTRL -> Map : addCity(city)
         activate Map
             Map -> Map : integrate city internally
-Map --> Controller: city
+            Map --> MAP_REPO: saveMap()
+            activate MAP_REPO
+            deactivate MAP_REPO
+Map --> CTRL: city
 deactivate Map
-Controller --> UI: city
-    deactivate Controller
+CTRL --> UI: city
+    deactivate CTRL
     UI -->  Editor: display operation success
 deactivate UI
 

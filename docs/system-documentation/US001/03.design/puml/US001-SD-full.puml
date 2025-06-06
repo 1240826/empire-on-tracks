@@ -8,7 +8,7 @@ autonumber
 actor "Editor" as Employee
 participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
-participant ":ValueValidator" as Validator
+
 participant "Repositories" as Rep
 participant "Repositories\n Repository" as Repos
 participant "MapRepository \n: MapRepository" as Repository
@@ -17,14 +17,15 @@ participant ":Map" as Map
 
 activate Employee
 
-    Employee -> UI : ask to "Create a Map"
+    Employee -> UI : ask to "Create a Map with size and name"
     activate UI
 
-            UI --> Controller** : startController()
+            UI --> Controller** : create()
 
 
 
         UI --> Employee : Ask the name, width, and height
+        deactivate UI
 
 
 
@@ -33,25 +34,28 @@ activate Employee
 
 
     Employee -> UI : Gives name and size
+    activate UI
 
 
-        UI --> Controller  : createMap(name, width, height)
-        activate Controller
-
-            Controller -> Validator : validateWidthLength(width, height)
-            activate Validator
-
-            Validator -> Validator : isPositiveInteger(width)
-            Validator -> Validator : isPositiveInteger(height)
-            Validator -> Controller : validationResult(valid or error)
-            deactivate Validator
-
-            alt If width/length are invalid
-                Controller --> UI : displayError("Invalid width or heigth")
 
 
-            else If width/length are valid
 
+
+            activate UI
+
+            UI -> UI : isPositiveInteger(width)
+            UI -> UI : isPositiveInteger(height)
+            UI --> UI : valid
+            deactivate UI
+             UI --> Controller  : ValidateName(name)
+             activate Controller
+
+
+
+
+
+
+activate Controller
             Controller->Rep: getInstance()
             activate Rep
 
@@ -62,45 +66,54 @@ activate Employee
             Repos--> Controller:MapRepository
             deactivate Repos
 
-            Controller->Repository:getMapsNames()
+            Controller->Repository:getMapsByName()
             activate Repository
             Repository-->Controller:listOfNames
             deactivate Repository
 
 
 
-                Controller -> Controller : validateMapName(name)
-                Controller-->Controller:valid/invalid
+                Controller -> Controller : isNameUnique(name)
+
+                Controller-->UI:valid
 
                 deactivate Controller
 
-                alt If name is valid
-                    UI --> Employee : asks for confirmation to create map
+
+                    UI --> Employee :ask for create Map confirmation
+                    deactivate UI
 
 
                     Employee -> UI : confirms map creation
+                    activate UI
 
 
-                    UI -> Controller: createMap()
+                    UI --> Controller: createMap(name,widht,height)
                     activate Controller
 
-                    Controller->Map**:createMap(Name,whidht,height)
+                    Controller-->Map**:createMap(Name,width,height)
+                    Controller->Repository:saveMap(Map)
+                    activate Repository
 
 
 
+                            Repository-->Controller:true
 
-
-                            Controller -> Repository : saveMap()
                         deactivate Repository
+                        deactivate Controller
+
 
 
                     Controller --> UI : displaySuccess("Map created successfully")
-                else If name is invalid
-                    Controller -> UI : displayError("Invalid name")
-                end
-            end
+
+
+
+
 
         deactivate Controller
+
+        UI-->Employee:displays operation success
+
     deactivate UI
 
 @enduml

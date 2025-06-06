@@ -32,7 +32,7 @@ public class Locomotive {
 
 
     private final double capacity = 0;              // max cargo volume the loco can carry
-    private final List<Cargo> currentLoad = new ArrayList<>();
+
 
     // scenario availability
     private Period availability;
@@ -98,18 +98,6 @@ public class Locomotive {
     /**
      * Unloads all cargo to the current station and clears internal load.
      */
-    public void unloadToStation() {
-        Station station = getCurrentStation();
-        if (station == null) return;
-        for (Cargo c : new ArrayList<>(currentLoad)) {
-            double qty = c.getQuantity();
-            if (qty > 0) {
-                station.unloadCargo(c.getType(), qty);
-                c.setQuantity(0);
-            }
-        }
-        currentLoad.removeIf(c -> c.getQuantity() == 0);
-    }
 
     /**
      * Collects cargo from the current station up to capacity.
@@ -118,20 +106,7 @@ public class Locomotive {
 
 
     /** Remaining capacity. */
-    public double spaceLeft() {
-        double used = currentLoad.stream().mapToDouble(Cargo::getQuantity).sum();
-        return capacity - used;
-    }
 
-    private void addToLoad(CargoType type, double qty) {
-        for (Cargo c : currentLoad) {
-            if (c.getType() == type) {
-                c.addQuantity(qty);
-                return;
-            }
-        }
-        currentLoad.add(new Cargo(type, qty));
-    }
 
     public Period getAvailability()         { return availability; }
     public void setAvailability(Period a)   { this.availability = a; }
@@ -139,11 +114,10 @@ public class Locomotive {
     @Override
     public String toString() {
         return String.format(
-                "Locomotive[id=%s,type=%s,at=%s,load=%s]",
+                "Locomotive[id=%s,type=%s]",
                 id,
                 type,
-                Optional.ofNullable(getCurrentStation()).map(Station::getStationName).orElse("none"),
-                currentLoad
+                Optional.ofNullable(getCurrentStation()).map(Station::getStationName).orElse("none")
         );
     }
 }

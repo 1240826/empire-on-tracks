@@ -41,7 +41,6 @@ As an Editor, I want to add a city in a position XY of the selected map, with a 
 > **Answer:** If you decide to assign positions on editor's decision, it's up to the editor to decide the position ;-)
 If you decide to assign positions automatically, you can use a normal distribution. Regarding absolute or relative positions, it is up to you to decide what best suits your needs, keeping in mind the overbuilding restriction.
 
-> **Question:** 
 
 
 

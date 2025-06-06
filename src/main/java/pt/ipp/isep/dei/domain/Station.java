@@ -1,157 +1,339 @@
-// Station.java
 package pt.ipp.isep.dei.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Station entity – supports three footprints (Depot 3×3, Terminal 5×5, Station 4×4).
- * Now includes <code>collectAndDistribute</code> (with event strings) so the
- * existing <code>SimulatorController</code> continues to work unchanged.
+ * Representa uma estação no mapa capaz de coletar e distribuir carga
+ * de indústrias que estejam dentro de sua área de alcance.
+ *
+ * <p>Tem dois construtores:
+ * <ul>
+ *   <li>Sem orientação (para tipos centrados 3×3, 5×5, depot…): usa
+ *       um alcance simétrico em todas as direções igual a 'range'.</li>
+ *   <li>Com orientação (para 4×4): recebe também uma Orientation e
+ *       ajusta internamente quatro ranges (norte, sul, leste, oeste):
+ *       na direção apontada utiliza (range–1) e nas demais utiliza full ‘range’.</li>
+ * </ul>
  */
 public class Station {
-
-    /*──────────────────── Identity & footprint ───────────────────*/
-    private final String   id;
-    private final String   name;
+    private final String id;
+    private final String name;
     private final Location location;
-    private final StationType type;
-    /** "CENTER" for Depot / Terminal, otherwise NE / NW / SE / SW. */
-    private  String   anchorDirection="Center";
 
-    /*──────────────────────── Stock & buildings ──────────────────*/
-    private final int capacity = 24;                 // per cargo type
-    private  List<Cargo> cargoes   = new ArrayList<>();
-    private       List<Building> buildings = new ArrayList<>();
+    // alcance base e direcional
+    private final int range;
+    private final int northRange;
+    private final int southRange;
+    private final int eastRange;
+    private final int westRange;
 
-    /*───────────────────── Legacy square‑radius ──────────────────*/
-    private int range;                               // kept only for backward calls
+    private final int capacity = 240;
+    private final List<Cargo> cargoes;
+    private List<Building> buildings;
 
-    /*────────────────────────── Constructors ─────────────────────*/
-    public Station(String id, String name, Location loc, StationType type) {
-        this(id, name, loc, type, "CENTER");
-    }
-    public Station(String id, String name, Location location, StationType type, String orientation) {
+    // -- Construtor para tipos centrados (3x3, 5x5, etc) --
+    public Station(String id, String name, Location location, int range) {
         this.id = id;
         this.name = name;
         this.location = location;
-        this.type = type;
-        this.range = type.getWidth();  // or adapt if range logic is separate
+        this.range = range;
+        this.northRange = range;
+        this.southRange = range;
+        this.eastRange  = range;
+        this.westRange  = range;
+
         this.cargoes = new ArrayList<>();
         this.buildings = new ArrayList<>();
-        this.anchorDirection = orientation;
-        for (CargoType cargoType : CargoType.values()) {
-            this.cargoes.add(new Cargo(cargoType, 0.0));
+        for (CargoType type : CargoType.values()) {
+            this.cargoes.add(new Cargo(type, 0.0));
         }
     }
 
-    /*──────────────────────────── Getters ────────────────────────*/
-    public String getId()            { return id; }
-    public String getStationName()   { return name; }
-    public Location getLocation()    { return location; }
-    public StationType getType()     { return type; }
-    public List<Cargo> getCargoes()  { return Collections.unmodifiableList(cargoes); }
+    // -- Construtor específico para estações 4x4 com orientação --
+    public Station(String id, String name, Location location, StationType station, String orientation) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.range = station.getHeight();
 
-    /*───────────────── Footprint helper (occupied cells) ─────────*/
-    public List<Location> calculateOccupiedCells() {
-
-        List<Location> occupied = new ArrayList<>();
-        int x = location.getX();
-        int y = location.getY();
-        int width = type.getWidth();
-        int height = type.getHeight();
-
-        int startX, startY, endX, endY;
-
-        switch (this.anchorDirection.toUpperCase()) {
+        switch (orientation) {
             case "NE":
-                startX = x - width + 1;
-                endX = x;
-                startY = y;
-                endY = y + height - 1;
+                this.northRange = range - 1;
+                this.eastRange  = range - 1;
+                this.southRange = range;
+                this.westRange  = range;
                 break;
             case "SE":
-                startX = x - width + 1;
-                endX = x;
-                startY = y - height + 1;
-                endY = y;
-                break;
-            case "NW":
-                startX = x;
-                endX = x + width - 1;
-                startY = y;
-                endY = y + height - 1;
+                this.southRange = range - 1;
+                this.eastRange  = range - 1;
+                this.northRange = range;
+                this.westRange  = range;
                 break;
             case "SW":
-                startX = x;
-                endX = x + width - 1;
-                startY = y - height + 1;
-                endY = y;
+                this.southRange = range - 1;
+                this.westRange  = range - 1;
+                this.northRange = range;
+                this.eastRange  = range;
+                break;
+            case "NW":
+                this.northRange = range - 1;
+                this.westRange  = range - 1;
+                this.southRange = range;
+                this.eastRange  = range;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid anchor direction: " + this.anchorDirection);
+                this.northRange = range;
+                this.westRange  = range;
+                this.southRange = range;
+                this.eastRange  = range;
+                break;
         }
 
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                occupied.add(new Location(i, j));
+        this.cargoes = new ArrayList<>();
+        this.buildings = new ArrayList<>();
+        for (CargoType type : CargoType.values()) {
+            this.cargoes.add(new Cargo(type, 0.0));
+        }
+    }
+
+    // --- Getters ---
+    public String getId()               { return id; }
+    public String getStationName()      { return name; }
+    public Location getLocation()       { return location; }
+    public List<Building> getBuildings(){ return buildings; }
+    public List<Cargo> getCargoes()     { return new ArrayList<>(cargoes); }
+
+    public void setBuildings(List<Building> buildings) {
+        this.buildings = buildings;
+    }
+    public void addBuilding(Building building) {
+        this.buildings.add(building);
+    }
+
+    // --- Coleta de indústrias próximas ---
+    /**
+     * Itera pelas indústrias e coleta carga apenas se estiver
+     * dentro do retângulo definido pelos quatro ranges:
+     *   -westRange ≤ dx ≤ eastRange
+     *   -southRange ≤ dy ≤ northRange
+     */
+    public void collectNearbyIndustries(List<Industry> industries) {
+        for (Industry industry : industries) {
+            Location indLoc = industry.getLocation();
+            int dx = indLoc.getX() - location.getX();   // >0 = a leste
+            int dy = indLoc.getY() - location.getY();   // >0 = ao norte
+
+            if (dx < -westRange || dx > eastRange ||
+                    dy < -southRange || dy > northRange) {
+                continue;
+            }
+
+            Cargo produced = industry.getCargo();
+            if (produced == null || produced.getQuantity() <= 0) {
+                continue;
+            }
+
+            double spaceLeft = capacityOfType(produced.getType()) - totalOfType(produced.getType());
+            if (spaceLeft <= 0) {
+                continue;
+            }
+
+            double toCollect = Math.min(produced.getQuantity(), spaceLeft);
+            boolean found = false;
+            for (Cargo c : cargoes) {
+                if (c.getType() == produced.getType()) {
+                    c.addQuantity(toCollect);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                cargoes.add(new Cargo(produced.getType(), toCollect));
+            }
+            industry.consumeCargo(toCollect);
+        }
+    }
+
+    // Métodos utilitários de carga/descarga/distribuição
+
+    public double loadCargo(CargoType type, double requested) {
+        Objects.requireNonNull(type, "type não pode ser null");
+        if (requested <= 0) return 0.0;
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                double taken = Math.min(c.getQuantity(), requested);
+                c.removeQuantity(taken);
+                return taken;
             }
         }
+        return 0.0;
+    }
 
-        return occupied;
+    public void unloadCargo(CargoType type, double quantity) {
+        Objects.requireNonNull(type, "type não pode ser null");
+        if (quantity < 0) throw new IllegalArgumentException("quantity não pode ser negativo");
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                c.addQuantity(quantity);
+                return;
+            }
+        }
+        cargoes.add(new Cargo(type, quantity));
+    }
+
+    public double getCargoQuantity(CargoType type) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == type) {
+                return c.getQuantity();
+            }
+        }
+        return 0.0;
+    }
+
+    public void clearCargoes() {
+        for (Cargo c : cargoes) {
+            c.setQuantity(0.0);
+        }
+    }
+
+    public boolean hasBuilding(String type) {
+        if (buildings == null) return false;
+        return buildings.stream()
+                .anyMatch(b -> b.getType().equalsIgnoreCase(type) && b.isActive());
+    }
+
+    public void removeBuilding(String type) {
+        if (buildings != null) {
+            buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
+        }
+    }
+    @Override
+    public String toString() {
+        return name + " @ " + location +
+                " [cargoes=" + cargoes.size() + "/" + capacity + "]";
+    }
+
+    // --- Helpers internos ---
+    private double totalOfType(CargoType type) {
+        return cargoes.stream()
+                .filter(c -> c.getType() == type)
+                .mapToDouble(Cargo::getQuantity)
+                .sum();
+    }
+
+    private double capacityOfType(CargoType type) {
+        return (double) capacity;
     }
     /**
-     * Returns the list of occupied cells (alias for calculateOccupiedCells, for backward compatibility).
+     * Carrega o máximo possível de carga do tipo dado desta estação
+     * para os vagões (carriages) do comboio especificado.
+     * Retorna o total efetivamente carregado.
      */
-    public List<Location> footprint() {
-        return calculateOccupiedCells();
+    public int collectCargoOfType(CargoType ctype, Train train) {
+        for (Cargo c : cargoes) {
+            if (c.getType() == ctype && c.getQuantity() > 0) {
+                int available = (int) c.getQuantity();
+                int totalLoaded = 0;
+                for (Carriage carr : train.getCarriages()) {
+                    if (carr.getCargoType() == ctype && carr.getAvailableCapacity() > 0 && available > 0) {
+                        int loaded = carr.loadCargo(available);
+                        c.removeQuantity(loaded);
+                        totalLoaded += loaded;
+                        available -= loaded;
+                        if (available <= 0) break;
+                    }
+                }
+                return totalLoaded;
+            }
+        }
+        return 0;
     }
 
-    /*──────────────── collectAndDistribute (used by Simulator) ──*/
+    /**
+     * Coleta automaticamente carga de indústrias próximas e distribui para indústrias consumidoras.
+     * Gera logs de eventos das operações.
+     */
     public List<String> collectAndDistribute(List<Industry> industries) {
         List<String> events = new ArrayList<>();
-        List<Location> area = footprint();
+        for (Industry industry : industries) {
+            Location indLoc = industry.getLocation();
+            int dx = indLoc.getX() - location.getX();
+            int dy = indLoc.getY() - location.getY();
 
-        /* 1) Collect cargo produced inside footprint */
-        for (Industry ind : industries) {
-            if (!area.contains(ind.getLocation())) continue;
-            Cargo produced = ind.getCargo();
-            if (produced == null || produced.getQuantity() <= 0) continue;
-            double free = capacity - getCargoQuantity(produced.getType());
-            if (free <= 0) continue;
-            double take = Math.min(produced.getQuantity(), free);
-            addCargoInternal(produced.getType(), take);
-            ind.consumeCargo(take);
-            events.add(String.format("Station %s collected %.2f of %s from %s",
-                    name, take, produced.getType(), ind.getIndustryName()));
-        }
+            // Dentro do retângulo definido pelos quatro ranges?
+            if (dx < -westRange || dx > eastRange ||
+                    dy < -southRange || dy > northRange) {
+                continue;
+            }
 
-        /* 2) Deliver to industries that need input */
-        for (Industry ind : industries) {
-            if (!area.contains(ind.getLocation())) continue;
+            // 1. Coletar carga da indústria (output)
+            Cargo produced = industry.getCargo();
+            if (produced != null && produced.getQuantity() > 0) {
+                double spaceLeft = capacityOfType(produced.getType()) - totalOfType(produced.getType());
+                if (spaceLeft > 0) {
+                    double toCollect = Math.min(produced.getQuantity(), spaceLeft);
+                    // Adiciona direto no cargoes
+                    for (Cargo c : cargoes) {
+                        if (c.getType() == produced.getType()) {
+                            c.addQuantity(toCollect);
+                            break;
+                        }
+                    }
+                    industry.consumeCargo(toCollect);
+                    events.add(String.format("Station %s collected %.2f of %s from %s",
+                            name, toCollect, produced.getType(), industry.getIndustryName()));
+                }
+            }
 
-            if (ind instanceof TransformingIndustry ti) {
+            // 2. Distribuir para Transforming/MixedIndustry
+            if (industry instanceof TransformingIndustry) {
+                TransformingIndustry ti = (TransformingIndustry) industry;
                 CargoType type = ti.getInputCargoType();
-                double need = ti.getDemand() - ti.getInputCargoQuantity();
-                if (need > 0) {
-                    double give = Math.min(need, getCargoQuantity(type));
+                double needed = ti.getDemand() - ti.getInputCargoQuantity();
+                if (needed > 0) {
+                    double avail = 0.0;
+                    for (Cargo c : cargoes) {
+                        if (c.getType() == type) {
+                            avail = c.getQuantity();
+                            break;
+                        }
+                    }
+                    double give = Math.min(needed, avail);
                     if (give > 0) {
+                        for (Cargo c : cargoes) {
+                            if (c.getType() == type) {
+                                c.removeQuantity(give);
+                                break;
+                            }
+                        }
                         ti.setInputCargoQuantity(ti.getInputCargoQuantity() + give);
-                        removeCargoInternal(type, give);
                         events.add(String.format("Station %s delivered %.2f of %s to %s",
                                 name, give, type, ti.getIndustryName()));
                     }
                 }
-            } else if (ind instanceof MixedIndustry mi) {
+            } else if (industry instanceof MixedIndustry) {
+                MixedIndustry mi = (MixedIndustry) industry;
                 CargoType type = mi.getInputCargoType();
-                double need = mi.getDemand() - mi.getInputCargoQuantity();
-                if (need > 0) {
-                    double give = Math.min(need, getCargoQuantity(type));
+                double needed = mi.getDemand() - mi.getInputCargoQuantity();
+                if (needed > 0) {
+                    double avail = 0.0;
+                    for (Cargo c : cargoes) {
+                        if (c.getType() == type) {
+                            avail = c.getQuantity();
+                            break;
+                        }
+                    }
+                    double give = Math.min(needed, avail);
                     if (give > 0) {
+                        for (Cargo c : cargoes) {
+                            if (c.getType() == type) {
+                                c.removeQuantity(give);
+                                break;
+                            }
+                        }
                         mi.setInputCargoQuantity(mi.getInputCargoQuantity() + give);
-                        removeCargoInternal(type, give);
                         events.add(String.format("Station %s delivered %.2f of %s to %s",
                                 name, give, type, mi.getIndustryName()));
                     }
@@ -161,107 +343,6 @@ public class Station {
         return events;
     }
 
-    /*────────────────── Loco ⇄ Station I/O (API) ────────────────*/
-    public double loadCargo(CargoType type, double requested) {
-        if (requested <= 0) return 0;
-        double avail = getCargoQuantity(type);
-        double take  = Math.min(avail, requested);
-        removeCargoInternal(type, take);
-        return take;
-    }
-    public void unloadCargo(CargoType type, double qty) {
-        if (qty > 0) addCargoInternal(type, qty);
-    }
 
-    /*─────────────────── Small helpers (cargo) ──────────────────*/
-    private void addCargoInternal(CargoType t, double q) {
-        cargoes.stream()
-                .filter(c -> c.getType() == t)
-                .findFirst()
-                .ifPresentOrElse(c -> c.addQuantity(q), () -> cargoes.add(new Cargo(t, q)));
-    }
-    private void removeCargoInternal(CargoType t, double q) {
-        cargoes.stream()
-                .filter(c -> c.getType() == t)
-                .findFirst()
-                .ifPresent(c -> c.removeQuantity(q));
-    }
-    public double getCargoQuantity(CargoType t) {
-        return cargoes.stream()
-                .filter(c -> c.getType() == t)
-                .mapToDouble(Cargo::getQuantity)
-                .findFirst().orElse(0);
-    }
-    private double capacityOfType(CargoType type) {
-        return 24.0;
-    }
-    private double totalOfType(CargoType type) {
-        return cargoes.stream()
-                .filter(c -> c.getType() == type)
-                .mapToDouble(Cargo::getQuantity).sum();
+
 }
-    public void collectNearbyIndustries(List<Industry> industries) {
-
-        List<Location> occupiedCells = calculateOccupiedCells();
-
-        for (Industry industry : industries) {
-            Location indLoc = industry.getLocation();
-            boolean isInside = occupiedCells.stream()
-                    .anyMatch(cell -> cell.getX() == indLoc.getX() && cell.getY() == indLoc.getY());
-
-            if (isInside) {
-                Cargo produced = industry.getCargo();
-                if (produced == null || produced.getQuantity() <= 0) continue;
-
-                double spaceLeft = capacityOfType(produced.getType()) - totalOfType(produced.getType());
-                if (spaceLeft <= 0) continue;
-
-                double toCollect = Math.min(produced.getQuantity(), spaceLeft);
-
-                boolean found = false;
-                for (Cargo c : cargoes) {
-                    if (c.getType() == produced.getType()) {
-                        c.addQuantity(toCollect);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    cargoes.add(new Cargo(produced.getType(), toCollect));
-                }
-
-                industry.consumeCargo(toCollect);
-            }
-        }
-    }
-
-
-
-    /*──────────────────── Debug toString ───────────────────────*/
-    @Override public String toString() {
-        return name + "@" + location + " cargo:" + cargoes.size();
-    }
-
-    public boolean hasBuilding(String type) {
-        return false;
-    }
-    public void addBuilding(Building building) {
-        buildings.add(building);
-    }
-
-    public void removeBuilding(String type) {
-        buildings.removeIf(b -> b.getType().equalsIgnoreCase(type));
-    }
-
-
-
-    public List<Building> getBuildings() {
-        return Collections.unmodifiableList(buildings);
-    }
-
-    public void setBuildings(List<Building> buildings) {
-        this.buildings = buildings;
-    }
-}
-
-

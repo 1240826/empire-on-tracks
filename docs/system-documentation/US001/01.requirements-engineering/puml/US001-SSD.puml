@@ -19,7 +19,7 @@ activate Employee
     Employee -> System : Gives name and size
     activate System
 
-    System --> Employee : validates name and size confirmation
+    System --> Employee :ask for create Map confirmation
     deactivate System
 
      Employee -> System : confirms map creation

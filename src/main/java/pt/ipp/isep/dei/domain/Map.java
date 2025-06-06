@@ -356,6 +356,7 @@ public class Map {
         for (Industry ind : industries) {
             ind.produceCargo();
         }
+        updateStations();
     }
 
     /**

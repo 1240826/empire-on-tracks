@@ -241,6 +241,9 @@ public class Train {
         }
         return qty - leftToLoad; // amount actually loaded
     }
+    public List<Carriage> getCarriages() {
+        return carriages;
+    }
 
 }
 
