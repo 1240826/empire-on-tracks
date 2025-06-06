@@ -196,3 +196,4 @@ public class ProducingIndustry implements Industry {
         );
     }
 }
+

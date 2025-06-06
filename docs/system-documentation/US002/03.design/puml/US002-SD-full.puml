@@ -63,13 +63,13 @@ UI-->Editor:Show the different types \nof industry and ask to select
 deactivate UI
 Editor->UI:Select one Industry.
 activate UI
-UI-->Controller: createIndustry(IndustryType,x,y)
+UI->Controller: createIndustry(IndustryType,x,y)
 activate Controller
 Controller-->Location**:createLocation(x,y)
 Controller-->Map: createIndustry(IndustryType,Location)
 activate Map
 Map-->Industry**:createIndustry(IndustryType,Location)
-Map-->Controller:Map
+
 deactivate Map
 
             Controller->Rep: getInstance()
