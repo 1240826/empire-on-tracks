@@ -280,9 +280,88 @@ public class AppController {
      * Option 4: Finds a maintenance route using only the filter defined by onlyElectrified.
      * Does not ask again—electrification preference is already known.
      */
-    private void findMaintenanceRoute() {
-        String route = graph.buildMaintenanceRoute(onlyElectrified);
-        System.out.println("\n🔧 Maintenance route:");
-        System.out.println(route);
+
+
+    /** Mostra APENAS as arestas da rota, em azul (electrificada) ou vermelho (não). */
+    private void displayRouteGraph(List<Station> trail) {
+        MultiGraph gs = new MultiGraph("RouteOnly");
+
+        String css = """
+        node { fill-color: grey; size:20px; text-alignment: under; text-size:14; }
+        edge.electrified { fill-color: blue;   size:4px; }
+        edge.non         { fill-color: red;    size:4px; }
+        """;
+        gs.setAttribute("ui.stylesheet", css);
+        gs.setAttribute("ui.quality");
+        gs.setAttribute("ui.antialias");
+        gs.setAttribute("springbox.idealLength", 200);
+        gs.setAttribute("springbox.force", 0.8);
+        gs.setAttribute("springbox.quality", 1.0);
+
+        /* ---------- criar os nós usados no percurso ---------- */
+        for (Station s : trail) {
+            if (gs.getNode(s.getName()) == null) {
+                Node n = gs.addNode(s.getName());
+                n.setAttribute("ui.label", s.getName());
+            }
+        }
+
+        /* ---------- criar as arestas apenas da rota ---------- */
+        int id = 0;
+        for (int i = 0; i < trail.size() - 1; i++) {
+            String a = trail.get(i).getName();
+            String b = trail.get(i + 1).getName();
+
+            // descobrir electrificação da linha a–b
+            boolean electrified = false;
+            for (Line l : graph.getAllLines()) {
+                boolean samePair = (l.getA().getName().equals(a) && l.getB().getName().equals(b)) ||
+                        (l.getA().getName().equals(b) && l.getB().getName().equals(a));
+                if (samePair) {                        // pega no 1.º que encontrar
+                    electrified = l.isElectrified();
+                    break;
+                }
+            }
+
+            Edge e = gs.addEdge("r" + (id++), a, b, false);
+            e.setAttribute("ui.class", electrified ? "electrified" : "non");
+        }
+
+        gs.display(true);
     }
+
+    private void findMaintenanceRoute() {
+
+        // 1) diagnóstico
+        Boolean status = graph.buildMaintenanceRoute(onlyElectrified);
+
+
+        // 2) prossegue apenas se possível
+        if (!status) return;
+
+        // 3) gera trilho
+        List<Station> trail = graph.findEulerRoute(onlyElectrified);
+        if (trail == null) {
+            System.out.println("Erro interno ao gerar trilho.");
+            return;
+        }
+
+        // 4) imprime caminho
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < trail.size(); i++) {
+            if (i > 0) sb.append(" → ");
+            sb.append(trail.get(i).getName());
+        }
+        System.out.println("\n🔧 Rota de manutenção:");
+        System.out.println(sb);
+
+        // 5) mostra rota em gráfico (azul/vermelho)
+        displayRouteGraph(trail);
+    }
+
+
+
+
+
+
 }

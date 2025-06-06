@@ -4,171 +4,82 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * Represents the railway graph. Internally maintains:
- *   • stationsMap: maps normalized station names → Station
- *   • allLines:    list of all lines (Line) added
+ * Represents the railway graph. Stores:
+ *   • stationsMap : normalised station-name → Station
+ *   • allLines    : every Line added
  *
- * Main methods:
- *   • addLine(...)               – adds a line, creating stations as needed
- *   • canTravel(...)             – builds connectivity matrix (filters by electrification) + Warshall
- *   • exportAdjacencyMatrix(...) – generates file "matrix.txt" with the complete adjacency matrix
- *   • buildMaintenanceRoute(...) – pre-checks Eulerian/Semi‐Eulerian status and connectivity
- *   • getSortedStations()        – returns a list of stations ordered D→S→T, then by number
- *   • getAllLines()              – returns an unmodifiable list of all lines
+ * Main public methods:
+ *   • addLine(...)
+ *   • exportAdjacencyMatrix()
+ *   • buildMaintenanceRoute(...)    – diagnostic only (Eulerian / etc.)
+ *   • findEulerRoute(...)           – returns the actual trail/circuit
+ *   • getSortedStations(), getAllLines()
  */
 public class RailwayGraph {
-    private final Map<String, Station> stationsMap = new HashMap<>();
-    private final List<Line> allLines           = new ArrayList<>();
 
-    /**
-     * Normalises station tokens by removing spaces or underscores after the prefix.
-     * For example: "D_8" → "D8".
-     *
-     * @param token the raw station token
-     * @return the normalised station name
-     */
+    /* ------------------------------------------------------------------ */
+    /*  Internal data                                                     */
+    /* ------------------------------------------------------------------ */
+    private final Map<String, Station> stationsMap = new HashMap<>();
+    private final List<Line>           allLines    = new ArrayList<>();
+
+    /* ------------------------------------------------------------------ */
+    /*  Normalise token ("D_8" → "D8")                                    */
+    /* ------------------------------------------------------------------ */
     private String normalize(String token) {
         token = token.trim();
-        if (token.length() > 1 && token.charAt(1) == '_') {
+        if (token.length() > 1 && token.charAt(1) == '_')
             return token.substring(0, 1) + token.substring(2);
-        }
         return token;
     }
 
-    /**
-     * Adds a line (edge) to the graph. Creates a Station if it does not already exist.
-     *
-     * @param rawA        origin station token (e.g. "D_8" or "D8")
-     * @param rawB        destination station token (e.g. "S_2" or "S2")
-     * @param electrified {@code true} if the line is electrified; {@code false} otherwise
-     * @param distance    distance in kilometres
-     */
-    public void addLine(String rawA, String rawB, boolean electrified, double distance) {
-        String nameA = normalize(rawA);
-        String nameB = normalize(rawB);
-
-        Station a = stationsMap.computeIfAbsent(nameA, Station::new);
-        Station b = stationsMap.computeIfAbsent(nameB, Station::new);
-
+    /* ------------------------------------------------------------------ */
+    /*  Add a line (creates stations as needed)                           */
+    /* ------------------------------------------------------------------ */
+    public void addLine(String rawA, String rawB,
+                        boolean electrified, double distance) {
+        String aName = normalize(rawA);
+        String bName = normalize(rawB);
+        Station a = stationsMap.computeIfAbsent(aName, Station::new);
+        Station b = stationsMap.computeIfAbsent(bName, Station::new);
         allLines.add(new Line(a, b, electrified, distance));
     }
 
-    /**
-     * Checks whether there is a path between {@code rawFrom} and {@code rawTo} for the given train type.
-     * Builds a boolean matrix, filters out non‐electrified lines if {@code train == ELECTRIC},
-     * applies Warshall’s algorithm, and returns {@code true} if a path exists.
-     *
-     * @param rawFrom raw name of the origin station
-     * @param rawTo   raw name of the destination station
-     * @param train   type of train (ELECTRIC or DIESEL)
-     * @return {@code true} if a path exists; {@code false} otherwise
-     */
-    public boolean canTravel(String rawFrom, String rawTo, TrainType train) {
-        String fromName = normalize(rawFrom);
-        String toName   = normalize(rawTo);
-
-        Station fromStation = stationsMap.get(fromName);
-        Station toStation   = stationsMap.get(toName);
-        if (fromStation == null || toStation == null) {
-            return false;
-        }
-
-        // 1) Sort all stations by name to fix indices
-        List<Station> stations = new ArrayList<>(stationsMap.values());
-        stations.sort(Comparator.comparing(Station::getName));
-
-        int n = stations.size();
-        // 2) Map Station → index
-        Map<Station, Integer> index = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            index.put(stations.get(i), i);
-        }
-
-        // 3) Build boolean matrix r[i][j]
-        boolean[][] r = new boolean[n][n];
-        for (Line l : allLines) {
-            if (train == TrainType.ELECTRIC && !l.isElectrified()) {
-                continue;
-            }
-            int i = index.get(l.getA());
-            int j = index.get(l.getB());
-            r[i][j] = true;
-            r[j][i] = true;
-        }
-        for (int i = 0; i < n; i++) {
-            r[i][i] = true;
-        }
-
-        // 4) Warshall’s algorithm (transitive closure)
-        for (int k = 0; k < n; k++) {
-            for (int i = 0; i < n; i++) {
-                if (!r[i][k]) continue;
-                for (int j = 0; j < n; j++) {
-                    r[i][j] = r[i][j] || r[k][j];
-                }
-            }
-        }
-
-        int fromIdx = index.get(fromStation);
-        int toIdx   = index.get(toStation);
-        return r[fromIdx][toIdx];
-    }
-
-    /**
-     * Exports the complete adjacency matrix (int[n][n], counting parallel lines)
-     * to a file named "matrix.txt" in the current directory.
-     */
+    /* ------------------------------------------------------------------ */
+    /*  Adjacency-matrix export (exactly your original code)              */
+    /* ------------------------------------------------------------------ */
     public void exportAdjacencyMatrix() {
-        // 1) Sort stations by name
-        List<Station> stations = new ArrayList<>(stationsMap.values());
-        stations.sort(Comparator.comparing(Station::getName));
+        List<Station> st = new ArrayList<>(stationsMap.values());
+        st.sort(Comparator.comparing(Station::getName));
 
-        int n = stations.size();
-        // 2) Map Station → index
-        Map<Station, Integer> index = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            index.put(stations.get(i), i);
-        }
+        int n = st.size();
+        Map<Station,Integer> idx = new HashMap<>();
+        for (int i = 0; i < n; i++) idx.put(st.get(i), i);
 
-        // 3) Build count matrix
-        int[][] matrix = new int[n][n];
+        int[][] mat = new int[n][n];
         for (Line l : allLines) {
-            int i = index.get(l.getA());
-            int j = index.get(l.getB());
-            matrix[i][j]++;
-            matrix[j][i]++;
+            int i = idx.get(l.getA());
+            int j = idx.get(l.getB());
+            mat[i][j]++;  mat[j][i]++;
         }
 
-        // 4) Determine column widths for formatting
-        int maxNameLen = stations.stream()
-                .mapToInt(s -> s.getName().length())
-                .max()
-                .orElse(4);
-        int maxValLen = 0;
-        for (int[] row : matrix) {
-            for (int v : row) {
-                maxValLen = Math.max(maxValLen, String.valueOf(v).length());
-            }
-        }
-        int w = Math.max(maxNameLen, maxValLen) + 2;
+        int nameW = st.stream().mapToInt(s -> s.getName().length()).max().orElse(4) + 2;
+        int valW  = 0;
+        for (int[] row : mat)
+            for (int v : row) valW = Math.max(valW, String.valueOf(v).length());
+        int w = Math.max(nameW, valW + 2);
+
         String nameFmt = "%" + w + "s";
         String numFmt  = "%" + w + "d";
 
-        // 5) Write to file "matrix.txt"
         try (PrintWriter out = new PrintWriter("matrix.txt")) {
-            // 5.1) Header: empty cell + station names
             out.printf(nameFmt, "");
-            for (Station s : stations) {
-                out.printf(nameFmt, s.getName());
-            }
+            for (Station s : st) out.printf(nameFmt, s.getName());
             out.println();
-
-            // 5.2) For each row: station name + counts
             for (int i = 0; i < n; i++) {
-                out.printf(nameFmt, stations.get(i).getName());
-                for (int j = 0; j < n; j++) {
-                    out.printf(numFmt, matrix[i][j]);
-                }
+                out.printf(nameFmt, st.get(i).getName());
+                for (int j = 0; j < n; j++)
+                    out.printf(numFmt, mat[i][j]);
                 out.println();
             }
             System.out.println("Matrix exported to matrix.txt");
@@ -177,149 +88,158 @@ public class RailwayGraph {
         }
     }
 
-    /**
-     * Determines whether the filtered graph (only electrified or all lines) is Eulerian,
-     * Semi‐Eulerian, or not. The steps are:
-     *   1) Build filtered adjacency matrix
-     *   2) Remove isolated vertices
-     *   3) Apply Warshall’s algorithm on the reduced subgraph to check connectivity
-     *   4) Count vertices of odd degree
-     *   5) Return an appropriate message
-     *
-     * @param onlyElectrified {@code true} to include only electrified lines; {@code false} to include all
-     * @return a message indicating Eulerian, Semi‐Eulerian, or non‐Eulerian status
-     */
-    public String buildMaintenanceRoute(boolean onlyElectrified) {
-        // 1) Sort stations
-        List<Station> stations = new ArrayList<>(stationsMap.values());
-        stations.sort(Comparator.comparing(Station::getName));
-        int n = stations.size();
+    /* ------------------------------------------------------------------ */
+    /*  Diagnostic: Eulerian / Semi / Not / Disconnected (original)       */
+    /*  Returns TRUE if a maintenance trail is possible, FALSE otherwise  */
+    /* ------------------------------------------------------------------ */
+    public boolean buildMaintenanceRoute(boolean onlyElec) {
+        List<Station> st = new ArrayList<>(stationsMap.values());
+        st.sort(Comparator.comparing(Station::getName));
+        int n = st.size();
 
-        // 2) Map Station → index
-        Map<Station, Integer> index = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            index.put(stations.get(i), i);
-        }
+        Map<Station,Integer> idx = new HashMap<>();
+        for (int i = 0; i < n; i++) idx.put(st.get(i), i);
 
-        // 3) Build filtered adjacency matrix adj[n][n]
         int[][] adj = new int[n][n];
         for (Line l : allLines) {
-            if (onlyElectrified && !l.isElectrified()) continue;
-            int i = index.get(l.getA());
-            int j = index.get(l.getB());
-            adj[i][j]++;
-            adj[j][i]++;
+            if (onlyElec && !l.isElectrified()) continue;
+            int i = idx.get(l.getA());
+            int j = idx.get(l.getB());
+            adj[i][j]++;  adj[j][i]++;
         }
 
-        // 4) Identify non‐isolated vertices
+        /* remove isolated vertices */
         List<Integer> keep = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            boolean isolated = true;
-            for (int j = 0; j < n; j++) {
-                if (adj[i][j] > 0) {
-                    isolated = false;
-                    break;
-                }
-            }
-            if (!isolated) keep.add(i);
+            for (int j = 0; j < n; j++)
+                if (adj[i][j] > 0) { keep.add(i); break; }
         }
         if (keep.isEmpty()) {
-            return "Graph has no edges → maintenance route not possible.";
+            System.out.println("Graph has no edges → maintenance route not possible.");
+            return false;
         }
 
-        // 5) Build reduced submatrix m[u][v]
-        int mSize = keep.size();
-        int[][] m = new int[mSize][mSize];
-        for (int u = 0; u < mSize; u++) {
-            for (int v = 0; v < mSize; v++) {
-                m[u][v] = adj[keep.get(u)][keep.get(v)];
-            }
-        }
+        int m = keep.size();
+        int[][] sub = new int[m][m];
+        for (int u = 0; u < m; u++)
+            for (int v = 0; v < m; v++)
+                sub[u][v] = adj[keep.get(u)][keep.get(v)];
 
-        // 6) Warshall’s algorithm on the reduced subgraph
-        boolean[][] r = new boolean[mSize][mSize];
-        for (int i = 0; i < mSize; i++) {
+        /* Warshall for connectivity on subgraph */
+        boolean[][] r = new boolean[m][m];
+        for (int i = 0; i < m; i++) {
             r[i][i] = true;
-            for (int j = 0; j < mSize; j++) {
-                if (m[i][j] > 0) r[i][j] = true;
-            }
+            for (int j = 0; j < m; j++)
+                if (sub[i][j] > 0) r[i][j] = true;
         }
-        for (int k = 0; k < mSize; k++) {
-            for (int i = 0; i < mSize; i++) {
-                if (!r[i][k]) continue;
-                for (int j = 0; j < mSize; j++) {
-                    r[i][j] = r[i][j] || r[k][j];
-                }
-            }
-        }
+        for (int k = 0; k < m; k++)
+            for (int i = 0; i < m; i++)
+                if (r[i][k])
+                    for (int j = 0; j < m; j++)
+                        r[i][j] |= r[k][j];
 
-        // 7) Verify connectivity of the subgraph
-        for (int i = 0; i < mSize; i++) {
-            for (int j = 0; j < mSize; j++) {
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < m; j++)
                 if (!r[i][j]) {
-                    return "Graph is disconnected → maintenance route not possible.";
+                    System.out.println("Graph is disconnected → maintenance route not possible.");
+                    return false;
                 }
-            }
+
+        int odd = 0;
+        for (int i = 0; i < m; i++) {
+            int deg = 0;
+            for (int j = 0; j < m; j++) deg += sub[i][j];
+            if (deg % 2 != 0) odd++;
         }
 
-        // 8) Count vertices of odd degree
-        int oddCount = 0;
-        for (int i = 0; i < mSize; i++) {
-            int degree = 0;
-            for (int j = 0; j < mSize; j++) {
-                degree += m[i][j];
-            }
-            if (degree % 2 != 0) oddCount++;
-        }
-
-        // 9) Determine Eulerian/Semi‐Eulerian/Non‐Eulerian
-        if (oddCount == 0) {
-            return "Graph is Eulerian (odd vertices = 0) → maintenance route possible.";
-        } else if (oddCount == 2) {
-            return "Graph is Semi‐Eulerian (odd vertices = 2) → maintenance route possible.";
+        if (odd == 0) {
+            System.out.println("Graph is Eulerian (odd vertices = 0) → maintenance route possible.");
+            return true;
+        } else if (odd == 2) {
+            System.out.println("Graph is Semi-Eulerian (odd vertices = 2) → maintenance route possible.");
+            return true;
         } else {
-            return "Graph is not Eulerian (odd vertices = " + oddCount + ") → maintenance route not possible.";
+            System.out.println("Graph is not Eulerian (odd vertices = " + odd + ") → maintenance route not possible.");
+            return false;
         }
     }
 
-    /**
-     * Returns a list of all stations ordered first by type (D → S → T),
-     * and then by their numeric part (substring after the first character).
-     *
-     * @return a sorted list of stations
-     */
-    public List<Station> getSortedStations() {
-        List<Station> stations = new ArrayList<>(stationsMap.values());
-        stations.sort((a, b) -> {
-            String na = a.getName();
-            String nb = b.getName();
+    /* ------------------------------------------------------------------ */
+    /*  NEW: Hierholzer trail / circuit                                   */
+    /* ------------------------------------------------------------------ */
+    public List<Station> findEulerRoute(boolean onlyElec) {
 
-            // 1) Compare by type (first character): D=0, S=1, T=2
-            char ta = Character.toUpperCase(na.charAt(0));
-            char tb = Character.toUpperCase(nb.charAt(0));
-            int orderA = (ta == 'D' ? 0 : (ta == 'S' ? 1 : 2));
-            int orderB = (tb == 'D' ? 0 : (tb == 'S' ? 1 : 2));
-            if (orderA != orderB) {
-                return Integer.compare(orderA, orderB);
+        /* 0) Build mutable adjacency list */
+        Map<Station, List<Station>> adj = new HashMap<>();
+        int edgeCnt = 0;
+        for (Line l : allLines) {
+            if (onlyElec && !l.isElectrified()) continue;
+            adj.computeIfAbsent(l.getA(), k -> new ArrayList<>()).add(l.getB());
+            adj.computeIfAbsent(l.getB(), k -> new ArrayList<>()).add(l.getA());
+            edgeCnt++;
+        }
+        if (edgeCnt == 0) return null;
+
+        /* 1) Connectivity + odd vertices */
+        Station start = adj.keySet().iterator().next();
+        Set<Station> vis = new HashSet<>();
+        dfsSimple(start, adj, vis);
+        if (vis.size() != adj.size()) return null;
+
+        List<Station> odd = new ArrayList<>();
+        for (Station v : adj.keySet())
+            if (adj.get(v).size() % 2 != 0) odd.add(v);
+        if (!(odd.size() == 0 || odd.size() == 2)) return null;
+        if (odd.size() == 2) start = odd.get(0);
+
+        /* 2) Hierholzer */
+        Deque<Station> stack = new ArrayDeque<>();
+        List<Station> path  = new ArrayList<>();
+        stack.push(start);
+
+        while (!stack.isEmpty()) {
+            Station v = stack.peek();
+            List<Station> list = adj.get(v);
+            while (!list.isEmpty() && list.get(0) == null) list.remove(0); // skip markers
+            if (list.isEmpty()) {
+                path.add(stack.pop());
+            } else {
+                Station u = list.remove(0);       // take v-u
+                adj.get(u).remove(v);             // remove back edge
+                stack.push(u);
             }
+        }
+        Collections.reverse(path);
+        return path;
+    }
 
-            // 2) If same type, compare numeric part (substring after the first character)
-            String partA = na.substring(1);
-            String partB = nb.substring(1);
+    /* simple DFS for connectivity check */
+    private void dfsSimple(Station v, Map<Station,List<Station>> adj,
+                           Set<Station> vis) {
+        if (!vis.add(v)) return;
+        for (Station u : adj.get(v)) dfsSimple(u, adj, vis);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Accessors                                                         */
+    /* ------------------------------------------------------------------ */
+    public List<Station> getSortedStations() {
+        List<Station> list = new ArrayList<>(stationsMap.values());
+        list.sort((a,b) -> {
+            char ta = Character.toUpperCase(a.getName().charAt(0));
+            char tb = Character.toUpperCase(b.getName().charAt(0));
+            int oa = (ta=='D')?0:(ta=='S'?1:2);
+            int ob = (tb=='D')?0:(tb=='S'?1:2);
+            if (oa!=ob) return oa-ob;
             try {
-                return Integer.compare(Integer.parseInt(partA), Integer.parseInt(partB));
-            } catch (NumberFormatException e) {
-                return partA.compareTo(partB);
+                return Integer.parseInt(a.getName().substring(1))
+                        - Integer.parseInt(b.getName().substring(1));
+            } catch(NumberFormatException e) {
+                return a.getName().compareTo(b.getName());
             }
         });
-        return stations;
+        return list;
     }
-
-    /**
-     * Returns an unmodifiable list of all lines (Line) in the graph.
-     *
-     * @return an unmodifiable list of lines
-     */
     public List<Line> getAllLines() {
         return Collections.unmodifiableList(allLines);
     }
