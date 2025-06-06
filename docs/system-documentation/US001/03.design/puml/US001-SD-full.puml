@@ -10,10 +10,10 @@ participant ":CreateMapUI" as UI
 participant ":CreateMapController" as Controller
 
 participant "Repositories" as Rep
-participant "Repositories\n Repository" as Repos
-participant "MapRepository \n: MapRepository" as Repository
+participant "repositories\n :Repository" as Repos
+participant "mapRepository \n: MapRepository" as Repository
 
-participant ":Map" as Map
+participant "map\n:Map" as Map
 
 activate Employee
 
@@ -36,18 +36,7 @@ activate Employee
     Employee -> UI : Gives name and size
     activate UI
 
-
-
-
-
-
-            activate UI
-
-            UI -> UI : isPositiveInteger(width)
-            UI -> UI : isPositiveInteger(height)
-            UI --> UI : valid
-            deactivate UI
-             UI --> Controller  : ValidateName(name)
+             UI -> Controller  : createMap(name,width,height)
              activate Controller
 
 
@@ -55,7 +44,7 @@ activate Employee
 
 
 
-activate Controller
+
             Controller->Rep: getInstance()
             activate Rep
 
@@ -63,19 +52,24 @@ activate Controller
             deactivate Rep
             Controller->Repos:getMapRepository
             activate Repos
-            Repos--> Controller:MapRepository
+            Repos--> Controller:mapRepository
             deactivate Repos
 
-            Controller->Repository:getMapsByName()
+            Controller->Repository:createMap(name,width,height)
             activate Repository
-            Repository-->Controller:listOfNames
+            Repository-->Map**:create(name,width,height)
+            activate Map
+            Map->Map:ispositive(widht)
+            Map->Map:ispositive(height)
+            Repository-->Controller:map
+            deactivate Map
             deactivate Repository
 
 
 
-                Controller -> Controller : isNameUnique(name)
 
-                Controller-->UI:valid
+
+                Controller-->UI:
 
                 deactivate Controller
 
@@ -88,23 +82,24 @@ activate Controller
                     activate UI
 
 
-                    UI --> Controller: createMap(name,widht,height)
+                    UI --> Controller: saveMap()
                     activate Controller
 
-                    Controller-->Map**:createMap(Name,width,height)
-                    Controller->Repository:saveMap(Map)
+                    Controller->Repository:saveMap(map)
                     activate Repository
+                    Repository->Repository:isMapNameUnique()
 
 
 
                             Repository-->Controller:true
 
                         deactivate Repository
-                        deactivate Controller
 
 
 
-                    Controller --> UI : displaySuccess("Map created successfully")
+
+                    Controller --> UI :true
+                    deactivate Controller
 
 
 

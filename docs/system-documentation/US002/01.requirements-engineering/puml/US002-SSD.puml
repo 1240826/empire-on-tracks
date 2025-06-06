@@ -12,19 +12,20 @@ activate Employee
 
     Employee -> System : Ask to add an industry.
     activate System
+System-->Employee:Show the different types of industry and ask to select .
 
-        System-->Employee:Ask for the X,Y position.
 
     deactivate System
+    Employee->System:Select one IndustryType.
 
-    Employee->System:Gives X,Y.
+
 
     activate System
-    System-->Employee:Show the different types of industry and ask one option.
+     System-->Employee:Ask for the X,Y position.
 
     deactivate System
 
-   Employee->System:Select one option.
+   Employee->System:Gives positionX,positionY.
 
    activate System
 
