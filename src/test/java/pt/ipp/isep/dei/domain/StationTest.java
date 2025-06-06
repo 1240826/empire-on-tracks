@@ -2,9 +2,9 @@ package pt.ipp.isep.dei.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pt.ipp.isep.dei.domain.StationType;    // adiciona aqui StationType
 
 import java.util.*;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,9 +16,10 @@ public class StationTest {
     @BeforeEach
     public void setUp() {
         Location location = new Location(5, 5);
-        station = new Station("S1", "Main", location, 2);
+        // em vez de (id, name, location, 2) usas o tipo 5×5
+        station = new Station("S1", "Main", location, StationType.TERMINAL_5x5);
         station.setBuildings(new ArrayList<>());
-        fixedDate = new Date(); // ou usa uma data específica se quiseres: new GregorianCalendar(1900, Calendar.JANUARY, 1).getTime();
+        fixedDate = new Date();
     }
 
     @Test
@@ -43,7 +44,11 @@ public class StationTest {
 
     @Test
     public void testCollectNearbyIndustriesCollectsCorrectly() {
-        Industry industry = new DummyIndustry("CoalMine", new Location(6, 5), new Cargo(CargoType.COAL, 10));
+        Industry industry = new DummyIndustry(
+                "CoalMine",
+                new Location(6, 5),
+                new Cargo(CargoType.COAL, 10)
+        );
         List<Industry> industries = List.of(industry);
 
         station.collectNearbyIndustries(industries);
