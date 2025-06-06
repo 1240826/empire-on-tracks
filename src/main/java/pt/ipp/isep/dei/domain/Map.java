@@ -193,6 +193,24 @@ public class Map {
         }
         return cityNames;
     }
+    /**
+     * Retrieves all City objects placed on the map.
+     *
+     * @return a {@code List} of {@link City} objects
+     */
+    public List<City> getCityObjects() {
+        List<City> cityObjects = new ArrayList<>();
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                Object obj = map[y][x];
+                if (obj instanceof City) {
+                    cityObjects.add((City) obj);
+                }
+            }
+        }
+        return cityObjects;
+    }
+
 
     /**
      * Checks if a city name already exists on the map (case-insensitive).
