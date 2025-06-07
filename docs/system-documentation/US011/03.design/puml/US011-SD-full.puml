@@ -4,45 +4,89 @@ skinparam shadowing false
 skinparam sequenceMessageAlign center
 autonumber
 
-actor ":Player" as Player
+actor ":Player" as PlayerActor
 participant ":ListTrainsUI" as UI
 participant ":ListTrainsController" as Controller
-participant ":Player" as PlayerObject
-participant "Train"
+participant "ApplicationSession" as APP_SESSION
+participant "applicationSession\n:ApplicationSession" as APP_SESSION_SINGLETON
+participant ":Player" as PlayerDomain
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "trainRepository\n:TrainRepository" as TRAIN_REPO
+participant ":TrainCollection" as TrainCollection
+participant ":Train" as Train
+participant ":TrainMapper" as TrainMapper
 
-activate Player
-Player -> UI : requests to list all trains
-activate UI
+activate PlayerActor
+    PlayerActor -> UI : requests to list all trains
+    activate UI
 
-UI -> Controller : requestTrainList()
-activate Controller
+        UI -> Controller** : create()
+        UI -> Controller : requestTrainList()
+        activate Controller
 
-Controller -> PlayerObject : getOwnedTrains()
-activate PlayerObject
-PlayerObject --> Controller : list of trains
-deactivate PlayerObject
+            Controller -> APP_SESSION : getInstance()
+            activate APP_SESSION
+                APP_SESSION --> Controller : applicationSession
+            deactivate APP_SESSION
 
-loop for each train
-    Controller -> Train : getLocomotiveType()
-    activate Train
-    Train --> Controller : locomotive
-    deactivate Train
+            Controller -> APP_SESSION_SINGLETON : getCurrentUser()
+            activate APP_SESSION_SINGLETON
+                APP_SESSION_SINGLETON --> Controller : PlayerDomain
+            deactivate APP_SESSION_SINGLETON
 
-    Controller -> Train : getName()
-    activate Train
-    Train --> Controller : name
-    deactivate Train
+            Controller -> PlayerDomain : getOwnedTrains()
+            activate PlayerDomain
+                PlayerDomain --> Controller : listOfTrains
+            deactivate PlayerDomain
 
-    Controller -> Train : getCurrentCargoes()
-    activate Train
-    Train --> Controller : list of current cargoes
-    deactivate Train
-end
+            Controller -> REPOS : getInstance()
+            activate REPOS
+                REPOS --> Controller : repositories
+            deactivate REPOS
 
-Controller --> UI : grouped and sorted list of trains
-deactivate Controller
+            Controller -> REPOS_SINGLETON : getTrainRepository()
+            activate REPOS_SINGLETON
+                REPOS_SINGLETON --> Controller : trainRepository
+            deactivate REPOS_SINGLETON
 
-UI --> Player : displays train list
-deactivate UI
-deactivate Player
+            Controller -> TrainCollection : groupAndSortTrains(listOfTrains, trainRepository)
+            activate TrainCollection
+
+                loop for each trainId in listOfTrains
+                    TrainCollection -> TRAIN_REPO : getTrainById(trainId)
+                    activate TRAIN_REPO
+                        TRAIN_REPO --> TrainCollection : train
+                    deactivate TRAIN_REPO
+
+                    create ":Train" as Train
+                    TrainCollection -> Train : getLocomotiveType()
+                    activate Train
+                        Train --> TrainCollection : locomotiveType
+                    deactivate Train
+
+                    TrainCollection -> Train : getCurrentCargoes()
+                    activate Train
+                        Train --> TrainCollection : currentCargoes
+                    deactivate Train
+                end
+
+                TrainCollection -> TrainCollection : sortAndGroupByLocomotiveTypeAndName()
+                TrainCollection --> Controller : groupedSortedTrains
+            deactivate TrainCollection
+
+            Controller -> TrainMapper : toGroupedDTO(groupedSortedTrains)
+            activate TrainMapper
+
+                create "groupedTrainDTO : GroupedTrainDTO" as GroupedDTO
+                TrainMapper --> GroupedDTO : create()
+                TrainMapper --> Controller : groupedTrainDTO
+            deactivate TrainMapper
+
+            Controller --> UI : groupedTrainDTO
+        deactivate Controller
+
+        UI --> PlayerActor : displays grouped/sorted train list
+    deactivate UI
+deactivate PlayerActor
 @enduml
