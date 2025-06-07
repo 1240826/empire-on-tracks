@@ -11,11 +11,15 @@ participant ":AddIndustryController" as Controller
 
 participant ":Map" as Map
 participant "industry\n:Industry" as Industry
-participant "IndustryType" as Type
-participant ":IndustryTypeMapper" as Mapper
-participant "listIndustryType\n:List<Industry>" as list
 
-participant "listIndustryTypeDTO\n:List<IndustryDTO>" as listDTO
+participant "Repositories" as Rep
+participant "repositories\n :Repository" as Repos
+participant "industryRepository \n: MapRepository" as Repository
+
+participant ":IndustryTypeMapper" as Mapper
+participant "listIndustry\n:List<Industry>" as list
+
+participant "listIndustryDTO\n:List<IndustryDTO>" as listDTO
 participant "industryDTO\n:IndustryDTO" as objDTO
 
 
@@ -28,13 +32,22 @@ activate UI
 UI --> Controller**: create(Map)
 UI->Controller:getIndustryTypeList()
 activate Controller
-Controller->Type:getIndustryTypeList()
-activate Type
-Type-->list**:create()
-Type-->Controller:listIndustryType
-deactivate Type
+   Controller->Rep: getInstance()
+            activate Rep
 
-Controller->Mapper: toDTO(listIndustryType)
+            Rep-->Controller:repositories
+            deactivate Rep
+            Controller->Repos:getIndustryRepository()
+            activate Repos
+            Repos--> Controller:industryRepository
+            deactivate Repos
+            Controller->Repository:getIndustryList()
+            activate Repository
+            Repository->list:create()
+            Repository-->Controller:listInsdustry
+            deactivate
+
+Controller->Mapper: toDTO(listIndustry)
 activate Mapper
 Mapper->listDTO**:create()
 loop for each Industy in list
@@ -50,9 +63,9 @@ Mapper->listDTO:add(industryDTO)
 activate listDTO
 deactivate listDTO
 end
-Mapper-->Controller:listIndustryTypeDTO
+Mapper-->Controller:listIndustryDTO
 deactivate
-Controller-->UI:listIndustryTypeDTO
+Controller-->UI:listIndustryDTO
 deactivate Controller
 UI-->Editor:Show the different types of \nindustry and ask to select one .
 deactivate UI
@@ -62,11 +75,11 @@ UI-->Editor:Ask for the X,Y position.
 deactivate UI
 Editor->UI:Gives positionX,positionY.
 activate UI
-UI->Controller:addIndustry(industryTypeDTO,positionX,positionY)
+UI->Controller:addIndustry(industryDTO,positionX,positionY)
 activate Controller
-Controller->Map:addIndustry(industryTypeDTO,positionX,positionY)
+Controller->Map:addIndustry(industryDTO,positionX,positionY)
 activate Map
-Map-->Industry**:create(industryTypeDTO,positionX,positionY)
+Map-->Industry**:create(industryDTO,positionX,positionY)
 activate Industry
 Industry-->Location**:create(positionX,positionY)
 Industry-->Map
