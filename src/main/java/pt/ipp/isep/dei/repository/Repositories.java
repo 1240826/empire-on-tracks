@@ -1,64 +1,70 @@
 package pt.ipp.isep.dei.repository;
 
 import pt.ipp.isep.dei.domain.LocomotiveCatalog;
+import pt.ipp.isep.dei.domain.Map;
 
 /**
- * Inspired by Singleton pattern to manage all repositories in the application.
+ * Inspired by the Singleton pattern to manage all repositories in the application.
  *
- * The Repositories class works as a Singleton. It defines the getInstance method that serves as an alternative
- * to the constructor and lets client classes access the same instance of this class over and over.
+ * Provides access to:
+ *  - MapRepository
+ *  - IndustryRepository
+ *  - LocomotiveCatalog
+ *  - ScenarioRepository
  */
 public class Repositories {
-    private static Repositories instance;
-    private final MapRepository repositoryMap;
-    private final IndustryRepository industryRepository;
-    private LocomotiveCatalog locomotiveCatalog = new LocomotiveCatalog();
-    private final ScenarioRepository scenarioRepository = new ScenarioRepository();
 
-    /**
-     * The Singleton's constructor should always be private to prevent direct construction calls with the new operator.
-     */
+    private static Repositories instance;
+
+    private final MapRepository      repositoryMap;
+    private final IndustryRepository industryRepository;
+    private final LocomotiveCatalog  locomotiveCatalog   = new LocomotiveCatalog();
+    private final ScenarioRepository scenarioRepository   = new ScenarioRepository();
+
+    /** Prevent direct instantiation. */
     private Repositories() {
-        repositoryMap = new MapRepository();  // Initialize the MapRepository
-        industryRepository = IndustryRepository.getInstance();
+        this.repositoryMap      = new MapRepository();
+        this.industryRepository = IndustryRepository.getInstance();
     }
 
     /**
-     * This is the static method that controls the access to the singleton instance.
-     * On the first run, it creates a singleton object and places it into the static attribute.
-     * On subsequent runs, it returns the existing object stored in the static attribute.
+     * Returns the singleton instance, creating it if necessary.
      */
     public static Repositories getInstance() {
         if (instance == null) {
             synchronized (Repositories.class) {
-                instance = new Repositories();
+                if (instance == null) {
+                    instance = new Repositories();
+                }
             }
         }
         return instance;
     }
 
     /**
-     * Returns the MapRepository instance.
-     *
-     * @return the MapRepository instance
+     * @return the MapRepository
      */
     public MapRepository getMapRepository() {
         return repositoryMap;
     }
 
-    public IndustryRepository getIndustryRepository(){
+    /**
+     * @return the IndustryRepository
+     */
+    public IndustryRepository getIndustryRepository() {
         return industryRepository;
     }
 
     /**
-     * Retrieves the locomotive catalog containing all locomotives.
-     *
-     * @return the locomotive catalog
+     * @return the LocomotiveCatalog
      */
     public LocomotiveCatalog getLocomotiveCatalog() {
         return locomotiveCatalog;
     }
 
+    /**
+     * @return the ScenarioRepository
+     */
     public ScenarioRepository getScenarioRepository() {
         return scenarioRepository;
     }
