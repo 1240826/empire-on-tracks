@@ -32,5 +32,9 @@ public class Building {
     public String toString() {
         return type + " (Added: " + dateAdded + ", Active: " + isActive + ")";
     }
+
+    public void setActive(boolean b) {
+        this.isActive = b;
+    }
 }
 

@@ -3,7 +3,11 @@ package pt.ipp.isep.dei.ui.console.menu;
 import pt.ipp.isep.dei.controller.CreateMapController;
 import pt.ipp.isep.dei.repository.Repositories;
 import pt.ipp.isep.dei.repository.MapRepository;
-import pt.ipp.isep.dei.ui.console.*;
+import pt.ipp.isep.dei.ui.console.AddCityUI;
+import pt.ipp.isep.dei.ui.console.AddIndustryUI;
+import pt.ipp.isep.dei.ui.console.CreateScenarioUI;
+import pt.ipp.isep.dei.ui.console.CreateMapUI;
+import pt.ipp.isep.dei.ui.console.menu.PlayerMenuUI;
 import pt.ipp.isep.dei.ui.console.utils.Utils;
 
 import java.util.ArrayList;
@@ -15,7 +19,7 @@ public class EditorMenuUI implements Runnable {
     public void run() {
         List<MenuItem> options = new ArrayList<>();
 
-        // Opções principais
+        // Main options
         options.add(new MenuItem("UC1: Create a New Map", this::createNewMap));
         options.add(new MenuItem("Edit Existing Map", this::editExistingMap));
         options.add(new MenuItem("Switch to Player Menu", new PlayerMenuUI()));
@@ -30,9 +34,8 @@ public class EditorMenuUI implements Runnable {
     }
 
     private void createNewMap() {
-        CreateMapUI ui = new CreateMapUI();
-        ui.setRepositoryMap(Repositories.getInstance().getMapRepository());
-        ui.setCreateMapController(new CreateMapController());
+        // Updated to match new constructor: pass CreateMapController directly
+        CreateMapUI ui = new CreateMapUI(new CreateMapController());
         ui.run();
     }
 
@@ -56,8 +59,13 @@ public class EditorMenuUI implements Runnable {
     }
 
     private void showMapEditSubmenu() {
+        MapRepository repo = Repositories.getInstance().getMapRepository();
         List<MenuItem> editOptions = new ArrayList<>();
-        AddIndustryUI industryUI = new AddIndustryUI(Repositories.getInstance(), Repositories.getInstance().getMapRepository().getCurrentMap());
+        // AddIndustryUI still expects (Repositories, Map)
+        AddIndustryUI industryUI = new AddIndustryUI(
+                Repositories.getInstance(),
+                repo.getCurrentMap()
+        );
 
         editOptions.add(new MenuItem("UC2: Add an Industry", industryUI));
         editOptions.add(new MenuItem("UC3: Add a City", new AddCityUI()));

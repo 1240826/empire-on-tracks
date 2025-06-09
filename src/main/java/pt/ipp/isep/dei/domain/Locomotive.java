@@ -95,19 +95,6 @@ public class Locomotive {
 
 
 
-    /**
-     * Unloads all cargo to the current station and clears internal load.
-     */
-
-    /**
-     * Collects cargo from the current station up to capacity.
-     */
-
-
-
-    /** Remaining capacity. */
-
-
     public Period getAvailability()         { return availability; }
     public void setAvailability(Period a)   { this.availability = a; }
 

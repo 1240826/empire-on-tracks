@@ -1,95 +1,83 @@
 package pt.ipp.isep.dei.repository;
 
 import pt.ipp.isep.dei.domain.Map;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Repository responsible for storing and managing multiple Map instances.
- * <p>
- * Maintains a list of maps and tracks a “current” map for user operations.
- * </p>
+ * Repository that stores all created {@link Map} instances
+ * and tracks the “current” one.
+ *
+ * <p><strong>New for Create-Map SD:</strong></p>
+ * <ul>
+ *   <li>{@link #createMap(String,int,int)} – builds a draft Map;</li>
+ *   <li>{@link #isMapNameUnique(String)} – checks for duplicate names.</li>
+ * </ul>
  */
 public class MapRepository {
 
-    /** Internal list of all stored maps. */
-    private List<Map> maps;
-
-    /** The currently selected map in the repository. */
+    private final List<Map> maps       = new ArrayList<>();
     private Map currentMap;
 
-    /**
-     * Constructs a MapRepository with a default initial map.
-     * <p>
-     * Creates a new default Map and sets it as the current map.
-     * </p>
-     */
+    /** Initializes with one default map. */
     public MapRepository() {
-        this.maps = new ArrayList<>();
-        this.currentMap = new Map();  // Initial default map
+        this.currentMap = new Map();
         this.maps.add(currentMap);
     }
 
-    /**
-     * Returns the currently active map.
-     *
-     * @return the current {@link Map}
-     */
+    /** @return currently active map */
     public Map getCurrentMap() {
         return currentMap;
     }
 
-    /**
-     * Sets the specified map as the current map.
-     *
-     * @param map the {@link Map} to make active
-     */
+    /** Sets the active map */
     public void setCurrentMap(Map map) {
         this.currentMap = map;
     }
 
-    /**
-     * Adds a new map to the repository without changing the current map.
-     *
-     * @param map the {@link Map} to add
-     */
-    public void addMap(Map map) {
-        this.maps.add(map);
-    }
-
-    /**
-     * Saves the given map by adding it to the repository and
-     * setting it as the current map.
-     *
-     * @param map the {@link Map} to save and activate
-     */
-    public void saveMap(Map map) {
-        addMap(map);
-        setCurrentMap(map);
-    }
-
-    /**
-     * Retrieves the names of all maps stored in the repository.
-     *
-     * @return a {@code List<String>} of map names
-     */
-    public List<String> getMapsNames() {
-        List<String> names = new ArrayList<>();
-        for (Map m : maps) {
-            names.add(m.getName());
-        }
-        return names;
-    }
+    /** @return all stored maps */
     public List<Map> getAllMaps() {
         return new ArrayList<>(maps);
     }
-    public Map getDetails(String selectedMapName) {
-        for (Map map : maps) {
-            if (map.getName().equalsIgnoreCase(selectedMapName)) {
-                return map;
-            }
-        }
+
+    /** @return names of all stored maps */
+    public List<String> getMapsNames() {
+        List<String> names = new ArrayList<>();
+        for (Map m : maps) names.add(m.getName());
+        return names;
+    }
+
+    /** @return map matching name, or null */
+    public Map getDetails(String name) {
+        for (Map m : maps)
+            if (m.getName().equalsIgnoreCase(name)) return m;
         return null;
+    }
+
+    /**
+     * Phase 1 – build a Map but do NOT persist it yet.
+     */
+    public Map createMap(String name, int width, int height) {
+        return new Map(name, width, height);
+    }
+
+    /**
+     * Checks that no existing map shares this name (case-insensitive).
+     */
+    public boolean isMapNameUnique(String name) {
+        return maps.stream()
+                .noneMatch(m -> m.getName().equalsIgnoreCase(name));
+    }
+
+    /**
+     * Phase 2 – persist and activate the Map after confirmation.
+     */
+    public void saveMap(Map map) {
+        maps.add(map);
+        setCurrentMap(map);
+    }
+
+    /** Adds a map without changing the current one. */
+    public void addMap(Map map) {
+        maps.add(map);
     }
 }

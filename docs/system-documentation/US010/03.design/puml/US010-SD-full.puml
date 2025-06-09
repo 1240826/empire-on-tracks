@@ -8,20 +8,24 @@ autonumber
 actor Player
 participant ":AssignTrainToRouteUI" as UI
 participant ":AssignTrainToRouteController" as Controller
+participant ":RouteBuilder" as RouteBuilder
 participant ":TrainRepository" as TrainRepo
 participant ":StationRepository" as StationRepo
 participant ":RouteValidator" as RouteValidator
-participant ":RailLine" as RailLine
+participant ":RailNetwork" as RailNetwork
 participant ":Route" as Route
 participant ":Train" as Train
+participant ":Station" as Station
+participant ":Carriage" as Carriage
 
 activate Player
 Player -> UI : request to assign a train to a route
 activate UI
 
+' Get player's trains
 UI -> Controller : getOwnedTrains()
 activate Controller
-Controller -> TrainRepo : getOwnedTrains()
+Controller -> TrainRepo : getOwnedTrainsByPlayer(player)
 activate TrainRepo
 TrainRepo --> Controller : list of owned trains
 deactivate TrainRepo
@@ -31,64 +35,162 @@ deactivate Controller
 UI -> Player : display list of owned trains
 Player -> UI : selects a train
 
-UI -> Controller : getAllStationsAndCargo()
-activate Controller
-Controller -> StationRepo : getAllStationsAndCargo()
-activate StationRepo
-StationRepo --> Controller : list of stations and cargoes
-deactivate StationRepo
-Controller --> UI : list of stations and cargoes
-deactivate Controller
+' Initialize route building
+UI -> RouteBuilder : createNew()
+activate RouteBuilder
+RouteBuilder --> UI : routeBuilder instance
 
-UI -> Player : display list of stations and cargo
-Player -> UI : selects stations and cargo
+'--- Begin Point-of-Route building loop ---
+loop add Points-of-Route (POR)
+    UI -> Controller : getAvailableStations()
+    activate Controller
+    Controller -> StationRepo : getAllStations()
+    activate StationRepo
+    StationRepo --> Controller : list of stations
+    deactivate StationRepo
+    Controller --> UI : list of stations
+    deactivate Controller
 
-UI -> Controller : assignRouteToTrain(trainId, stationCargoList)
-activate Controller
-Controller -> RouteValidator : validateRoute(stationCargoList)
-activate RouteValidator
+    UI -> Player : display stations
+    Player -> UI : selects station
 
-loop for each (stationA, stationB) in stationCargoList
-    RouteValidator -> RailLine : isConnected(stationA, stationB)
-    note right of RailLine
-        Checks if a direct line exists between each pair of stations.
-    end note
-    RailLine --> RouteValidator : true/false
+    UI -> Controller : getStation(stationId)
+    activate Controller
+    Controller -> StationRepo : findById(stationId)
+    activate StationRepo
+    StationRepo --> Controller : station
+    deactivate StationRepo
+
+    Controller -> Station : getAvailableCargoTypes()
+    activate Station
+    Station --> Controller : list of cargo types
+    deactivate Station
+    Controller --> UI : list of cargo types for station
+    deactivate Controller
+
+    UI -> Player : display available cargo types for station
+    Player -> UI : selects one or more cargo types
+
+    UI -> Player : display cargo mode options (FULL/HALF/AVAILABLE)
+    Player -> UI : selects cargo mode
+
+    UI -> RouteBuilder : addPointOfRoute(station, cargoTypeList, cargoMode)
+    RouteBuilder --> UI : point added successfully
 end
-' ===================================================
+'--- End Point-of-Route building loop ---
 
-RouteValidator --> Controller : route valid/invalid
-deactivate RouteValidator
+UI -> Player : ask "Add another PointOfRoute or finish?"
+alt user wants to finish
+    UI -> RouteBuilder : getPointsOfRoute()
+    RouteBuilder --> UI : list of points
 
-alt if route is valid
-    Controller -> Route : createRoute(stationCargoList)
-    activate Route
-    Route --> Controller : route
-    deactivate Route
+    alt if less than 2 points
+        UI -> Player : "At least 2 Points-of-Route required"
+    else
+        ' Validate complete route
+        UI -> Controller : validateAndAssignRoute(selectedTrain, pointsOfRoute)
+        activate Controller
+        Controller -> RouteValidator : validateRoute(pointsOfRoute)
+        activate RouteValidator
 
-    Controller -> TrainRepo : findTrainById()
-    activate TrainRepo
-    TrainRepo --> Controller : Train
-    deactivate TrainRepo
+        ' Check connectivity and circuit validity
+        loop for each consecutive pair of stations
+            RouteValidator -> RailNetwork : areConnected(stationA, stationB)
+            activate RailNetwork
+            RailNetwork --> RouteValidator : true/false
+            deactivate RailNetwork
+        end
 
-    Controller -> Train : assignRoute(route)
-    activate Train
-    Train --> Controller : success
-    deactivate Train
+        RouteValidator -> RailNetwork : isValidCircuit(allStations)
+        activate RailNetwork
+        RailNetwork --> RouteValidator : true/false
+        deactivate RailNetwork
 
-    Controller -> TrainRepo : save(train)
-    activate TrainRepo
-    TrainRepo --> Controller : saved
-    deactivate TrainRepo
+        RouteValidator --> Controller : validation result
+        deactivate RouteValidator
 
-    Controller --> UI : success message
+        alt if route is invalid
+            Controller --> UI : validation errors
+            UI -> Player : show errors
+        else
+            ' Create route
+            Controller -> Route : new Route(pointsOfRoute)
+            activate Route
+            Route --> Controller : route instance
+            deactivate Route
+
+            ' Get the train and assign route
+            Controller -> TrainRepo : findById(selectedTrainId)
+            activate TrainRepo
+            TrainRepo --> Controller : train
+            deactivate TrainRepo
+
+            Controller -> Train : assignRoute(route)
+            activate Train
+
+            ' Train reconfigures its carriages based on route requirements
+            Train -> Route : getAllCargoTypes()
+            activate Route
+            Route --> Train : distinct cargo types across all PORs
+            deactivate Route
+
+            note right of Train
+                Train destroys existing carriages
+                and creates new ones based on
+                required cargo types
+            end note
+
+            Train -> Train : destroyExistingCarriages()
+            note right of Train
+                Composition: Existing carriages
+                are destroyed when train
+                reconfigures
+            end note
+
+            loop for each distinct cargo type in route
+                Train -> Carriage : new Carriage(cargoType, capacity)
+                activate Carriage
+                note right of Carriage
+                    Composition: Carriage created
+                    and owned by train. Cannot
+                    exist independently.
+                end note
+                Carriage --> Train : carriage instance
+                deactivate Carriage
+                Train -> Train : addCarriage(carriage)
+            end
+
+            Train -> Train : validateCarriageConfiguration()
+
+            alt if carriage configuration is invalid
+                Train --> Controller : configuration error
+                Controller --> UI : error message
+                UI -> Player : show error
+            else
+                Train --> Controller : route assigned, carriages reconfigured
+
+                Controller -> TrainRepo : save(train)
+                activate TrainRepo
+                note right of TrainRepo
+                    Saves train with new route
+                    and reconfigured carriages
+                end note
+                TrainRepo --> Controller : saved
+                deactivate TrainRepo
+
+                Controller --> UI : success message with carriage details
+                UI -> Player : show success
+            end
+
+            deactivate Train
+        end
+        deactivate Controller
+    end
 else
-    Controller --> UI : failure message
+    ' Continue adding points
 end
 
-deactivate Controller
-UI -> Player : show result
-
+deactivate RouteBuilder
 deactivate UI
 deactivate Player
 @enduml
