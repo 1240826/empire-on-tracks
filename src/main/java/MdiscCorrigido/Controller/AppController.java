@@ -11,10 +11,11 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+
+
+// Classe auxiliar para devolver caminho e distânci
+
 
 /**
  * The main controller exposing functionalities to:
@@ -36,6 +37,8 @@ public class AppController {
     private final boolean onlyElectrified;
     private final TrainType defaultTrainType;
 
+
+
     public AppController(String stationsCsvPath,
                          String linesCsvPath,
                          boolean onlyElectrified) {
@@ -55,6 +58,14 @@ public class AppController {
             System.err.println("Error loading files: " + e.getMessage());
         }
     }
+    private static class DijkstraResult {
+        final List<Station> path;
+        final double distance;
+        DijkstraResult(List<Station> path, double distance) {
+            this.path = path;
+            this.distance = distance;
+        }
+    }
 
     /**
      * Opens the main menu (options 1 to 4, and 0 to exit).
@@ -72,6 +83,7 @@ public class AppController {
             System.out.println(" 2) Check reachability A→B and save closure");
             System.out.println(" 3) Display full network graph");
             System.out.println(" 4) Find maintenance route");
+            System.out.println(" 5) Find fastest path between two stations");  // <<< nova linha
             System.out.println(" 0) Exit");
             System.out.print("Select an option: ");
             choice = sc.nextInt();
@@ -90,6 +102,9 @@ public class AppController {
                 case 4:
                     findMaintenanceRoute();
                     break;
+                case 5:                                   // <<< novo case
+                    findFastestPath(sc);
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -100,6 +115,7 @@ public class AppController {
 
         sc.close();
     }
+
 
     /**
      * Option 1: Exports the adjacency matrix to "matrix.txt".
@@ -358,6 +374,122 @@ public class AppController {
         // 5) mostra rota em gráfico (azul/vermelho)
         displayRouteGraph(trail);
     }
+
+    private void findFastestPath(Scanner sc) {
+        // 1) Lista e indices
+        List<Station> stations = graph.getSortedStations();
+        for (int i = 0; i < stations.size(); i++) {
+            System.out.printf("%2d) %s%n", i, stations.get(i).getName());
+        }
+        System.out.print("Origem (índice): ");
+        int srcIdx = sc.nextInt();
+        System.out.print("Destino (índice): ");
+        int dstIdx = sc.nextInt();
+        sc.nextLine();
+
+        // 2) Paragens intermédias
+        System.out.print("Quantas paragens intermédias quer adicionar? ");
+        int k = sc.nextInt();
+        sc.nextLine();
+        List<Station> points = new ArrayList<>();
+        points.add(stations.get(srcIdx));
+        for (int i = 0; i < k; i++) {
+            System.out.printf("Paragem %d (índice): ", i + 1);
+            int pi = sc.nextInt();
+            sc.nextLine();
+            points.add(stations.get(pi));
+        }
+        points.add(stations.get(dstIdx));
+
+        // 3) Executa Dijkstra para cada tramo
+        double totalDist = 0;
+        List<Station> fullPath = new ArrayList<>();
+        for (int i = 0; i < points.size() - 1; i++) {
+            Station a = points.get(i), b = points.get(i + 1);
+            DijkstraResult res = dijkstra(a, b);
+            if (res == null) {
+                System.out.printf("❌ Sem caminho entre %s e %s%n", a.getName(), b.getName());
+                return;
+            }
+            totalDist += res.distance;
+            if (i == 0) fullPath.addAll(res.path);
+            else fullPath.addAll(res.path.subList(1, res.path.size()));
+        }
+
+        if (!fullPath.isEmpty()) {
+            StringBuilder route = new StringBuilder();
+            for (int i = 0; i < fullPath.size(); i++) {
+                if (i > 0) route.append(';');
+                route.append(fullPath.get(i).getName());
+            }
+            // %.0f para arredondar para inteiro
+            System.out.printf("route [%s] with length %.0f km;%n",
+                    route.toString(),
+                    totalDist);
+        } else {
+            System.out.println("❌ Não foi possível determinar o caminho.");
+        }
+    }
+
+    private DijkstraResult dijkstra(Station src, Station dst) {
+        // 1) Constrói lista de adjacência de linhas
+        Map<Station, List<Line>> adjLines = new HashMap<>();
+        for (Line l : graph.getAllLines()) {
+            if (defaultTrainType == TrainType.ELECTRIC && !l.isElectrified()) continue;
+            adjLines.computeIfAbsent(l.getA(), x -> new ArrayList<>()).add(l);
+            adjLines.computeIfAbsent(l.getB(), x -> new ArrayList<>()).add(l);
+        }
+
+        // 2) Inicializa distâncias e predecessores
+        Map<Station, Double> dist = new HashMap<>();
+        Map<Station, Station> prev = new HashMap<>();
+        List<Station> unvisited = new ArrayList<>(adjLines.keySet());
+        for (Station s : unvisited) {
+            dist.put(s, Double.POSITIVE_INFINITY);
+        }
+        dist.put(src, 0.0);
+
+        // 3) Loop principal sem PriorityQueue
+        while (!unvisited.isEmpty()) {
+            // A) escolhe u = vértice em unvisited com menor dist
+            Station u = null;
+            double best = Double.POSITIVE_INFINITY;
+            for (Station s : unvisited) {
+                double d = dist.getOrDefault(s, Double.POSITIVE_INFINITY);
+                if (d < best) {
+                    best = d;
+                    u = s;
+                }
+            }
+            if (u == null || best == Double.POSITIVE_INFINITY) break;
+            unvisited.remove(u);
+            if (u.equals(dst)) break;
+
+            // B) relaxa arestas saindo de u
+            for (Line l : adjLines.getOrDefault(u, new ArrayList<>())) {
+                Station v = l.getA().equals(u) ? l.getB() : l.getA();
+                double alt = dist.get(u) + l.getDistance();
+                if (alt < dist.getOrDefault(v, Double.POSITIVE_INFINITY)) {
+                    dist.put(v, alt);
+                    prev.put(v, u);
+                }
+            }
+        }
+
+        // 4) Se não chegou a dst, sem caminho
+        if (!prev.containsKey(dst) && !src.equals(dst)) return null;
+
+        // 5) Reconstrói caminho de trás para a frente
+        List<Station> path = new ArrayList<>();
+        for (Station at = dst; at != null; at = prev.get(at)) {
+            path.add(at);
+            if (at.equals(src)) break;
+        }
+        Collections.reverse(path);
+        return new DijkstraResult(path, dist.get(dst));
+    }
+
+
 
 
 
