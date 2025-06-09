@@ -4,27 +4,28 @@ skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
 
-class BuyLocomotiveUI {
-}
+class BuyLocomotiveUI {}
 
 class BuyLocomotiveController {
-    + requestAvailableLocomotives() : List<Locomotive>
+    + requestAvailableLocomotives() : LocomotiveListDTO
     + buyLocomotiveAsTrain(locomotiveID: String, trainName: String) : int
 }
 
-class LocomotiveCatalog {
-    + getAvailableLocomotives() : List<Locomotive>
+class LocomotiveRepository {
+    + getAvailableLocomotives(currentDate: LocalDateTime) : List<Locomotive>
+    + findLocomotiveById(id: String) : Locomotive
+}
+
+class PlayerRepository {
+    + save(player: Player) : void
+    + findById(id: String) : Player
 }
 
 class Repositories {
+    - Repositories()
     + {static} getInstance() : Repositories
-    + getLocomotiveCatalog() : LocomotiveCatalog
-}
-
-class Player {
-    + hasSufficientBudget(price: double) : boolean
-    + buyLocomotive(locomotive: Locomotive) : void
-    + addTrain(train: Train) : void
+    + getLocomotiveRepository() : LocomotiveRepository
+    + getPlayerRepository() : PlayerRepository
 }
 
 class Locomotive {
@@ -42,42 +43,63 @@ class Locomotive {
 }
 
 class Train {
+    - plateNumber : String
     - name : String
     - locomotive : Locomotive
-    - route : List<Station>
+    - route : List<PointofRoute>
+    - carriages : List<Carriage>
     - cargoes : List<Cargo>
-    + Train(name: String, locomotive: Locomotive, route: List<Station>, cargoes: List<Cargo>)
+    + Train(plateNumber: String, name: String, locomotive: Locomotive)
 }
 
-' Relationships
+class Player {
+    - budget : double
+    - ownedTrains : List<Train>
+    + hasSufficientBudget(price: double) : boolean
+    + deductPrice(price: double) : void
+    + createUniquePlateNumber() : String
+    + addTrain(train: Train) : void
+}
+
+class LocomotiveMapper {
+    + toDTO(locomotives: List<Locomotive>) : LocomotiveListDTO
+    + toDTO(locomotive: Locomotive) : LocomotiveDTO
+}
+
+class LocomotiveListDTO {}
+class LocomotiveDTO {}
+
 
 BuyLocomotiveUI .> BuyLocomotiveController
-
 BuyLocomotiveController .> Repositories
-BuyLocomotiveController ..> LocomotiveCatalog
+BuyLocomotiveController ..> LocomotiveRepository
+BuyLocomotiveController ..> PlayerRepository
+BuyLocomotiveController ..> LocomotiveMapper
 BuyLocomotiveController ..> Player
 BuyLocomotiveController ..> Locomotive
 BuyLocomotiveController ..> Train
 
-Repositories --> LocomotiveCatalog : locomotiveCatalog
+Repositories -> "1" Repositories : instance
+Repositories --> "1" LocomotiveRepository : locomotiveRepository
+Repositories --> "1" PlayerRepository : playerRepository
 
-Player  o--  Locomotive : ownedLocomotives
-Player  o--  Train       : ownedTrains
+LocomotiveRepository --> "*" Locomotive : locomotives
+PlayerRepository --> "*" Player : players
 
-LocomotiveCatalog --> "*" Locomotive : availableLocomotives
+Player o-- "*" Train : ownedTrains
+Train *-- Locomotive
+LocomotiveMapper ..> LocomotiveListDTO
+LocomotiveMapper ..> LocomotiveDTO
 
 note right of BuyLocomotiveController
-  Coordinates:
-  - fetch catalog via Repositories
-  - validate train name
-  - check budget
-  - buy locomotive & create Train
+  train name is retrieved from inputted data
 end note
 
 note right of Player
-  Holds budget and collections:
-  - ownedLocomotives
-  - ownedTrains
+  Responsible for:
+  - budget
+  - owned trains
+  - unique plate generation
 end note
 
 @enduml

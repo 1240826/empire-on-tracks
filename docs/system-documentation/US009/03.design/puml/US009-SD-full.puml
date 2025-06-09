@@ -130,8 +130,13 @@ activate UI
                         PlayerDomain --> PlayerDomain : true
                         deactivate PlayerDomain
 
+             PlayerDomain -> PlayerDomain : createUniquePlateNumber()
+                        activate PlayerDomain
+                        PlayerDomain --> PlayerDomain : plateNumber
+                        deactivate PlayerDomain
+
                 create ":Train" as Train
-                PlayerDomain --> Train : create(trainName, Locomotive)
+            PlayerDomain --> Train : create(plateNumber, trainName, \nLocomotive)
 
 
                 PlayerDomain -> PlayerDomain : addTrain(train)
