@@ -5,6 +5,7 @@ import pt.ipp.isep.dei.domain.Locomotive;
 import pt.ipp.isep.dei.domain.Train;
 import pt.ipp.isep.dei.repository.Repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class BuyLocomotiveController {
         player.buyLocomotive(chosen);
 
         // 5. Create and add new train
-        Train newTrain = new Train(trainName, chosen, List.of(), List.of());
+        Train newTrain = new Train(trainName, chosen, new ArrayList<>(), new ArrayList<>());
         player.addTrain(newTrain);
 
         return 0; // Success

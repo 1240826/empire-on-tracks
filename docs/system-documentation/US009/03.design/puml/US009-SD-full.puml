@@ -18,7 +18,6 @@ participant ":LocomotiveMapper" as LocoMapper
 participant "availableLocomotiveList \n:List<Locomotive>" as LocoList
 participant "locomotiveListDTO \n:LocomotiveListDTO" as LocoListDTO
 participant "locomotiveDTO \n:LocomotiveDTO" as LocoDTO
-participant ":TrainPurchaseService" as PurchaseService
 participant ":Player" as PlayerDomain
 
 activate PlayerActor
@@ -85,18 +84,22 @@ activate PlayerActor
             Controller --> UI : locomotiveListDTO
         deactivate Controller
 
-        UI --> PlayerActor : shows list and requests selection
+        UI --> PlayerActor : shows available locomotives \nand asks to select one
     deactivate UI
 
 PlayerActor -> UI : selects a locomotive
 activate UI
-    UI -> PlayerActor : prompt for train name
+    UI -> PlayerActor : asks for train name
 deactivate UI
 
 PlayerActor -> UI : enters train name
 activate UI
+    UI -> PlayerActor : shows all data \nand requests confirmation
+deactivate UI
 
-    UI -> Controller : buyLocomotiveAsTrain(PurchaseRequestDTO)
+PlayerActor -> UI : confirms data
+activate UI
+    UI -> Controller : buyLocomotiveAsTrain(locomotiveId,\n trainName)
     activate Controller
 
         Controller -> REPOS : getInstance()
@@ -114,38 +117,38 @@ activate UI
             LOCO_REPO --> Controller : Locomotive
         deactivate LOCO_REPO
 
-        Controller -> PurchaseService : purchaseLocomotive(Player, Locomotive, trainName)
-        activate PurchaseService
-
-            PurchaseService -> PlayerDomain : createTrain(locomotive, \ntrainName)
+        Controller -> PlayerDomain : buyLocomotiveAsTrain(Player, Locomotive, trainName)
             activate PlayerDomain
 
+            PlayerDomain -> PlayerDomain : hasSufficientBudget(locomotiveCost)
+            activate PlayerDomain
+            PlayerDomain --> PlayerDomain : true
+            deactivate PlayerDomain
+
+            PlayerDomain -> PlayerDomain : deductPrice(locomotiveCost)
+                        activate PlayerDomain
+                        PlayerDomain --> PlayerDomain : true
+                        deactivate PlayerDomain
+
                 create ":Train" as Train
-                PlayerDomain --> Train : create(trainName, \nlocomotive, Player)
+                PlayerDomain --> Train : create(trainName, Locomotive)
 
 
                 PlayerDomain -> PlayerDomain : addTrain(train)
                 activate PlayerDomain
                 PlayerDomain -> PlayerDomain : validateTrain(train)
                                 activate PlayerDomain
-
+                PlayerDomain --> PlayerDomain : true
                 deactivate PlayerDomain
+                PlayerDomain --> PlayerDomain : true
+                PlayerDomain --> Controller : success
+                                deactivate PlayerDomain
 
-                PlayerDomain --> PurchaseService : train
-            deactivate PlayerDomain
 
-            create ":TrainMapper" as TrainMapper
-            PurchaseService -> TrainMapper : toDTO(train)
-            activate TrainMapper
-                TrainMapper --> PurchaseService : TrainDTO
-            deactivate TrainMapper
 
-            PurchaseService --> Controller : TrainDTO
-        deactivate PurchaseService
 
-    Controller --> UI : TrainDTO
+    Controller --> UI : success
     deactivate Controller
-    activate UI
 
     UI --> PlayerActor : displays purchase success
 deactivate UI

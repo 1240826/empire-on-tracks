@@ -19,13 +19,19 @@ activate Player
     Player -> System : selects a locomotive
     activate System
 
-            System --> Player : shows selected locomotive and requests confirmation
+            System --> Player : asks for train name
+    deactivate System
+
+    Player -> System : enters train name
+        activate System
+
+            System --> Player : shows all data and requests confirmation
     deactivate System
 
     Player -> System : confirms selection
     activate System
 
-        System --> Player : displays purchase success message
+        System --> Player : displays purchase success
     deactivate System
 
 @enduml
