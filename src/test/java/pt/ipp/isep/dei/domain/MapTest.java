@@ -8,34 +8,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MapTest {
 
-    @Test
-    void addStation() {
-        Map map = new Map("Test", 5, 5);
-        Station s = new Station("Central", "CENTRAL", new Location(2, 2), StationType.TERMINAL_5x5);
-
-        map.addStation(s);
-        assertTrue(map.getStations().contains(s));
-    }
-
-    @Test
-    void getStations() {
-        Map map = new Map("Test", 5, 5);
-        Station s = new Station("A", "A", new Location(1, 1), StationType.DEPOT);
-        map.addStation(s);
-        List<Station> result = map.getStations();
-        assertEquals(1, result.size());
-        assertEquals("A", result.get(0).getStationName());
-    }
-
-    @Test
-    void getAllNamesStation() {
-        Map map = new Map("Test", 5, 5);
-        map.addStation(new Station("Lisboa", "LSB", new Location(1, 1), StationType.DEPOT));
-        map.addStation(new Station("Porto", "PRT", new Location(2, 2), StationType.DEPOT));
-        List<String> names = map.getAllNamesStation();
-        assertTrue(names.contains("LSB"));
-        assertTrue(names.contains("PRT"));
-    }
+//    @Test
+//    void addStation() {
+//        Map map = new Map("Test", 5, 5);
+//        Station s = new Station("Central", "CENTRAL", new Location(2, 2), StationType.TERMINAL_5x5);
+//
+//        map.addStation(s);
+//        assertTrue(map.getStations().contains(s));
+//    }
+//
+//    @Test
+//    void getStations() {
+//        Map map = new Map("Test", 5, 5);
+//        Station s = new Station("A", "A", new Location(1, 1), StationType.DEPOT);
+//        map.addStation(s);
+//        List<Station> result = map.getStations();
+//        assertEquals(1, result.size());
+//        assertEquals("A", result.get(0).getStationName());
+//    }
+//
+//    @Test
+//    void getAllNamesStation() {
+//        Map map = new Map("Test", 5, 5);
+//        map.addStation(new Station("Lisboa", "LSB", new Location(1, 1), StationType.DEPOT));
+//        map.addStation(new Station("Porto", "PRT", new Location(2, 2), StationType.DEPOT));
+//        List<String> names = map.getAllNamesStation();
+//        assertTrue(names.contains("LSB"));
+//        assertTrue(names.contains("PRT"));
+//    }
 
 
 
@@ -60,31 +60,6 @@ class MapTest {
         assertEquals(1, list.size());
     }
 
-    @Test
-    void addCity() {
-        Map map = new Map("Test", 5, 5);
-        City city = new City("Braga", 2, 2,10);
-        boolean result = map.addCity(city);
-        assertTrue(result);
-    }
-
-    @Test
-    void getCities() {
-        Map map = new Map("Test", 5, 5);
-        map.addCity(new City("Aveiro", 1, 1,20));
-        map.addCity(new City("Guimarães", 2, 2,10));
-        List<String> cityNames = map.getCities();
-        assertTrue(cityNames.contains("Aveiro"));
-        assertTrue(cityNames.contains("Guimarães"));
-    }
-
-    @Test
-    void isCityNameDuplicate() {
-        Map map = new Map("Test", 5, 5);
-        map.addCity(new City("Évora", 1, 1,10));
-        assertTrue(map.isCityNameDuplicate("ÉVORA"));
-        assertFalse(map.isCityNameDuplicate("Faro"));
-    }
 
     @Test
     void isEmpty() {

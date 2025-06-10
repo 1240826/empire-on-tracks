@@ -53,6 +53,8 @@ public class Map {
     /** Optional scenario for applying dynamic events to the map. */
     private Scenario scenario;
 
+    private List<City> cities = new ArrayList<>();
+
     /* ------------------------------------------------------------------
      * Construction
      * ---------------------------------------------------------------- */
@@ -155,37 +157,36 @@ public class Map {
     /* ------------------------------------------------------------------
      * CITIES  (unchanged)
      * ---------------------------------------------------------------- */
-    public boolean addCity(City city) {
-        int x = city.getCenterX(), y = city.getCenterY();
-        if (!isEmpty(x, y)) {
-            System.out.println("Overbuilding");
-            return false;
+    public boolean cityExists(String name) {
+        return cities.stream().anyMatch(city -> city.getName().equalsIgnoreCase(name));
+    }
+
+    public City create(String name, int positionX, int positionY, int houseBlockCount, String assignmentMethod,
+                       List<Integer> manualPosX, List<Integer> manualPosY) {
+
+        City city = new City(name, positionX, positionY, houseBlockCount, assignmentMethod);
+
+        city.validateName();
+        city.validateHouseBlocks();
+
+        if (assignmentMethod.equals("manual")) {
+            city.createHouseBlocksManually(manualPosX, manualPosY);
+        } else {
+            city.createHouseBlocksAutomatically();
         }
-        city.assignHouseBlocksAutomatic();
-        map[y][x] = city;
-        return true;
+
+        cities.add(city);
+        return city;
     }
 
-    public List<String> getCities() {
-        List<String> cityNames = new ArrayList<>();
-        for (int y = 0; y < getHeight(); y++)
-            for (int x = 0; x < getWidth(); x++)
-                if (map[y][x] instanceof City c) cityNames.add(c.getName());
-        return cityNames;
+    public boolean removeCity(String name) {
+        return cities.removeIf(city -> city.getName().equalsIgnoreCase(name));
     }
 
-    public List<City> getCityObjects() {
-        List<City> cityObjects = new ArrayList<>();
-        for (int y = 0; y < getHeight(); y++)
-            for (int x = 0; x < getWidth(); x++)
-                if (map[y][x] instanceof City c) cityObjects.add(c);
-        return cityObjects;
+    public List<City> getCities() {
+        return cities;
     }
 
-    public boolean isCityNameDuplicate(String cityName) {
-        return getCities().stream()
-                .anyMatch(n -> n.equalsIgnoreCase(cityName));
-    }
 
     /* ------------------------------------------------------------------
      * GRID HELPERS — isEmpty expanded with JavaDoc
@@ -297,3 +298,4 @@ public class Map {
 
     public void setName(String name) { this.name = name; }
 }
+

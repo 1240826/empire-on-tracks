@@ -8,135 +8,120 @@ autonumber
 actor "Editor" as Editor
 participant ":AddCityUI"            as UI
 participant ":AddCityController"    as CTRL
-participant "Repositories"          as REPOS
-participant "repositories\n:Repositories" as REPOS_SINGLETON
-participant ":Map"                  as Map
-participant ":city\nCity"                 as City
+participant "map\n:Map"                  as Map
+participant "city\n:City"           as City
 participant ":HouseBlock"           as HouseBlock
 participant ":Location"             as Location
-participant "mapRepository\n:MapRepository" as MAP_REPO
 
 activate Editor
 
-    Editor -> UI : asks to add a city
-    activate UI
-        UI --> CTRL** : create()
+Editor -> UI : asks to add a city
+activate UI
+    UI --> CTRL**: create(map)
 
-    activate CTRL
-
-
-
-
-UI --> Editor : requests city details (name, positionX, positionY, number of house blocks)
+    UI --> Editor : requests city details (name, positionX, positionY, houseBlockCount\n houseblockAssignmentMethod)
 deactivate UI
+
 Editor -> UI : types city details
 activate UI
+UI --> Editor: shows all data and requests confirmation
+deactivate UI
+Editor -> UI: confirms data
+activate UI
 
-    UI -> CTRL : submitCityDetails(name, positionX, positionY, houseBlocks)
+alt method = "manual"
+    loop for each houseblock
+        UI --> Editor : request positions of house blocks
+        deactivate UI
+        Editor -> UI : submits positions
+        activate UI
+    end
+
+     UI -> CTRL : createCity(name, positionX, positionY, houseBlockCount,\n houseblockAssignmentMethod, positionXHouseblock, positionYhouseblock)
+        activate CTRL
+         CTRL -> Map : isCityNameDuplicate(name)
+                activate Map
+                    Map --> CTRL : false
+                deactivate Map
+        CTRL -> Map : create(name, positionX, positionY, houseBlockCount,\n houseblockAssignmentMethod, positionXHouseblock, positionYhouseblock)
+        activate Map
+
+        Map --> City**: create(name, positionX, positionY, houseBlockCount,\n houseblockAssignmentMethod, positionXHouseblock, positionYhouseblock)
+        activate City
+        City -> City : validateName()
+                    activate City
+                    deactivate City
+                    City -> City : validateHouseBlocks()
+                    activate City
+                    deactivate City
+        loop for each houseblock
+         City --> HouseBlock** : create(positionXHouseblock,positionYHouseblock)
+         activate HouseBlock
+         HouseBlock --> Location** : create(positionXHouseblock, positionYHouseblock)
+         deactivate Location
+         deactivate HouseBlock
+         City -> City : addHouseBlock(block)
+         activate City
+         deactivate City
+         end
+            Map --> CTRL: city
+
+         deactivate City
+         deactivate Map
+
+        CTRL --> UI : city
+
+    deactivate CTRL
+
+else method = "automatic"
+
+    UI -> CTRL : createCity(name, positionX, positionY,\n houseBlockCount, houseblockAssignmentMethod)
     activate CTRL
 
         CTRL -> Map : isCityNameDuplicate(name)
-          activate Map
-          Map --> CTRL : true
-          deactivate Map
+        activate Map
+            Map --> CTRL : false
+        deactivate Map
 
-
-        CTRL -> City** : createCity(name, positionX, positionY, houseBlocks)
+        CTRL -> Map : create(name, positionX, positionY, houseBlockCount, houseblockAssignmentMethod)
+        activate Map
+        Map --> City** : create(name, positionX, positionY,\n houseBlockCount, houseblockAssignmentMethod)
         activate City
             City -> City : validateName()
-            City -> City : validateHouseBlocks()
-             City --> CTRL : city
-        deactivate City
-        deactivate CTRL
-
-
-        opt name duplicated
-            CTRL --> UI : warn("City name is already in use")
-            activate CTRL
-        end
-            CTRL --> UI : requests assignment method\n(manual or automatic)
-    deactivate CTRL
-
-
-UI --> Editor : requests to select house block assignment method (manual or automatic)
-deactivate UI
-Editor -> UI : selects assignment method "automatic" or "manual"
-activate UI
-
-    alt method = "automatic"
-        UI -> CTRL : selectedAssignmentMethod("automatic")
-        activate CTRL
-
-            CTRL -> City : getCityCenter()
             activate City
-                City --> CTRL : center
             deactivate City
-
-            loop for each houseblock
-                CTRL -> Location : computeBlockPosition(center)
-                activate Location
-                    Location --> CTRL : position
-                deactivate Location
-
-                CTRL -> HouseBlock : createAt(position)
+            City -> City : validateHouseBlocks()
+            activate City
+            deactivate City
+            City -> City : createHouseBlocksAutomatically()
+            activate City
+            deactivate City
+            loop for each house block
+                City -> City : computeRelativePosition(center)
+                activate City
+                deactivate City
+                City --> HouseBlock** : create(positionXHouseblock,positionYHouseblock)
                 activate HouseBlock
-                    HouseBlock --> CTRL : houseBlock
-                deactivate HouseBlock
+                HouseBlock --> Location** : create(positionXHouseblock,positionYHouseblock)
 
-                CTRL -> City : addHouseBlock(houseBlock)
+                deactivate Location
+                deactivate HouseBlock
+                City -> City : addHouseBlock(block)
                 activate City
-                City --> CTRL : houseBlocks
                 deactivate City
             end
             deactivate City
-        deactivate CTRL
+        Map --> CTRL : city
+        deactivate Map
 
-    else method = "manual"
-        UI --> Editor : request positions of house blocks
-        deactivate UI
-        Editor -> UI : submits positionX, positionY
-        activate UI
-        UI -> CTRL : selectedAssignmentMethod("manual", positions)
-        activate CTRL
 
-            CTRL -> Map : validateCoordinates(positions)
-            activate Map
-                Map --> CTRL : true
-            deactivate Map
-
-            alt positions valid
-                CTRL -> City : assignHouseBlocksManually(positions)
-                activate City
-                City --> CTRL : houseBlocks
-                deactivate City
-            else positions invalid
-                CTRL --> UI : warn("Coordinates out of bounds")
-            end
-    end
-    CTRL --> UI: city details
-            deactivate CTRL
-
-    UI --> Editor : shows all data (city details) and requests confirmation
-deactivate UI
-
-Editor -> UI : confirms data
-activate UI
-
-    UI -> CTRL : confirmCityCreation()
-    activate CTRL
-
-        CTRL -> Map : addCity(city)
-        activate Map
-            Map -> Map : integrate city internally
-            Map --> MAP_REPO: saveMap()
-            activate MAP_REPO
-            deactivate MAP_REPO
-Map --> CTRL: city
-deactivate Map
-CTRL --> UI: city
+        CTRL --> UI : city
     deactivate CTRL
-    UI -->  Editor: display operation success
+end
+
+UI --> Editor : displays operation success
 deactivate UI
+
 
 deactivate Editor
 @enduml

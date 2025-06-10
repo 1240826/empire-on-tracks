@@ -66,33 +66,33 @@ public class BuildStationUI implements Runnable {
         int y = Integer.parseInt(scanner.nextLine().trim());
 
         // Step 4: Suggest name based on closest city
-        String name;
-        City closestCity = controller.getClosestCity(x, y);
-        if (closestCity != null) {
-            System.out.println("Closest city detected: " + closestCity.getName());
+//        String name;
+//        City closestCity = controller.getClosestCity(x, y);
+//        if (closestCity != null) {
+//            System.out.println("Closest city detected: " + closestCity.getName());
+//
+//            Station closestStation = controller.getClosestStationToCity(closestCity);
+//            if (closestStation != null) {
+//                System.out.println("Closest existing station to " + closestCity.getName() + ": "
+//                        + closestStation.getStationName());
+//            }
 
-            Station closestStation = controller.getClosestStationToCity(closestCity);
-            if (closestStation != null) {
-                System.out.println("Closest existing station to " + closestCity.getName() + ": "
-                        + closestStation.getStationName());
-            }
-
-            System.out.print("Do you want to name the station '" + closestCity.getName() + " Station'? (yes/no): ");
-            String answer = scanner.nextLine().trim().toLowerCase();
-            if (answer.equals("yes") || answer.equals("y")) {
-                name = closestCity.getName() + " Station";
-            } else {
-                System.out.print("Enter your desired station name: ");
-                name = scanner.nextLine().trim();
-            }
-        } else {
-            System.out.print("No nearby cities found. Enter your desired station name: ");
-            name = scanner.nextLine().trim();
-        }
-
-        // Step 5: Build station
-        boolean result = controller.buildStation(name, x, y, types[selected], anchorDirection);
-
-        System.out.println(result ? "✅ Station built successfully!" : "❌ Error: Failed to build station (area may be occupied or invalid).");
-    }
+//            System.out.print("Do you want to name the station '" + closestCity.getName() + " Station'? (yes/no): ");
+//            String answer = scanner.nextLine().trim().toLowerCase();
+//            if (answer.equals("yes") || answer.equals("y")) {
+//                name = closestCity.getName() + " Station";
+//            } else {
+//                System.out.print("Enter your desired station name: ");
+//                name = scanner.nextLine().trim();
+//            }
+//        } else {
+//            System.out.print("No nearby cities found. Enter your desired station name: ");
+//            name = scanner.nextLine().trim();
+//        }
+//
+//        // Step 5: Build station
+//        boolean result = controller.buildStation(name, x, y, types[selected], anchorDirection);
+//
+//        System.out.println(result ? "✅ Station built successfully!" : "❌ Error: Failed to build station (area may be occupied or invalid).");
+   }
 }

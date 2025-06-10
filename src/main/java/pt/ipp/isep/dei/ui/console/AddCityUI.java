@@ -2,165 +2,115 @@ package pt.ipp.isep.dei.ui.console;
 
 import pt.ipp.isep.dei.controller.AddCityController;
 import pt.ipp.isep.dei.domain.City;
-import pt.ipp.isep.dei.domain.HouseBlock;
-import pt.ipp.isep.dei.domain.Location;
+import pt.ipp.isep.dei.domain.Map;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
-/**
- * Console-based user interface for the "Add City" use case.
- *
- * Guides the editor through creating a new City with its center and house blocks,
- * supporting both automatic and manual block assignment methods.
- */
 public class AddCityUI implements Runnable {
-    private final AddCityController controller = new AddCityController();
-    private final Scanner sc = new Scanner(System.in);
 
-    /**
-     * Starts the interactive "Add City" flow.
-     * <p>
-     * Steps:
-     * <ol>
-     *   <li>Initialize the controller.</n     *   <li>Collect city name, center coordinates, and house block count.</li>
-     *   <li>Choose assignment method (automatic/manual).</li>
-     *   <li>If manual, collect each block's coordinates.</li>
-     *   <li>Attempt block assignment, retrying on errors.</li>
-     *   <li>Display a review summary and confirm creation.</li>
-     * </ol>
-     */
-    public void start() {
-        System.out.println("=== Add New City ===");
+    private AddCityController controller;
 
-        // Initialize controller state
-        controller.startAddCity();
+    public void start(Map map) {
+        Scanner scanner = new Scanner(System.in);
+        controller = new AddCityController(map);
 
-        // Collect basic city data
-        System.out.print("Name: ");
-        String name = sc.nextLine().trim();
-
-        System.out.print("Position X: ");
-        int x = readInt();
-
-        System.out.print("Position Y: ");
-        int y = readInt();
-
-        System.out.print("Number of House Blocks: ");
-        int hbCount = readInt();
-
-        City city;
-        try {
-            city = controller.submitCityDetails(name, x, y, hbCount);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error: " + e.getMessage());
-            return;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        // Choose assignment method
-        String method;
         while (true) {
-            System.out.print("Assignment method (automatic/manual): ");
-            method = sc.nextLine().trim().toLowerCase();
-            if (method.equals("automatic") || method.equals("manual")) {
-                break;
-            }
-            System.out.println("Invalid option. Type 'automatic' or 'manual'.");
-        }
+            System.out.println("\n=== City Management Menu ===");
+            System.out.println("1. Add new city");
+            System.out.println("2. Remove city");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
 
-        // Collect house block positions if manual assignment
-        List<Location> positions = new ArrayList<>();
+            switch (option) {
+                case 1:
+                    addCity(scanner);
+                    break;
+                case 2:
+                    removeCity(scanner);
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+
+    private void addCity(Scanner scanner) {
+        System.out.print("Enter city name: ");
+        String name = scanner.nextLine();
+
+        // Pede as coordenadas da cidade
+        System.out.print("Enter city X position: ");
+        int posX = scanner.nextInt();
+
+        System.out.print("Enter city Y position: ");
+        int posY = scanner.nextInt();
+
+        // Pede a quantidade de blocos de casa
+        System.out.print("Enter number of house blocks: ");
+        int houseBlockCount = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Choose house block assignment method:");
+        System.out.println("1. Manual");
+        System.out.println("2. Automatic");
+        System.out.print("Your choice: ");
+        int methodOption = scanner.nextInt();
+        scanner.nextLine();
+        String method = (methodOption == 1) ? "manual" : "automatic";
+
+        // Caso o método seja manual, pedimos as coordenadas dos blocos
         if (method.equals("manual")) {
-            for (int i = 1; i <= hbCount; i++) {
-                System.out.printf("Block %d X: ", i);
-                int bx = readInt();
-                System.out.printf("Block %d Y: ", i);
-                int by = readInt();
-                positions.add(new Location(bx, by));
-            }
-            sc.nextLine(); // consume leftover newline
-        }
+            List<Integer> posXArray = new ArrayList<>();
+            List<Integer> posYArray = new ArrayList<>();
 
-        // Attempt block assignment, with retry on error
-        boolean assigned = false;
-        while (!assigned) {
-            try {
-                controller.selectedAssignmentMethod(method, positions);
-                assigned = true;
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error: " + e.getMessage());
-                if (method.equals("manual")) {
-                    positions.clear();
-                    System.out.println("Please re-enter block coordinates:");
-                    for (int i = 1; i <= hbCount; i++) {
-                        System.out.printf("Block %d X: ", i);
-                        int bx = readInt();
-                        System.out.printf("Block %d Y: ", i);
-                        int by = readInt();
-                        positions.add(new Location(bx, by));
-                    }
-                    sc.nextLine();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            for (int i = 0; i < houseBlockCount; i++) {
+                System.out.println("Enter coordinates for House Block #" + (i + 1));
+                System.out.print("  X: ");
+                posXArray.add(scanner.nextInt());
+                System.out.print("  Y: ");
+                posYArray.add(scanner.nextInt());
             }
-        }
 
-        // Review and confirmation
-        System.out.println("\nReview City:");
-        System.out.println("Name: " + city.getName());
-        System.out.println("Center: (" + city.getCenter().getX() + ", " + city.getCenter().getY() + ")");
-        System.out.println("House Blocks:");
-        for (HouseBlock hbk : city.getHouseBlocks()) {
-            System.out.println(" - (" + hbk.getPosition().getX() + ", " + hbk.getPosition().getY() + ")");
-        }
-
-        System.out.print("\nConfirm creation? (yes/no): ");
-        String confirm = sc.nextLine().trim().toLowerCase();
-        if (confirm.equals("yes")) {
-            boolean success = controller.confirmCityCreation();
-            if (success) {
-                System.out.println("City created successfully!");
-            }
-            // Não imprime nada se houver overbuilding
+            // Criar a cidade com o método manual
+            City city = controller.createCity(name, posX, posY, houseBlockCount, method, posXArray, posYArray);
+            displaySuccess(city);
         } else {
-            System.out.println("Operation cancelled.");
+            // Criar a cidade com o método automático
+            City city = controller.createCity(name, posX, posY, houseBlockCount, method, null, null);
+            displaySuccess(city);
         }
     }
 
-    /**
-     * Reads an integer from the console, re-prompting on invalid input.
-     *
-     * @return a valid integer entered by the user
-     */
-    private int readInt() {
-        while (true) {
-            try {
-                String line = sc.nextLine().trim();
-                return Integer.parseInt(line);
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid number. Please enter again: ");
-            }
+    private void removeCity(Scanner scanner) {
+        System.out.print("Enter the name of the city to remove: ");
+        String name = scanner.nextLine();
+
+        boolean removed = controller.removeCity(name);
+        if (removed) {
+            System.out.println("✅ City successfully removed.");
+        } else {
+            System.out.println("❌ City not found.");
         }
     }
 
-    /**
-     * Entry‐point for Runnable dispatch.
-     */
+    private void displaySuccess(City city) {
+        if (city != null) {
+            System.out.println("\n✅ City created successfully: " + city.getName());
+        } else {
+            System.out.println("\n❌ Failed to create city. Name might be invalid or already exists.");
+        }
+    }
+
     @Override
     public void run() {
-        start();
+        Map map = new Map();
+        start(map);
     }
-
-    /**
-     * Entry point: launches the Add City UI.
-     *
-     * @param args not used
-     */
-
 }
-
-

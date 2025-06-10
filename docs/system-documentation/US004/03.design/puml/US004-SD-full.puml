@@ -8,138 +8,144 @@ autonumber
 
 actor "Editor" as Editor
 participant ":CreateScenarioUI" as UI
-participant ":CreateScenarioController" as Controller
-participant "Repositories" as REPOS
-participant "repositories\n:Repositories" as REPOS_SINGLETON
-participant "scenarioRepository\n:ScenarioRepository" as SCENARIO_REPO
-participant ":Scenario" as Scenario
-participant ":Cargo" as Cargo
-participant ":Locomotive" as Locomotive
-participant ":MapRepository" as MapRepo
-participant ":Period" as Period
-participant "cargoRepository\n:CargoRepository" as CargoRepo
-participant "locomotiveRepository\n:LocomotiveRepository" as LocoRepo
+participant ":CreateScenarioController" as CTRL
+participant "map\n:Map" as Map
+participant "scenario\n:Scenario" as Scenario
+participant "period\n:Period" as Period
+participant "LocomotiveType" as LocomotiveType
+participant "IndustryMapper" as IndustryMapper
+participant "listIndustry\n:List<Industry>" as ListIndustry
+participant "listIndustryDTO\n:List<IndustryDTO>" as ListIndustryDTO
+participant "industryDTO\n:IndustryDTO" as IndustryDTO
+participant "industry\n:Industry" as Industry
+
 
 activate Editor
 
-Editor -> UI : asks to create a scenario for selected map
+Editor -> UI : asks to create a scenario
 activate UI
-UI --> Editor : requests scenario period (start and end date)
+    UI --> CTRL **: create(map)
+UI --> Editor : requests scenario name and period (start and end date)
+deactivate UI
+Editor -> UI : provides name, start and end date
+activate UI
+UI -> CTRL: createScenario(name, startDate,endDate)
+activate CTRL
+CTRL -> Map: createScenario(name, startDate,endDate)
+activate Map
+Map --> Scenario**: create(name, startDate,endDate)
+activate Scenario
+Scenario --> Period**: create(startDate,endDate)
+
+deactivate Scenario
+Map --> CTRL:
+deactivate Map
+CTRL --> UI:
+deactivate CTRL
+UI --> Editor: show options and asks to select one
 deactivate UI
 
-Editor -> UI: provides start and end date
+alt locomotive
+Editor -> UI: select locomotive types to include in the scenario
 activate UI
-UI -> Controller : startCreateScenario(start, end)
-activate Controller
-
-Controller -> REPOS : getInstance()
-activate REPOS
-REPOS --> Controller : repositories
-deactivate REPOS
-
-
-Controller -> REPOS_SINGLETON : getScenarioRepository()
-activate REPOS_SINGLETON
-REPOS_SINGLETON --> Controller : scenarioRepository
-deactivate REPOS_SINGLETON
-
-Controller -> Period : newPeriod(start, end)
-activate Period
-Period --> Controller : period
-deactivate Period
-Controller -> Scenario : setPeriod(period)
-deactivate REPOS_SINGLETON
-
+UI -> CTRL: getLocomotiveTypes()
+activate CTRL
+CTRL -> LocomotiveType: getLocomotiveTypes()
+activate LocomotiveType
+LocomotiveType --> CTRL: locomotive types
+deactivate LocomotiveType
+CTRL --> UI: locomotive types
+deactivate CTRL
 UI --> Editor : shows all available locomotion types
 deactivate UI
-
-Editor -> UI : selects locomotion types to include in the scenario
+Editor -> UI: defines available types
 activate UI
+UI -> CTRL: defineAvailableTypes(type)
+activate CTRL
+CTRL -> Map: defineAvailableTypes(type)
+activate Map
+Map -> Scenario: defineAvailableTypes(type)
+activate Scenario
+Scenario --> Map: true
+deactivate Scenario
+Map --> CTRL: true
+deactivate Map
+CTRL --> UI: true
+deactivate CTRL
+UI --> Editor: success
+deactivate UI
 
-loop for each selected locomotive
-    UI -> Controller : addLocomotiveType(type)
-    activate Controller
-    Controller -> LocoRepo : addAvailableLocomotionType(type)
-
-
-        UI --> Editor : requests availability period for type
-        deactivate UI
-        Editor -> UI : provides availability option
-        activate UI
-
-        alt define availability period
-        else from date
-            UI -> Controller : setLocomotiveAvailability(type, fromDate)
-            Controller -> Scenario : addLocomotive(year,type)
-            activate Scenario
-            Scenario --> SCENARIO_REPO: scenario
-            deactivate
-            Controller -> Locomotive : setAvailability(type, period)
-            deactivate Period
-
-        else until date
-            UI -> Controller : setLocomotiveAvailability(type, untilDate)
-            Controller -> Scenario : addLocomotive(year,type)
-                        activate Scenario
-                        Scenario --> SCENARIO_REPO: scenario
-                        deactivate
-            deactivate Period
-            Controller -> Locomotive : setAvailability(type, period)
-            deactivate Period
-    end
-    deactivate Controller
+else production rate
+Editor -> UI: select production rates to include in the scenario
+activate UI
+UI -> CTRL: getIndustries()
+activate CTRL
+CTRL -> Map: getIndustries()
+activate Map
+Map --> ListIndustry**:
+Map --> CTRL: listIndustry
+deactivate Map
+CTRL -> IndustryMapper: toDTO(listIndustry)
+activate IndustryMapper
+IndustryMapper --> ListIndustryDTO**: create()
+loop for each industry in list
+IndustryMapper -> ListIndustry: industry=get(i)
+activate ListIndustry
+deactivate ListIndustry
+IndustryMapper -> IndustryMapper: industryDTO=t0DTO(industry)
+activate IndustryMapper
+IndustryMapper --> IndustryDTO** : create(industry)
+deactivate IndustryMapper
+IndustryMapper -> ListIndustryDTO: add(IndustryDTO)
+activate ListIndustryDTO
+deactivate ListIndustryDTO
 end
+IndustryMapper --> CTRL: listIndustryDTO
+deactivate IndustryMapper
+CTRL --> UI: listIndustryDTO
+deactivate CTRL
+UI --> Editor: shows list
 
-UI --> Editor : shows all available cargo types
 deactivate UI
-
-Editor -> UI : selects cargo types to be part of the scenario (e.g., Iron, Coal, Silver, etc.)
+Editor -> UI: select industry and define production rate
+loop for each industry
 activate UI
-
-loop for each selected cargo
-    UI -> Controller : addCargoType(cargo)
-    activate Controller
-    Controller -> CargoRepo : addAvailableCargo(cargo)
-
-    UI --> Editor : requests cargo behavior (import/export/transform)
-    deactivate UI
-    Editor -> UI : selects behavior(s)
-    activate UI
-
-    loop for each selected behavior
-        UI -> Controller : setCargoBehavior(cargo, behavior)
-        activate Controller
-        deactivate Controller
-    end
-    deactivate Controller
+UI -> CTRL: defineProductionRate(rate, IndustryDTO)
+activate CTRL
+CTRL -> Map: defineProductionRate(rate, IndustryDTO)
+activate Map
+Map -> Scenario: defineProductionRate(rate, IndustryDTO)
+activate Scenario
+Scenario --> Map: true
+deactivate Scenario
+Map --> CTRL: true
+deactivate Map
+CTRL --> UI: true
+deactivate CTRL
+UI --> Editor: success
+deactivate UI
 end
-
-UI --> Editor : requests production frequency for generating industries
-deactivate UI
-Editor -> UI : defines production frequency (percentage)
+else mixed behavior
+Editor -> UI: selects mixed behavior
 activate UI
-UI -> Controller : setIndustryProductionFrequency(percent)
-
-UI --> Editor : shows all data and asks for confirmation
+UI --> Editor: show options menu (import/export/transform)
 deactivate UI
-Editor -> UI : confirms data
+Editor -> UI: selects behavior
 activate UI
-UI -> Controller : confirmScenarioCreation()
-
-
-Controller -> SCENARIO_REPO : saveScenario(scenario)
-activate SCENARIO_REPO
-SCENARIO_REPO -> SCENARIO_REPO : storeRepScenario(scenario)
-SCENARIO_REPO --> Controller : scenario
-deactivate SCENARIO_REPO
-
-Controller --> UI : scenario
+UI -> CTRL: selectBehavior(behavior)
+activate CTRL
+CTRL -> Map: selectBehavior(behavior)
+activate Map
+Map -> Scenario: selectBehavior(behavior)
+activate Scenario
+Scenario --> Map: true
+deactivate Scenario
+Map --> CTRL: true
+deactivate Map
+CTRL --> UI: true
+deactivate CTRL
 UI --> Editor : displays operation success
-
-deactivate SCENARIO_REPO
-deactivate MapRepo
-deactivate REPOS
-deactivate Controller
 deactivate UI
-deactivate Editor
+
+end
 @enduml

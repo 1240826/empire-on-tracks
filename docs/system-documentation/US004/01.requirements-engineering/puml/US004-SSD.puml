@@ -11,57 +11,47 @@ participant ":System" as System
 activate Editor
 
 
-Editor -> System : asks to create a scenario for a selected map
+Editor -> System : asks to create a scenario
 activate System
-System --> Editor : requests scenario period (start and end date)
+System --> Editor : requests scenario name and period (start and end date)
 deactivate System
 
 
-Editor -> System : provides start and end date
+Editor -> System : provides name, start and end date
 activate System
-System --> Editor : shows all available locomotion types
+System --> Editor : show options and asks to select one
 deactivate System
-Editor -> System : selects locomotion types to include in the scenario
+alt locomotive
+Editor -> System: select locomotive types to include in the scenario
 activate System
-
-loop for each selected locomotion type
-
-
-    alt define availability period
-        System --> Editor :requests availability period for type
-        deactivate System
-        Editor -> System : provides availability option
-        activate System
-    end
-end loop
-        System --> Editor : shows all available cargo types
-        deactivate System
-
-
-Editor -> System : selects cargo types to be part of the scenario (e.g., Iron, Coal, Silver, etc.)
+System --> Editor: shows all available locomotion types
+deactivate System
+Editor -> System: defines available types
 activate System
-System --> Editor : requests cargo behavior (import, export, transform)
+System --> Editor : success
 deactivate System
 
-loop for each cargo type in scenario
-    Editor -> System : selects behavior(s)
-    activate System
-end loop
-    System --> Editor : requests production frequency for generating industries
-    deactivate System
-
-
-
-Editor -> System : defines production frequency (percentage)
+else production rate
+Editor -> System: select production rates to include in the scenario
 activate System
-System --> Editor : shows all data and asks for confirmation
+System --> Editor: shows list
 deactivate System
-
-' Editor confirma dados
-Editor -> System : confirms data
+Editor -> System: select industry and define production rate
 activate System
+loop for each industry
+System --> Editor: success
+deactivate System
+else mixed behavior
+Editor -> System: selects mixed behavior
+activate System
+System --> Editor: show options menu (import/export/transform)
+deactivate System
+Editor -> System: selects behavior
+activate System
+end
+
 System --> Editor : displays operation success
 deactivate System
 deactivate Editor
-
+end
 @enduml

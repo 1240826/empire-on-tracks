@@ -39,7 +39,7 @@ Other software classes (i.e. Pure Fabrication) identified:
 
 * AddCityUI  
 * AddCityController
-* MapRepository
+
 
 
 ## 3.2. Sequence Diagram (SD)
@@ -56,19 +56,6 @@ The following diagram shows the same sequence of interactions between the classe
 
 It uses Interaction Occurrence (a.k.a. Interaction Use).
 
-![US003-SD-split.svg](svg/US003-SD-split.svg)
-
-**Create City**
-
-![US003-SD-partial-create-city.svg](svg/US003-SD-partial-create-city.svg)
-
-**Assign automatic**
-
-![US003-SD-partial-assign-automatic.svg](svg/US003-SD-partial-assign-automatic.svg)
-
-**Assign manual**
-
-![US003-SD-partial-assign-manual.svg](svg/US003-SD-partial-assign-manual.svg)
 
 ## 3.3. Class Diagram (CD)
 

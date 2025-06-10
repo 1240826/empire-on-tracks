@@ -13,22 +13,28 @@ activate Editor
     Editor -> System : asks to add a city
     activate System
 
-        System --> Editor : requests city details (name, positionX, positionY, number of house blocks)
+        System --> Editor : requests city details (name, positionX, positionY, houseBlockCount\n houseblockAssignmentMethod)
     deactivate System
 
     Editor -> System : types city details
     activate System
 
-     System --> Editor : requests to select house block assignment method (manual or automatic)
+     System --> Editor : shows all data and requests confirmation
         deactivate System
-
-        Editor -> System : selects assignment method "automatic" or "manual"
-        activate System
-        System --> Editor : shows all data (city details) and requests confirmation
-            deactivate System
 
         Editor -> System : confirms data
         activate System
+
+        alt method = "manual"
+            loop for each houseblock
+                System --> Editor : request positions of house blocks
+                deactivate System
+                Editor -> System : submits positions
+                activate System
+            end
+
+        else method = "automatic"
+        end
 
         System --> Editor : displays operation success
         deactivate System
