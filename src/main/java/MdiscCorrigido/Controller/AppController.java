@@ -10,6 +10,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -133,6 +135,9 @@ public class AppController {
     private void checkReachability(Scanner sc) {
         System.out.println("\n--- Connectivity Check (US13) ---");
 
+        // Start execution time
+        long startTime = System.nanoTime();
+
         // 1) Obtain the ordered list (by D→S→T and then by number)
         List<Station> stations = graph.getSortedStations();
         int n = stations.size();
@@ -169,6 +174,20 @@ public class AppController {
                 }
             }
         }
+
+        // End execution time
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime; // Time in nanoseconds
+
+        // Convert to seconds
+        double executionTimeInSeconds = duration / 1_000_000_000.0;
+
+        // Save execution time for US13
+        saveExecutionTimeToFile("C:\\Users\\fabio\\IdeaProjects\\sem2-pi-24.25-g031-repo\\src\\main\\java\\MdiscCorrigido\\files\\us13_execution_times.txt", n, executionTimeInSeconds);
+
+        // Display the execution time
+        System.out.printf("Execution time for connectivity check (US13): %.10f seconds.%n", executionTimeInSeconds);
+
 
         // 4) Determine column width based on the longest station name
         int maxNameLen = stations.stream()
@@ -348,6 +367,9 @@ public class AppController {
 
     private void findMaintenanceRoute() {
 
+        // Start execution time
+        long startTime = System.nanoTime();
+
         // 1) diagnóstico
         Boolean status = graph.buildMaintenanceRoute(onlyElectrified);
 
@@ -358,7 +380,7 @@ public class AppController {
         // 3) gera trilho
         List<Station> trail = graph.findEulerRoute(onlyElectrified);
         if (trail == null) {
-            System.out.println("Erro interno ao gerar trilho.");
+            System.out.println("Error.");
             return;
         }
 
@@ -368,7 +390,21 @@ public class AppController {
             if (i > 0) sb.append(" → ");
             sb.append(trail.get(i).getName());
         }
-        System.out.println("\n🔧 Rota de manutenção:");
+
+        // End execution time
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime; // Time in nanoseconds
+
+        // Convert to seconds
+        double executionTimeInSeconds = duration / 1_000_000_000.0;
+
+        // Save execution time for US14
+        saveExecutionTimeToFile("C:\\Users\\fabio\\IdeaProjects\\sem2-pi-24.25-g031-repo\\src\\main\\java\\MdiscCorrigido\\files\\us14_execution_times.txt", graph.getAllLines().size(), executionTimeInSeconds);
+
+        // Display the execution time
+        System.out.printf("Execution time for maintenance route (US14): %.10f seconds.%n", executionTimeInSeconds);
+
+        System.out.println("\n🔧 Maintenace route:");
         System.out.println(sb);
 
         // 5) mostra rota em gráfico (azul/vermelho)
@@ -488,12 +524,14 @@ public class AppController {
         Collections.reverse(path);
         return new DijkstraResult(path, dist.get(dst));
     }
-
-
-
-
-
-
+    private void saveExecutionTimeToFile(String filename, int size, double executionTimeInSeconds) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename, true))) {
+            // Append size and execution time in seconds to the file
+            writer.printf("%d\t%.10f%n", size, executionTimeInSeconds);
+        } catch (IOException e) {
+            System.err.println("Error writing execution times to file: " + e.getMessage());
+        }
+    }
 
 
 }

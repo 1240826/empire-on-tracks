@@ -6,18 +6,17 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-
 class Editor {
 }
 
 class Player {
-
 }
 
 class Map {
     name
 }
-class Size{
+
+class Size {
     length
     width
 }
@@ -25,77 +24,82 @@ class Size{
 class Industry {
     production
 }
-class PrimarySectorIndustry{
-    type
+
+class IndustrySector {
+    name
 }
-class TransformingIndustry{
-    type
-    demand
-}
-class MixedIndustry{
-    type
+
+class Type {
+    name
+    cost
 }
 
 class City {
     name
 }
-class HouseBlock{
+
+class HouseBlock {
     people
 }
 
 class Scenario {
     industryProductionRate
     behaviorOfMixedIndustries
-    availableTrains
+    availableLocomotiveTypes
 }
+
 class Period {
     start
     end
 }
 
-class Location{
+class Location {
     positionX
     positionY
 }
 
 class Station {
-capacity
+    capacity
     name
-
 }
 
-class StationType{
+class StationType {
     type
-   range
-   cost
+    range
+    cost
 }
 
-class Train{
-
-   name
-}
-class RailLine{
-cost
-isEletrified
-isDouble
-}
-class Building{
+class Train {
     name
 }
-class Route{
+
+class RailLine {
+    cost
+    isElectrified
+    isDouble
+}
+
+class Building {
+    name
+}
+
+class Route {
     starts
     ends
 }
 
-class Simulation{
-isRunning
-budget
+class Simulation {
+    isRunning
+    budget
 }
 
 class Cargo {
-    type
     quantity
+}
 
+class CargoType {
+    type
+    cost
 }
 
 class Locomotive {
@@ -108,10 +112,11 @@ class Locomotive {
     maintenanceCost
 }
 
-class Carriage{
-    cargoType
+class Carriage {
     capacity
-    }
+}
+
+' RELACIONAMENTOS
 
 Editor "1" -down- "1..*" Map : creates >
 Editor "1" --- "*" Scenario : creates >
@@ -119,33 +124,32 @@ Editor "1" -right- "*" City : adds >
 Editor "1" -- "*" Industry : adds >
 
 Player "1" -- "1..*" Station : buys >
-Player "1" -- "1" Map : places elements >
+Player "1" -- "1..*" Map : places elements on >
 Player "1" - "1..*" Train : buys >
 Player "1" - "1..*" RailLine : builds >
 Player "1" - "*" Building : buys >
-Player "1" - "1" Scenario : start/pause >
+Player "1" - "*" Simulation : runs >
 
 Map "1" - "1" Size : has >
 Map "1" -- "*" Industry : contains >
 Map "1" - "*" City : contains >
 Map "1" -- "*" RailLine : contains >
 
-Industry <|-down- PrimarySectorIndustry
-Industry <|-down- TransformingIndustry
-Industry <|-down- MixedIndustry
-PrimarySectorIndustry <|-down- MixedIndustry
-TransformingIndustry <|-down- MixedIndustry
-
+Industry "1" -- "1" Type : is from a certain >
+IndustrySector "1" -- "1" Type : has
 Industry "1" - "1" Location : has >
 Industry "1..*" -- "1..*" Station : loads/unloads >
 Industry "1" -- "1..*" Cargo : produces >
 
 Scenario "1" -- "1" Period : has >
-Scenario "*" -- "1..*" MixedIndustry : changes Class >
+Scenario "*" -- "1..*" Type : changes Class >
 Scenario "*" -- "1..*" Industry : changes Production >
 Scenario "*" - "1" Map : uses >
 Scenario "1" - "1..*" Locomotive : restricts locomotion types >
-Scenario "1" - "1..*" Cargo : restricts cargo types >
+Scenario "1" -- "1..*" CargoType : restricts cargo types >
+
+CargoType "1" -- "1" Cargo : is from a certain <
+Carriage "1..*" -- "1" CargoType: has >
 
 Station "1" -- "1" Location : has >
 Station "2..*" - "1" RailLine : connects <
@@ -166,12 +170,11 @@ Route "1" -- "2..*" Station : connects >
 City "1" -- "1..*" HouseBlock : contains >
 City "1" -- "1" Location : bears >
 
-Simulation "1" -- "1..*" Industry : starts/pauses >
+Simulation "1" -- "1..*" Industry : activates >
 Simulation "1" --- "1" Map : starts/pauses >
 Simulation "1" -- "1..*" City : starts/pauses >
+Simulation "1" -- "1" Scenario : is composed of >
 
 Location "1" -- "1" HouseBlock : have <
 
-
 @enduml
-
