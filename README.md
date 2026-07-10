@@ -1,82 +1,31 @@
-# Project Template
+# Empire on Tracks — Railway Simulation Game
 
-This project template contains didactic artifacts relevant to the Integrative Project to be developed during the second semester of the [Degree in Informatics Engineering (LEI)](https://www.isep.ipp.pt/Course/Course/26) from the [School of Engineering – Polytechnic of Porto (ISEP)](https://www.isep.ipp.pt).
+A Java-based railway simulation game inspired by Railroad Tycoon 2. Features a comprehensive map editor for creating custom scenarios with cities, industries, stations, and buildings. Players manage railway networks, deploy locomotives, and run simulations.
 
-In particular, it has:
+## Key Features
 
-* The [Team Members and Task Distribution](docs/TeamMembersAndTasks.md) during sprints;
-* [Templates](docs/(template-files)) to capture and systematize evidence of proper application of the Software Development Process, namely regarding the activities of Requirements Engineering, OO Analysis and Design;
-* [Sample documentation](docs/outsourcing-tasks-example) and [source code](src) available as a starting point;
-* General description of how the provided application works (and it is structured).
+- **Map Editor**: Create custom scenarios by placing cities, industries, train stations, buildings, and rail infrastructure on interactive maps
+- **Dual-Mode System**: Editor role for map creation and scenario design, Player role for running simulations and managing operations
+- **Train Simulation**: Train movement system with interactions between locomotives, cargo, and industries
+- **MVC Architecture**: Clean separation between game logic (Model), JavaFX visualization (View), and user interactions (Controller)
+- **Design Patterns**: Implemented Observer, Strategy, Command, and Singleton patterns throughout the codebase
 
+## Tech Stack
 
-## Maven goals
+- Java
+- JavaFX (GUI)
+- Python (map processing)
+- JUnit (testing)
+- MVC + Design Patterns
 
-### Run the unit tests
-```
-mvn clean test
-```
+## Setup
 
-### Generate javadoc for the source code
-```
-mvn javadoc:javadoc
-```
-
-### Generate javadoc for the test code
-```
-mvn javadoc:test-javadoc
-```
-
-### Generate Jacoco source code coverage report
-```
-mvn test jacoco:report
+```bash
+# Requires Java
+javac *.java
+java Main
 ```
 
-### Check if thresholds limits are achieved
-```
-mvn test jacoco:check
-```
+## License
 
-## How to generate a Jar package for the project
-
-Place the following plugin on the appropriate place of the pom.xml file.
-
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <version>3.6.0</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>single</goal>
-            </goals>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <mainClass>pt.ipp.isep.dei.esoft.project.ui.Main</mainClass>
-                    </manifest>
-                </archive>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-```
-
-Run the following command on the project root folder. You can use IntelliJ to run the command or the command line of your computer if you hav Maven installed.
-
-```
-mvn package
-```
-
-## How to run the project from the generated Jar Package
-
-Run the following command on the project root folder. You can use IntelliJ to run the command or the command line of your computer if you hav Maven installed.
-
-```
-java -jar target/project-template-1.0-SNAPSHOT-jar-with-dependencies.jar
-```
+Academic project. Repository made public after completion.

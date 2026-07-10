@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.repository;
+package pt.ipp.isep.dei.example;
 
 import org.junit.jupiter.api.Test;
 import pt.ipp.isep.dei.example_US6.TaskCategory;
