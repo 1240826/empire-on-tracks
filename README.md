@@ -30,16 +30,16 @@ The game has two modes:
 ```
 ┌────────────────────────────────────────────┐
 │              JavaFX GUI (View)             │
-│  Map Editor │ Dashboard │ Route Manager    │
+│    Map Editor │ Dashboard │ Route Manager  │
 ├────────────────────────────────────────────┤
-│            Controller Layer                │
-│  User input handling │ Game loop           │
+│              Controller Layer              │
+│       User input handling │ Game loop      │
 ├────────────────────────────────────────────┤
-│              Model Layer                   │
-│  Game logic │ Economy │ Train physics      │
+│                 Model Layer                │
+│      Game logic │ Economy │ Train physics  │
 ├────────────────────────────────────────────┤
 │           Python (Map Processing)          │
-│  Map generation │ CSV data parsing         │
+│       Map generation │ CSV data parsing    │
 └────────────────────────────────────────────┘
 ```
 
