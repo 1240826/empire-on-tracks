@@ -1,0 +1,5 @@
+# Keep GitHub language stats about the Java source, not generated or documentation files
+javadoc/** linguist-generated
+htmlReport/** linguist-generated
+MDISC_docs/** linguist-documentation
+*.ipynb linguist-documentation
